@@ -46,6 +46,8 @@ function mostrarFormulariosCifrado() {
     elementosVigenere.forEach(elem => elem.style.display = 'none');
     elementosTransposicionColumna.forEach(elem => elem.style.display = 'none');
     elementosAtbash.forEach(elem => elem.style.display = 'none');
+    const elementosRailFence = document.querySelectorAll('.solo-railFence');
+    elementosRailFence.forEach(elem => elem.style.display = 'none');
 
     // Mostrar solo los elementos del cifrado seleccionado
     if (tipoCifrado === 'afin') {
@@ -66,6 +68,8 @@ function mostrarFormulariosCifrado() {
         elementosTransposicionColumna.forEach(elem => elem.style.display = 'block');
     } else if (tipoCifrado === 'atbash') {
         elementosAtbash.forEach(elem => elem.style.display = 'block');
+    } else if (tipoCifrado === 'railFence') {
+        elementosRailFence.forEach(elem => elem.style.display = 'block');
     }
 }
 
@@ -92,6 +96,8 @@ function manejarCifrado(evento) {
         manejarCifradoTransposicionColumna();
     } else if (tipoCifrado === 'atbash') {
         manejarCifradoAtbash();
+    } else if (tipoCifrado === 'railFence') {
+        manejarCifradoRailFence();
     }
 }
 
@@ -230,6 +236,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoTransposicionColumna();
     } else if (tipoCifrado === 'atbash') {
         manejarDescifradoAtbash();
+    } else if (tipoCifrado === 'railFence') {
+        manejarDescifradoRailFence();
     }
 }
 
@@ -369,6 +377,8 @@ function manejarFuerzaBruta() {
         manejarFuerzaBrutaTransposicionColumna();
     } else if (tipoCifrado === 'atbash') {
         manejarFuerzaBrutaAtbash();
+    } else if (tipoCifrado === 'railFence') {
+        manejarFuerzaBrutaRailFence();
     }
 }
 
@@ -1566,5 +1576,183 @@ function mostrarResultadosFuerzaBrutaAtbash(resultado) {
     </li>`;
     html += '</ul>';
     
+    contenedor.innerHTML = html;
+}
+
+// Función para manejar el cifrado Rail Fence
+function manejarCifradoRailFence() {
+    const textoPlano = document.getElementById('textoPlanoRailFence').value;
+    const clave = document.getElementById('claveRailFenceCifrado').value;
+
+    // Validar los campos
+    if (!textoPlano || !clave) {
+        mostrarError('errorCifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Validar que la clave sea un número entero positivo
+    const claveNum = parseInt(clave);
+    if (isNaN(claveNum) || claveNum <= 0) {
+        mostrarError('errorCifrado', 'La clave debe ser un número entero positivo');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarRailFence', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                document.getElementById('resultadoCifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado Rail Fence
+function manejarDescifradoRailFence() {
+    const textoCifrado = document.getElementById('textoCifradoRailFence').value;
+    const clave = document.getElementById('claveRailFenceDescifrado').value;
+
+    // Validar los campos
+    if (!textoCifrado || !clave) {
+        mostrarError('errorDescifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Validar que la clave sea un número entero positivo
+    const claveNum = parseInt(clave);
+    if (isNaN(claveNum) || claveNum <= 0) {
+        mostrarError('errorDescifrado', 'La clave debe ser un número entero positivo');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarRailFence', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado por fuerza bruta Rail Fence
+function manejarFuerzaBrutaRailFence() {
+    const textoCifrado = document.getElementById('textoFuerzaBruta').value;
+    const claveInicio = document.getElementById('claveInicioRailFence').value;
+    const claveFin = document.getElementById('claveFinRailFence').value;
+
+    // Validar que se haya ingresado texto
+    if (!textoCifrado) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+
+    // Validar el rango de claves
+    const inicio = parseInt(claveInicio);
+    const fin = parseInt(claveFin);
+    
+    if (isNaN(inicio) || inicio < 2) {
+        mostrarError('errorFuerzaBruta', 'El número inicial de rieles debe ser mayor o igual a 2');
+        return;
+    }
+    
+    if (isNaN(fin) || fin < inicio) {
+        mostrarError('errorFuerzaBruta', 'El número final de rieles debe ser mayor o igual al inicial');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoFuerzaBruta').classList.add('mostrar');
+    document.getElementById('resultadoFuerzaBruta').innerHTML = '';
+    document.getElementById('errorFuerzaBruta').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/fuerzaBrutaRailFence', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            claveInicio: inicio,
+            claveFin: fin
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorFuerzaBruta', datos.error);
+            } else {
+                mostrarResultadosFuerzaBrutaRailFence(datos.resultados);
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            mostrarError('errorFuerzaBruta', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para mostrar los resultados del descifrado por fuerza bruta Rail Fence
+function mostrarResultadosFuerzaBrutaRailFence(resultados) {
+    const contenedor = document.getElementById('resultadoFuerzaBruta');
+
+    if (!resultados || resultados.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
+        return;
+    }
+
+    let html = '<ul class="listaResultados">';
+
+    resultados.forEach(item => {
+        html += `<li>
+            <strong>Rails = ${item.rails}</strong>
+            <p>${item.textoDescifrado || item.texto}</p>
+        </li>`;
+    });
+
+    html += '</ul>';
     contenedor.innerHTML = html;
 }

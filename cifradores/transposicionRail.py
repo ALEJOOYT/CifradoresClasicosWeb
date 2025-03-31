@@ -53,10 +53,13 @@ def Descifrar(cifrado, clave):
         fila += 1 if direccionAbajo else -1
     return "".join(resultado)
 
-def DescifrarFuerzaBruta(cifrado, maxClave=10):
+def DescifrarFuerzaBruta(cifrado, claveInicio=2, claveFin=10):
     """Función para aplicar fuerza bruta al cifrado Rail Fence"""
     resultados = []
-    for clave in range(2, min(maxClave + 1, len(cifrado))):
-        descifrado = Descifrar(cifrado, clave)
-        resultados.append((clave, descifrado))
+    for clave in range(claveInicio, claveFin + 1):
+        try:
+            descifrado = Descifrar(cifrado, clave)
+            resultados.append((clave, descifrado))
+        except:
+            continue  # Si hay un error, simplemente continuamos con el siguiente
     return resultados

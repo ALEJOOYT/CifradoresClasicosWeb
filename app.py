@@ -34,6 +34,10 @@ from cifradores.atbah import Descifrar as DescifrarAtbash
 from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
 from cifradores.transposicionColumna import DescifradoFuerzaBruta as DescifradoFuerzaBrutaTransposicionColumna
+
+from cifradores.transposicionRail import Cifrar as CifrarRailFence
+from cifradores.transposicionRail import Descifrar as DescifrarRailFence
+from cifradores.transposicionRail import DescifrarFuerzaBruta as DescifrarFuerzaBrutaRailFence
 app = Flask(__name__)
 
 # Ruta principal
@@ -498,6 +502,99 @@ def ApiDescifrarAtbash():
         })
     except Exception as e:
         return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+
+# API para cifrar Rail Fence
+@app.route('/api/cifrarRailFence', methods=['POST'])
+def ApiCifrarRailFence():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = int(datos.get('clave', 2))
+    
+    if clave < 2:
+        return jsonify({
+            "resultado": "Error: La clave debe ser un número entero mayor o igual a 2",
+            "exito": False
+        })
+        
+    try:
+        resultado = CifrarRailFence(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar Rail Fence
+@app.route('/api/descifrarRailFence', methods=['POST'])
+def ApiDescifrarRailFence():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = int(datos.get('clave', 2))
+    
+    if clave < 2:
+        return jsonify({
+            "resultado": "Error: La clave debe ser un número entero mayor o igual a 2",
+            "exito": False
+        })
+        
+    try:
+        resultado = DescifrarRailFence(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar por fuerza bruta Rail Fence
+@app.route('/api/fuerzaBrutaRailFence', methods=['POST'])
+def ApiFuerzaBrutaRailFence():
+    datos = request.json
+    texto = datos.get('texto', '')
+    claveInicio = int(datos.get('claveInicio', 2))
+    claveFin = int(datos.get('claveFin', 10))
+    
+    if claveInicio < 2:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": "Error: El valor inicial de la clave debe ser mayor o igual a 2",
+            "exito": False
+        })
+    
+    if claveFin < claveInicio:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": "Error: El valor final de la clave debe ser mayor o igual al valor inicial",
+            "exito": False
+        })
+        
+    try:
+        resultados = DescifrarFuerzaBrutaRailFence(texto, claveInicio, claveFin)
+        # Transformar los resultados a un formato más amigable
+        resultados_formateados = [{"rails": clave, "textoDescifrado": texto} for clave, texto in resultados]
+        
+        return jsonify({
+            "resultados": resultados_formateados,
+            "listaResultados": resultados_formateados,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
             "resultado": f"Error: {str(e)}",
             "exito": False
         })

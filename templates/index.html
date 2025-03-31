@@ -27,6 +27,7 @@
                 <option value="vernam">Cifrado Vernam</option>
                 <option value="vigenere">Cifrado Vigenère</option>
                 <option value="transposicionColumna">Transposición por Columna</option>
+                <option value="railFence">Cifrado Rail Fence</option>
                 <option value="atbash">Cifrado Atbash</option>
             </select>
         </div>
@@ -52,6 +53,8 @@
                     <textarea id="textoPlanoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoAtbash" class="textoAtbash solo-atbash" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoRailFence" class="textoRailFence" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <div id="camposAfin" class="campos-cifrado">
                         <div class="formGrid">
@@ -145,6 +148,16 @@
                             <small>La clave debe ser un número entero mayor a 1</small>
                         </div>
                     </div>
+                    
+                    <!-- Campos para Cifrado Rail Fence -->
+                    <div id="camposRailFence" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="claveRailFenceCifrado">Número de rieles:</label>
+                            <input type="number" id="claveRailFenceCifrado" min="2" 
+                                placeholder="Ingrese el número de rieles (mayor a 1)" required>
+                            <small>El número de rieles debe ser un entero mayor a 1</small>
+                        </div>
+                    </div>
                     <div id="errorCifrado" class="mensajeError"></div>
                     <div id="cargandoCifrado" class="indicadorCargando">
                         <div class="spinner"></div><span>Procesando...</span>
@@ -179,6 +192,8 @@
                     <textarea id="textoCifradoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                     <textarea id="textoCifradoAtbash" class="textoAtbash solo-atbash" style="display: none;"
+                        placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
+                    <textarea id="textoCifradoRailFence" class="textoRailFence" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -278,6 +293,16 @@
                         <small>La clave debe ser un número entero mayor a 1</small>
                     </div>
                 </div>
+                
+                <!-- Campos para Descifrado Rail Fence -->
+                <div id="camposRailFenceDescifrado" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="claveRailFenceDescifrado">Número de rieles:</label>
+                        <input type="number" id="claveRailFenceDescifrado" min="2" 
+                            placeholder="Ingrese el número de rieles (mayor a 1)" required>
+                        <small>El número de rieles debe ser un entero mayor a 1</small>
+                    </div>
+                </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
                 <div id="cargandoDescifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -335,6 +360,24 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Campos para Fuerza Bruta Rail Fence -->
+                <div id="railFenceFuerzaBruta" class="campos-fuerza-bruta" style="display: none;">
+                    <div class="formGrid">
+                        <div class="grupoFormulario medio">
+                            <label for="claveInicioRailFence">Rieles inicio:</label>
+                            <input type="number" id="claveInicioRailFence" min="2" 
+                                placeholder="Valor inicial" required>
+                            <small>Valor inicial para la búsqueda</small>
+                        </div>
+                        <div class="grupoFormulario medio">
+                            <label for="claveFinRailFence">Rieles fin:</label>
+                            <input type="number" id="claveFinRailFence" min="2" 
+                                placeholder="Valor final" required>
+                            <small>Valor final para la búsqueda</small>
+                        </div>
+                    </div>
+                </div>
                 <div id="errorFuerzaBruta" class="mensajeError"></div>
                 <div id="cargandoFuerzaBruta" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -367,6 +410,8 @@
             const camposVigenere = document.getElementById('camposVigenere');
             const transposicionColumnaInputs = document.getElementById('transposicionColumnaInputs');
             const transposicionColumnaDescifradoInputs = document.getElementById('transposicionColumnaDescifradoInputs');
+            const camposRailFence = document.getElementById('camposRailFence');
+            const camposRailFenceDescifrado = document.getElementById('camposRailFenceDescifrado');
             const textoPlanoAtbash = document.getElementById('textoPlanoAtbash');
             const textoCifradoAtbash = document.getElementById('textoCifradoAtbash');
             const textoCifrado = document.getElementById('textoCifrado'); // Agregada esta línea para garantizar que textoCifrado esté definido
@@ -386,6 +431,7 @@
             const textoPlanoVernam = document.getElementById('textoPlanoVernam');
             const textoPlanoVigenere = document.getElementById('textoPlanoVigenere');
             const textoPlanoTransposicionColumna = document.getElementById('textoPlanoTransposicionColumna');
+            const textoPlanoRailFence = document.getElementById('textoPlanoRailFence');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
             const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
             const textoCifradoCesar = document.getElementById('textoCifradoCesar');
@@ -393,6 +439,7 @@
             const textoCifradoVernam = document.getElementById('textoCifradoVernam');
             const textoCifradoVigenere = document.getElementById('textoCifradoVigenere');
             const textoCifradoTransposicionColumna = document.getElementById('textoCifradoTransposicionColumna');
+            const textoCifradoRailFence = document.getElementById('textoCifradoRailFence');
             // Establecer la visualización inicial basada en el valor seleccionado
             actualizarInterfazSegunCifrado(tipoCifrado.value);
             
@@ -566,6 +613,7 @@
                     seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para Transposición por Columna
                     document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
                     document.getElementById('transposicionColumnaFuerzaBruta').style.display = 'block'; // Mostrar campos para fuerza bruta Transposición por Columna
+                    document.getElementById('railFenceFuerzaBruta').style.display = 'none'; // Ocultar campos para fuerza bruta Rail Fence
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'none';
                     textoPlanoPlayFair.style.display = 'none';
@@ -602,6 +650,7 @@
                     seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para Atbash
                     document.getElementById('campos-fuerza-bruta-hill').style.display = 'none';
                     document.getElementById('transposicionColumnaFuerzaBruta').style.display = 'none';
+                    document.getElementById('railFenceFuerzaBruta').style.display = 'none';
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'none';
                     textoPlanoPlayFair.style.display = 'none';
@@ -620,6 +669,49 @@
                     textoCifradoVigenere.style.display = 'none';
                     textoCifradoTransposicionColumna.style.display = 'none';
                     textoCifradoAtbash.style.display = 'block';
+                } else if (valor === 'railFence') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'none';
+                    camposHill.style.display = 'none';
+                    camposVernam.style.display = 'none';
+                    camposVigenere.style.display = 'none';
+                    transposicionColumnaInputs.style.display = 'none';
+                    camposRailFence.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'none';
+                    camposHillDescifrado.style.display = 'none';
+                    camposVernamDescifrado.style.display = 'none';
+                    camposVigenereDescifrado.style.display = 'none';
+                    transposicionColumnaDescifradoInputs.style.display = 'none';
+                    camposRailFenceDescifrado.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para Rail Fence
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none';
+                    document.getElementById('transposicionColumnaFuerzaBruta').style.display = 'none';
+                    document.getElementById('railFenceFuerzaBruta').style.display = 'block'; // Mostrar campos para fuerza bruta Rail Fence
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'none';
+                    textoPlanoHill.style.display = 'none';
+                    textoPlanoVernam.style.display = 'none';
+                    textoPlanoVigenere.style.display = 'none';
+                    textoPlanoTransposicionColumna.style.display = 'none';
+                    textoPlanoAtbash.style.display = 'none';
+                    textoPlanoRailFence.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'none';
+                    textoCifradoHill.style.display = 'none';
+                    textoCifradoVernam.style.display = 'none';
+                    textoCifradoVigenere.style.display = 'none';
+                    textoCifradoTransposicionColumna.style.display = 'none';
+                    textoCifradoAtbash.style.display = 'none';
+                    textoCifradoRailFence.style.display = 'block';
                 }
             }
 
