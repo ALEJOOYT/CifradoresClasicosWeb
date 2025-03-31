@@ -29,19 +29,28 @@ function mostrarFormulariosCifrado() {
     const elementosAfin = document.querySelectorAll('.solo-afin');
     const elementosAdfgvx = document.querySelectorAll('.solo-adfgvx');
     const elementosPlayFair = document.querySelectorAll('.solo-playFair');
+    const elementosCesar = document.querySelectorAll('.solo-cesar');
 
     if (tipoCifrado === 'afin') {
         elementosAfin.forEach(elem => elem.style.display = 'block');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'adfgvx') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'block');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'playFair') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'block');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
+    } else if (tipoCifrado === 'cesar') {
+        elementosAfin.forEach(elem => elem.style.display = 'none');
+        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
+        elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'block');
     }
 }
 
@@ -57,6 +66,8 @@ function manejarCifrado(evento) {
         manejarCifradoAdfgvx();
     } else if (tipoCifrado === 'playFair') {
         manejarCifradoPlayFair();
+    } else if (tipoCifrado === 'cesar') {
+        manejarCifradoCesar();
     }
 }
 
@@ -183,6 +194,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoAdfgvx();
     } else if (tipoCifrado === 'playFair') {
         manejarDescifradoPlayFair();
+    } else if (tipoCifrado === 'cesar') {
+        manejarDescifradoCesar();
     }
 }
 
@@ -312,6 +325,8 @@ function manejarFuerzaBruta() {
         manejarFuerzaBrutaAfin();
     } else if (tipoCifrado === 'playFair') {
         manejarFuerzaBrutaPlayFair();
+    } else if (tipoCifrado === 'cesar') {
+        manejarFuerzaBrutaCesar();
     }
 }
 
@@ -595,3 +610,155 @@ function mostrarResultadosFuerzaBrutaPlayFair(resultados) {
     html += '</ul>';
     contenedor.innerHTML = html;
 }
+
+// Función para manejar el cifrado César
+function manejarCifradoCesar() {
+    const textoPlano = document.getElementById('textoPlanoCesar').value;
+    const desplazamiento = document.getElementById('desplazamientoCifrado').value;
+
+    // Validar los campos
+    if (!textoPlano || !desplazamiento) {
+        mostrarError('errorCifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarCesar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano,
+            desplazamiento: desplazamiento
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                document.getElementById('resultadoCifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado César
+function manejarDescifradoCesar() {
+    const textoCifrado = document.getElementById('textoCifradoCesar').value;
+    const desplazamiento = document.getElementById('desplazamientoDescifrado').value;
+
+    // Validar los campos
+    if (!textoCifrado || !desplazamiento) {
+        mostrarError('errorDescifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarCesar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            desplazamiento: desplazamiento
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado por fuerza bruta César
+function manejarFuerzaBrutaCesar() {
+    const textoCifrado = document.getElementById('textoFuerzaBruta').value;
+
+    // Validar que se haya ingresado texto
+    if (!textoCifrado) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoFuerzaBruta').classList.add('mostrar');
+    document.getElementById('resultadoFuerzaBruta').innerHTML = '';
+    document.getElementById('errorFuerzaBruta').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/fuerzaBrutaCesar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorFuerzaBruta', datos.error);
+            } else {
+                mostrarResultadosFuerzaBrutaCesar(datos.resultados);
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            mostrarError('errorFuerzaBruta', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para mostrar los resultados del descifrado por fuerza bruta César
+function mostrarResultadosFuerzaBrutaCesar(resultados) {
+    const contenedor = document.getElementById('resultadoFuerzaBruta');
+
+    if (!resultados || resultados.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
+        return;
+    }
+
+    let html = '<ul class="listaResultados">';
+
+    resultados.forEach(item => {
+        // Extraer desplazamiento y texto descifrado de la tupla
+        // La tupla viene como [desplazamiento, textoDescifrado]
+        const desplazamiento = item[0];
+        const textoDescifrado = item[1];
+        
+        html += `<li>
+            <strong>Desplazamiento = ${desplazamiento}</strong>
+            <p>${textoDescifrado}</p>
+        </li>`;
+    });
+
+    html += '</ul>';
+    contenedor.innerHTML = html;
+}
+

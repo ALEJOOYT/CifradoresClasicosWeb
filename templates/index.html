@@ -22,6 +22,7 @@
                 <option value="afin">Cifrado Afín</option>
                 <option value="adfgvx">Cifrado ADFGVX</option>
                 <option value="playFair">Cifrado PlayFair</option>
+                <option value="cesar">Cifrado César</option>
             </select>
         </div>
         <section class="seccion">
@@ -34,6 +35,8 @@
                     <textarea id="textoPlanoAdfgvx" class="textoAdfgvx" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoPlayFair" class="textoPlayFair" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoCesar" class="textoCesar" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                 </div>
                 <!-- Campos para Cifrado Afín -->
@@ -77,6 +80,15 @@
                         <small>La clave debe contener solo letras</small>
                     </div>
                 </div>
+
+                <!-- Campos para Cifrado César -->
+                <div id="camposCesar" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="desplazamientoCifrado">Desplazamiento:</label>
+                        <input type="number" id="desplazamientoCifrado" min="1" max="25" placeholder="Ingrese el desplazamiento (1-25)" required>
+                        <small>El desplazamiento debe ser un número entre 1 y 25</small>
+                    </div>
+                </div>
                 <div id="errorCifrado" class="mensajeError"></div>
                 <div id="cargandoCifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -99,6 +111,8 @@
                     <textarea id="textoCifradoAdfgvx" class="textoAdfgvx" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
                     <textarea id="textoCifradoPlayFair" class="textoPlayFair" style="display: none;"
+                        placeholder="Ingrese el texto para descifrar" required></textarea>
+                    <textarea id="textoCifradoCesar" class="textoCesar" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -142,6 +156,15 @@
                         <label for="clavePlayFairDescifrado">Clave:</label>
                         <input type="text" id="clavePlayFairDescifrado" placeholder="Ingrese la clave para el descifrado PlayFair" required>
                         <small>La clave debe contener solo letras</small>
+                    </div>
+                </div>
+
+                <!-- Campos para Descifrado César -->
+                <div id="camposCesarDescifrado" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="desplazamientoDescifrado">Desplazamiento:</label>
+                        <input type="number" id="desplazamientoDescifrado" min="1" max="25" placeholder="Ingrese el desplazamiento (1-25)" required>
+                        <small>El desplazamiento debe ser un número entre 1 y 25</small>
                     </div>
                 </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
@@ -190,16 +213,19 @@
             const camposAfin = document.getElementById('camposAfin');
             const camposAdfgvx = document.getElementById('camposAdfgvx');
             const camposPlayFair = document.getElementById('camposPlayFair');
+            const camposCesar = document.getElementById('camposCesar');
             const camposAfinDescifrado = document.getElementById('camposAfinDescifrado');
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
             const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
-            const seccionFuerzaBruta = document.getElementById('seccionFuerzaBruta');
+            const camposCesarDescifrado = document.getElementById('camposCesarDescifrado');
             const textoPlano = document.getElementById('textoPlano');
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
             const textoPlanoPlayFair = document.getElementById('textoPlanoPlayFair');
+            const textoPlanoCesar = document.getElementById('textoPlanoCesar');
             const textoCifrado = document.getElementById('textoCifrado');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
             const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
+            const textoCifradoCesar = document.getElementById('textoCifradoCesar');
 
             tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
@@ -244,6 +270,24 @@
                     textoCifrado.style.display = 'none';
                     textoCifradoAdfgvx.style.display = 'none';
                     textoCifradoPlayFair.style.display = 'block';
+                } else if (this.value === 'cesar') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para César
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'block';
                 }
             });
 

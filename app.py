@@ -16,12 +16,15 @@ from cifradores.playFair import FuerzaBruta as DescifrarFuerzaBrutaPlayfair
 from cifradores.cesar import Cifrar as CifrarCesar
 from cifradores.cesar import Descifrar as DescifrarCesar
 from cifradores.cesar import DescifrarFuerzaBruta as DescifrarFuerzaBrutaCesar
+
 app = Flask(__name__)
 
 # Ruta principal
 @app.route('/')
 def PaginaPrincipal():
     return render_template('index.html')
+
+
 # API para cifrar Afin
 @app.route('/api/cifrar', methods=['POST'])
 def ApiCifrar():
@@ -65,6 +68,8 @@ def ApiFuerzaBruta():
         "listaResultados": resultados,
         "exito": True
     })
+
+
 # API para cifrar con ADFGVX
 @app.route('/api/cifrarAdfgvx', methods=['POST'])
 def ApiCifrarAdfgvx():
@@ -112,6 +117,8 @@ def ApiGenerarMatrizAdfgvx():
     except Exception as e:
         return jsonify({"error": f"Error al generar matriz: {str(e)}", "exito": False})
 
+
+# API para cifrar PlayFair
 @app.route('/api/cifrarPlayFair', methods=['POST'])
 def ApiCifrarPlayfair():
     datos = request.json
@@ -119,7 +126,7 @@ def ApiCifrarPlayfair():
     clave = datos.get('clave', '')
     resultado = CifrarPlayfair(texto, clave)
     return jsonify({"resultado": resultado, "exito": not resultado.startswith("Error")})
-
+# API para Descifrar PlayFair
 @app.route('/api/descifrarPlayFair', methods=['POST'])
 def ApiDescifrarPlayfair():
     datos = request.json
@@ -127,13 +134,59 @@ def ApiDescifrarPlayfair():
     clave = datos.get('clave', '')
     resultado = DescifrarPlayfair(texto, clave)
     return jsonify({"resultado": resultado, "exito": not resultado.startswith("Error")})
-
+# API para Descifrar por fuerza bruta PlayFair
 @app.route('/api/fuerzaBrutaPlayFair', methods=['POST'])
 def ApiFuerzaBrutaPlayfair():
     datos = request.json
     texto = datos.get('texto', '')
     resultados = DescifrarFuerzaBrutaPlayfair(texto)
     return jsonify({"resultados": resultados, "exito": True})
+
+
+# API para cifrar César
+@app.route('/api/cifrarCesar', methods=['POST'])
+def ApiCifrarCesar():
+    datos = request.json
+    texto = datos.get('texto', '')
+    desplazamiento = int(datos.get('desplazamiento', 3))
+
+    resultado = CifrarCesar(texto, desplazamiento)
+
+    return jsonify({
+        "resultado": resultado,
+        "resultado_texto": resultado,
+        "exito": not resultado.startswith("Error")
+    })
+
+# API para descifrar César
+@app.route('/api/descifrarCesar', methods=['POST'])
+def ApiDescifrarCesar():
+    datos = request.json
+    texto = datos.get('texto', '')
+    desplazamiento = int(datos.get('desplazamiento', 3))
+
+    resultado = DescifrarCesar(texto, desplazamiento)
+
+    return jsonify({
+        "resultado": resultado,
+        "resultado_texto": resultado,
+        "exito": not resultado.startswith("Error")
+    })
+
+# API para descifrar por fuerza bruta César
+@app.route('/api/fuerzaBrutaCesar', methods=['POST'])
+def ApiFuerzaBrutaCesar():
+    datos = request.json
+    texto = datos.get('texto', '')
+
+    resultados = DescifrarFuerzaBrutaCesar(texto)
+
+    return jsonify({
+        "resultados": resultados,
+        "listaResultados": resultados,
+        "exito": True
+    })
+
 
 if __name__ == '__main__':
     app.run(debug=True)
