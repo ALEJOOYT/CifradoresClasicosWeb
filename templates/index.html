@@ -24,6 +24,7 @@
                 <option value="playFair">Cifrado PlayFair</option>
                 <option value="cesar">Cifrado César</option>
                 <option value="hill">Cifrado Hill</option>
+                <option value="vernam">Cifrado Vernam</option>
             </select>
         </div>
         <section class="seccion">
@@ -39,79 +40,93 @@
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoCesar" class="textoCesar" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;"
+                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;" <textarea id="textoPlanoHill"
+                        class="textoHill" style="display: none;" placeholder="Ingrese el texto para cifrar"
+                        required></textarea>
+                    <textarea id="textoPlanoVernam" class="textoVernam" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                </div>
-                <!-- Campos para Cifrado Afín -->
-                <div id="camposAfin" class="campos-cifrado">
-                    <div class="formGrid">
-                        <div class="grupoFormulario medio">
-                            <label for="valorACifrado">Clave A:</label>
-                            <input type="number" id="valorACifrado" min="1" placeholder="Valor de A" required>
-                            <small>A debe ser coprimo con 26</small>
+                    <!-- Campos para Cifrado Afín -->
+                    <div id="camposAfin" class="campos-cifrado">
+                        <div class="formGrid">
+                            <div class="grupoFormulario medio">
+                                <label for="valorACifrado">Clave A:</label>
+                                <input type="number" id="valorACifrado" min="1" placeholder="Valor de A" required>
+                                <small>A debe ser coprimo con 26</small>
+                            </div>
+                            <div class="grupoFormulario medio">
+                                <label for="valorBCifrado">Clave B:</label>
+                                <input type="number" id="valorBCifrado" min="0" max="25" placeholder="Valor de B"
+                                    required>
+                                <small>B debe estar entre 0 y 25</small>
+                            </div>
                         </div>
-                        <div class="grupoFormulario medio">
-                            <label for="valorBCifrado">Clave B:</label>
-                            <input type="number" id="valorBCifrado" min="0" max="25" placeholder="Valor de B" required>
-                            <small>B debe estar entre 0 y 25</small>
+                    </div>
+
+                    <!-- Campos para Cifrado ADFGVX -->
+                    <div id="camposAdfgvx" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="matrizAdfgvxCifrado">Matriz (36 caracteres):</label>
+                            <input type="text" id="matrizAdfgvxCifrado"
+                                placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
+                            <small>La matriz debe contener 36 caracteres únicos (letras y números)</small>
+                            <button type="button" id="generarMatrizAdfgvx" class="boton botonSecundario">Generar matriz
+                                aleatoria</button>
+                        </div>
+                        <div class="grupoFormulario">
+                            <label for="claveAdfgvxCifrado">Clave de transposición:</label>
+                            <input type="text" id="claveAdfgvxCifrado" placeholder="Ingrese la clave de transposición"
+                                required>
+                            <small>La clave debe contener solo letras y sin repeticiones</small>
                         </div>
                     </div>
-                </div>
 
-                <!-- Campos para Cifrado ADFGVX -->
-                <div id="camposAdfgvx" class="campos-cifrado" style="display: none;">
-                    <div class="grupoFormulario">
-                        <label for="matrizAdfgvxCifrado">Matriz (36 caracteres):</label>
-                        <input type="text" id="matrizAdfgvxCifrado"
-                            placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
-                        <small>La matriz debe contener 36 caracteres únicos (letras y números)</small>
-                        <button type="button" id="generarMatrizAdfgvx" class="boton botonSecundario">Generar matriz
-                            aleatoria</button>
+                    <div id="camposPlayFair" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="clavePlayFairCifrado">Clave:</label>
+                            <input type="text" id="clavePlayFairCifrado"
+                                placeholder="Ingrese la clave para el cifrado PlayFair" required>
+                            <small>La clave debe contener solo letras</small>
+                        </div>
                     </div>
-                    <div class="grupoFormulario">
-                        <label for="claveAdfgvxCifrado">Clave de transposición:</label>
-                        <input type="text" id="claveAdfgvxCifrado" placeholder="Ingrese la clave de transposición"
-                            required>
-                        <small>La clave debe contener solo letras y sin repeticiones</small>
-                    </div>
-                </div>
 
-                <div id="camposPlayFair" class="campos-cifrado" style="display: none;">
-                    <div class="grupoFormulario">
-                        <label for="clavePlayFairCifrado">Clave:</label>
-                        <input type="text" id="clavePlayFairCifrado" placeholder="Ingrese la clave para el cifrado PlayFair" required>
-                        <small>La clave debe contener solo letras</small>
+                    <!-- Campos para Cifrado César -->
+                    <div id="camposCesar" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="desplazamientoCifrado">Desplazamiento:</label>
+                            <input type="number" id="desplazamientoCifrado" min="1" max="25"
+                                placeholder="Ingrese el desplazamiento (1-25)" required>
+                            <small>El desplazamiento debe ser un número entre 1 y 25</small>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Campos para Cifrado César -->
-                <div id="camposCesar" class="campos-cifrado" style="display: none;">
-                    <div class="grupoFormulario">
-                        <label for="desplazamientoCifrado">Desplazamiento:</label>
-                        <input type="number" id="desplazamientoCifrado" min="1" max="25" placeholder="Ingrese el desplazamiento (1-25)" required>
-                        <small>El desplazamiento debe ser un número entre 1 y 25</small>
+                    <!-- Campos para Cifrado Hill -->
+                    <div id="camposHill" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="matrizHillCifrado">Matriz Clave:</label>
+                            <textarea id="matrizHillCifrado" placeholder="Ingrese la matriz clave para el cifrado Hill"
+                                required></textarea>
+                            <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
+                                <br>1 2
+                                <br>3 4</small>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Campos para Cifrado Hill -->
-                <div id="camposHill" class="campos-cifrado" style="display: none;">
-                    <div class="grupoFormulario">
-                        <label for="matrizHillCifrado">Matriz Clave:</label>
-                        <textarea id="matrizHillCifrado" placeholder="Ingrese la matriz clave para el cifrado Hill" required></textarea>
-                        <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
-                        <br>1 2
-                        <br>3 4</small>
+                    <!-- Campos para Cifrado Vernam -->
+                    <div id="camposVernam" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <p>El cifrado Vernam generará automáticamente una clave aleatoria.</p>
+                            <small>Esta clave será necesaria para descifrar el mensaje posteriormente.</small>
+                        </div>
                     </div>
-                </div>
-                <div id="errorCifrado" class="mensajeError"></div>
-                <div id="cargandoCifrado" class="indicadorCargando">
-                    <div class="spinner"></div><span>Procesando...</span>
-                </div>
-                <button type="button" id="botonCifrar" class="boton">Cifrar</button>
-                <div class="resultados">
-                    <h3>Resultado:</h3>
-                    <div id="resultadoCifrado" class="resultadoTexto"></div>
-                </div>
+                    <div id="errorCifrado" class="mensajeError"></div>
+                    <div id="cargandoCifrado" class="indicadorCargando">
+                        <div class="spinner"></div><span>Procesando...</span>
+                    </div>
+                    <button type="button" id="botonCifrar" class="boton">Cifrar</button>
+                    <div class="resultados">
+                        <h3>Resultado:</h3>
+                        <div id="resultadoCifrado" class="resultadoTexto"></div>
+                    </div>
             </form>
         </section>
 
@@ -130,6 +145,8 @@
                         placeholder="Ingrese el texto para descifrar" required></textarea>
                     <textarea id="textoCifradoHill" class="textoHill" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
+                    <textarea id="textoCifradoVernam" class="textoVernam" style="display: none;"
+                        placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
                 <div id="camposAfinDescifrado" class="campos-cifrado">
@@ -170,8 +187,10 @@
                 <div id="camposPlayFairDescifrado" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="clavePlayFairDescifrado">Clave:</label>
-                        <input type="text" id="clavePlayFairDescifrado" placeholder="Ingrese la clave para el descifrado PlayFair" required>
-                        <small>La clave debe contener solo letras</small>
+                        <input type="text" id="clavePlayFairDescifrado"
+                            placeholder="Ingrese la clave para el descifrado PlayFair" required>
+                        <127.0.0.1 /:285 Uncaught SyntaxError: Identifier 'camposCesar' has already been declared small>
+                            La clave debe contener solo letras</small>
                     </div>
                 </div>
 
@@ -179,7 +198,8 @@
                 <div id="camposCesarDescifrado" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="desplazamientoDescifrado">Desplazamiento:</label>
-                        <input type="number" id="desplazamientoDescifrado" min="1" max="25" placeholder="Ingrese el desplazamiento (1-25)" required>
+                        <input type="number" id="desplazamientoDescifrado" min="1" max="25"
+                            placeholder="Ingrese el desplazamiento (1-25)" required>
                         <small>El desplazamiento debe ser un número entre 1 y 25</small>
                     </div>
                 </div>
@@ -188,10 +208,22 @@
                 <div id="camposHillDescifrado" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="matrizHillDescifrado">Matriz Clave:</label>
-                        <textarea id="matrizHillDescifrado" placeholder="Ingrese la matriz clave para el descifrado Hill" required></textarea>
+                        <textarea id="matrizHillDescifrado"
+                            placeholder="Ingrese la matriz clave para el descifrado Hill" required></textarea>
                         <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
-                        <br>1 2
-                        <br>3 4</small>
+                            <br>1 2
+                            <br>3 4</small>
+                    </div>
+                </div>
+
+                <!-- Campos para Descifrado Vernam -->
+                <div id="camposVernamDescifrado" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="claveVernamDescifrado">Clave:</label>
+                        <textarea id="claveVernamDescifrado"
+                            placeholder="Ingrese la clave que se generó durante el cifrado" required></textarea>
+                        <small>La clave debe ser exactamente la misma que se generó durante el proceso de
+                            cifrado</small>
                     </div>
                 </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
@@ -214,7 +246,7 @@
                     <textarea id="textoFuerzaBruta"
                         placeholder="Ingrese el texto cifrado para descifrar por fuerza bruta" required></textarea>
                 </div>
-                
+
                 <!-- Campos adicionales para Fuerza Bruta Hill -->
                 <div id="campos-fuerza-bruta-hill" class="campos-fuerza-bruta-hill" style="display: none;">
                     <div class="grupoFormulario">
@@ -225,12 +257,12 @@
                     </div>
                     <div class="grupoFormulario">
                         <label for="claveInicialFuerzaBruta">Matriz clave inicial:</label>
-                        <textarea id="claveInicialFuerzaBruta" 
+                        <textarea id="claveInicialFuerzaBruta"
                             placeholder="Ingrese una matriz inicial para comenzar la búsqueda" required></textarea>
                         <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
-                        <br>1 2
-                        <br>3 4
-                        <br>Esta será la matriz de partida para el algoritmo de fuerza bruta</small>
+                            <br>1 2
+                            <br>3 4
+                            <br>Esta será la matriz de partida para el algoritmo de fuerza bruta</small>
                     </div>
                 </div>
                 <div id="errorFuerzaBruta" class="mensajeError"></div>
@@ -261,20 +293,23 @@
             const camposPlayFair = document.getElementById('camposPlayFair');
             const camposCesar = document.getElementById('camposCesar');
             const camposHill = document.getElementById('camposHill');
-            const camposAfinDescifrado = document.getElementById('camposAfinDescifrado');
+            const camposVernam = document.getElementById('camposVernam');
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
             const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
             const camposCesarDescifrado = document.getElementById('camposCesarDescifrado');
             const camposHillDescifrado = document.getElementById('camposHillDescifrado');
+            const camposVernamDescifrado = document.getElementById('camposVernamDescifrado');
             const textoPlano = document.getElementById('textoPlano');
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
             const textoPlanoPlayFair = document.getElementById('textoPlanoPlayFair');
             const textoPlanoCesar = document.getElementById('textoPlanoCesar');
             const textoPlanoHill = document.getElementById('textoPlanoHill');
+            const textoPlanoVernam = document.getElementById('textoPlanoVernam');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
             const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
             const textoCifradoCesar = document.getElementById('textoCifradoCesar');
             const textoCifradoHill = document.getElementById('textoCifradoHill');
+            const textoCifradoVernam = document.getElementById('textoCifradoVernam');
             tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
                     camposAfin.style.display = 'block';
@@ -298,8 +333,8 @@
                     camposAfinDescifrado.style.display = 'none';
                     camposAdfgvxDescifrado.style.display = 'block';
                     camposPlayFairDescifrado.style.display = 'none';
-                    seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para ADFGVX
-                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
+                    seccionFuerzaBruta.style.display = 'none';
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none';
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'block';
                     textoPlanoPlayFair.style.display = 'none';
@@ -363,6 +398,33 @@
                     textoCifradoPlayFair.style.display = 'none';
                     textoCifradoCesar.style.display = 'none';
                     textoCifradoHill.style.display = 'block';
+                } else if (this.value === 'vernam') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'none';
+                    camposHill.style.display = 'none';
+                    camposVernam.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'none';
+                    camposHillDescifrado.style.display = 'none';
+                    camposVernamDescifrado.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para Vernam
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'none';
+                    textoPlanoHill.style.display = 'none';
+                    textoPlanoVernam.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'none';
+                    textoCifradoHill.style.display = 'none';
+                    textoCifradoVernam.style.display = 'block';
                 }
             });
 

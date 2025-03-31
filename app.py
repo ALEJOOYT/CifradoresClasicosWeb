@@ -20,6 +20,9 @@ from cifradores.cesar import DescifrarFuerzaBruta as DescifrarFuerzaBrutaCesar
 from cifradores.hill import Cifrar as CifrarHill
 from cifradores.hill import Descifrar as DescifrarHill
 from cifradores.hill import DescifrarFuerzaBruta as DescifrarFuerzaBrutaHill
+
+from cifradores.vernam import CifrarVernam
+from cifradores.vernam import DescifrarVernam
 app = Flask(__name__)
 
 # Ruta principal
@@ -277,6 +280,47 @@ def ApiFuerzaBrutaHill():
         })
     except Exception as e:
         return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
+
+
+# API para cifrar Vernam
+@app.route('/api/cifrarVernam', methods=['POST'])
+def ApiCifrarVernam():
+    datos = request.json
+    texto = datos.get('texto', '')
+
+    try:
+        textoCifrado, clave = CifrarVernam(texto)
+        
+        return jsonify({
+            "resultado": textoCifrado,
+            "clave": clave,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}", 
+            "exito": False
+        })
+
+# API para descifrar Vernam
+@app.route('/api/descifrarVernam', methods=['POST'])
+def ApiDescifrarVernam():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+
+    try:
+        resultado = DescifrarVernam(texto, clave)
+        
+        return jsonify({
+            "resultado": resultado,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}", 
+            "exito": False
+        })
 
 
 if __name__ == '__main__':

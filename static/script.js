@@ -31,37 +31,50 @@ function mostrarFormulariosCifrado() {
     const elementosPlayFair = document.querySelectorAll('.solo-playFair');
     const elementosCesar = document.querySelectorAll('.solo-cesar');
     const elementosHill = document.querySelectorAll('.solo-hill');
+    const elementosVernam = document.querySelectorAll('.solo-vernam');
 
     if (tipoCifrado === 'afin') {
         elementosAfin.forEach(elem => elem.style.display = 'block');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
         elementosHill.forEach(elem => elem.style.display = 'none');
-    } else if (tipoCifrado === 'adfgvx') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
+        elementosVernam.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'block');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'none');
         elementosHill.forEach(elem => elem.style.display = 'none');
+        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'playFair') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'block');
         elementosCesar.forEach(elem => elem.style.display = 'none');
         elementosHill.forEach(elem => elem.style.display = 'none');
+        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'hill') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'none');
         elementosHill.forEach(elem => elem.style.display = 'block');
+        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'cesar') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'block');
         elementosHill.forEach(elem => elem.style.display = 'none');
+        elementosVernam.forEach(elem => elem.style.display = 'none');
+    } else if (tipoCifrado === 'vernam') {
+        elementosAfin.forEach(elem => elem.style.display = 'none');
+        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
+        elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosHill.forEach(elem => elem.style.display = 'none');
+        elementosVernam.forEach(elem => elem.style.display = 'block');
     }
 }
 
@@ -81,6 +94,8 @@ function manejarCifrado(evento) {
         manejarCifradoCesar();
     } else if (tipoCifrado === 'hill') {
         manejarCifradoHill();
+    } else if (tipoCifrado === 'vernam') {
+        manejarCifradoVernam();
     }
 }
 
@@ -211,6 +226,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoCesar();
     } else if (tipoCifrado === 'hill') {
         manejarDescifradoHill();
+    } else if (tipoCifrado === 'vernam') {
+        manejarDescifradoVernam();
     }
 }
 
@@ -937,4 +954,89 @@ function mostrarResultadosFuerzaBrutaHill(resultados) {
 
     html += '</ul>';
     contenedor.innerHTML = html;
+}
+
+// Función para manejar el cifrado Vernam
+function manejarCifradoVernam() {
+    const textoPlano = document.getElementById('textoPlanoVernam').value;
+
+    // Validar los campos
+    if (!textoPlano) {
+        mostrarError('errorCifrado', 'Por favor, ingrese el texto a cifrar');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarVernam', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                // Mostrar tanto el texto cifrado como la clave
+                const resultadoHTML = `<p><strong>Texto cifrado:</strong> ${datos.resultado}</p>
+                <p><strong>Clave:</strong> ${datos.clave}</p>`;
+                document.getElementById('resultadoCifrado').innerHTML = resultadoHTML;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado Vernam
+function manejarDescifradoVernam() {
+    const textoCifrado = document.getElementById('textoCifradoVernam').value;
+    const clave = document.getElementById('claveVernamDescifrado').value;
+
+    // Validar los campos
+    if (!textoCifrado || !clave) {
+        mostrarError('errorDescifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarVernam', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
 }
