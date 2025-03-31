@@ -13,6 +13,9 @@ from cifradores.playFair import Cifrar as CifrarPlayfair
 from cifradores.playFair import Descifrar as DescifrarPlayfair
 from cifradores.playFair import FuerzaBruta as DescifrarFuerzaBrutaPlayfair
 
+from cifradores.cesar import Cifrar as CifrarCesar
+from cifradores.cesar import Descifrar as DescifrarCesar
+from cifradores.cesar import DescifrarFuerzaBruta as DescifrarFuerzaBrutaCesar
 app = Flask(__name__)
 
 # Ruta principal

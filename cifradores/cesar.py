@@ -1,4 +1,4 @@
-def CifrarCesar(texto, desplazamiento):
+def Cifrar(texto, desplazamiento):
     resultado = ''
     for caracter in texto:
         if caracter.isalpha():
@@ -8,13 +8,13 @@ def CifrarCesar(texto, desplazamiento):
             resultado += caracter
     return resultado
 
-def DescifrarCesar(textoCifrado, desplazamiento):
-    return CifrarCesar(textoCifrado, -desplazamiento)
+def Descifrar(textoCifrado, desplazamiento):
+    return Cifrar(textoCifrado, -desplazamiento)
 
-def FuerzaBrutaCesar(textoCifrado):
+def DescifrarFuerzaBruta(textoCifrado):
     resultados = []
     for i in range(1, 26):
-        posibleDescifrado = DescifrarCesar(textoCifrado, i)
+        posibleDescifrado = Descifrar(textoCifrado, i)
         resultados.append((i, posibleDescifrado))
     print("\nResultados de Fuerza Bruta:")
     for i, descifrado in resultados:
