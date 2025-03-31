@@ -42,8 +42,8 @@ def encrypt(plaintext, polybius_key, transposition_key):
     Returns:
         The encrypted message
     """
-    # Normalize input - convert to lowercase and remove spaces
-    plaintext = ''.join(c.lower() for c in plaintext if c.isalnum())
+    # Normalize input - convert to uppercase and remove spaces
+    plaintext = ''.join(c.upper() for c in plaintext if c.isalnum())
     
     # Create the Polybius square
     square = create_polybius_square(polybius_key)
@@ -173,5 +173,5 @@ def generate_default_polybius_key():
     """
     # Use alphabets (a-z) and digits (0-9) to create a 36-character key
     import string
-    return string.ascii_lowercase + string.digits[:10]
+    return string.ascii_uppercase + string.digits[:10]
 

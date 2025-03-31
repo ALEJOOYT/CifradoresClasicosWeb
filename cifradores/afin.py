@@ -21,7 +21,7 @@ def cifrar(palabra, a, b):
         return "Error: El valor de 'a' debe ser coprimo con el tamaño del alfabeto."
 
     resultado = ""
-    for letra in palabra.lower():
+    for letra in palabra.upper():
         if letra in alfabeto:
             indice = alfabeto.index(letra)
             nuevoIndice = (a * indice + b) % TAMAÑO_ALFABETO
@@ -39,7 +39,7 @@ def descifrar(palabraCifrada, a, b):
     aInverso = calcularInversoMultiplicativo(a, TAMAÑO_ALFABETO)
     resultado = ""
 
-    for letra in palabraCifrada.lower():
+    for letra in palabraCifrada.upper():
         if letra in alfabeto:
             indice = alfabeto.index(letra)
             nuevoIndice = (aInverso * (indice - b)) % TAMAÑO_ALFABETO

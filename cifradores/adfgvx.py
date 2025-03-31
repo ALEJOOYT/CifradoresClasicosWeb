@@ -5,7 +5,7 @@ from typing import List, Tuple, Dict
 
 # Constantes para el cifrado ADFGVX
 ADFGVX = ['A', 'D', 'F', 'G', 'V', 'X']
-DEFAULT_CHARSET = string.ascii_lowercase + string.digits  # a-z, 0-9
+DEFAULT_CHARSET = string.ascii_uppercase + string.digits  # a-z, 0-9
 
 def generate_random_polybius_key() -> str:
     """
@@ -82,7 +82,7 @@ def encrypt_with_polybius(text: str, polybius: Dict[str, str]) -> str:
     encrypted = ""
     
     # Convertir texto a minúsculas y eliminar caracteres no mapeados
-    text = text.lower()
+    text = text.upper()
     
     for char in text:
         if char in polybius:

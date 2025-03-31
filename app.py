@@ -67,11 +67,11 @@ def apiCifrarAdfgvx():
     texto = datos.get('texto', '')
     matriz = datos.get('matriz', '')
     clave_transposicion = datos.get('clave', '')  # Changed from 'claveTransposicion' to 'clave' to match frontend
-    
+
     # Generar una matriz aleatoria si no se proporciona una
     if not matriz:
         matriz = generate_random_polybius_key()
-    
+
     try:
         resultado = cifrar_adfgvx(texto, matriz, clave_transposicion)
         return jsonify({
