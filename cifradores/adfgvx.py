@@ -8,38 +8,22 @@ ADFGVX = ['A', 'D', 'F', 'G', 'V', 'X']
 DEFAULT_CHARSET = string.ascii_uppercase + string.digits  # a-z, 0-9
 
 def generate_random_polybius_key() -> str:
-    """
-    Genera una disposición aleatoria de 36 caracteres únicos para el cuadro de Polybius.
-    Utiliza letras minúsculas (a-z) y dígitos (0-9).
-    
-    Returns:
-        str: Cadena de 36 caracteres únicos aleatorios.
-    """
     # Crear una lista de todos los caracteres posibles
     all_chars = list(DEFAULT_CHARSET)
-    
+
     # Asegurarse de que hay al menos 36 caracteres disponibles
     if len(all_chars) < 36:
         raise ValueError("No hay suficientes caracteres para generar una clave Polybius de 36 caracteres")
-    
+
     # Mezclar los caracteres aleatoriamente
     random.shuffle(all_chars)
-    
+
     # Tomar los primeros 36 caracteres
     polybius_key = ''.join(all_chars[:36])
-    
+
     return polybius_key
 
 def create_polybius_square(key: str) -> Dict[str, str]:
-    """
-    Crea un cuadro de Polybius 6x6 usando la clave proporcionada.
-    
-    Args:
-        key (str): Cadena de 36 caracteres únicos para llenar el cuadro.
-        
-    Returns:
-        Dict[str, str]: Diccionario que mapea cada carácter a su coordenada ADFGVX.
-    """
     # Validar que la clave tenga exactamente 36 caracteres únicos
     if len(key) != 36 or len(set(key)) != 36:
         raise ValueError("La clave debe tener exactamente 36 caracteres únicos")
@@ -57,28 +41,9 @@ def create_polybius_square(key: str) -> Dict[str, str]:
     return polybius
 
 def create_inverse_polybius(polybius: Dict[str, str]) -> Dict[str, str]:
-    """
-    Crea un cuadro de Polybius inverso para el descifrado.
-    
-    Args:
-        polybius (Dict[str, str]): Cuadro de Polybius original.
-        
-    Returns:
-        Dict[str, str]: Diccionario que mapea cada coordenada ADFGVX a su carácter.
-    """
     return {v: k for k, v in polybius.items()}
 
 def encrypt_with_polybius(text: str, polybius: Dict[str, str]) -> str:
-    """
-    Encripta el texto usando el cuadro de Polybius.
-    
-    Args:
-        text (str): Texto a encriptar.
-        polybius (Dict[str, str]): Cuadro de Polybius.
-        
-    Returns:
-        str: Texto intermedio encriptado.
-    """
     encrypted = ""
     
     # Convertir texto a minúsculas y eliminar caracteres no mapeados
@@ -93,16 +58,6 @@ def encrypt_with_polybius(text: str, polybius: Dict[str, str]) -> str:
     return encrypted
 
 def apply_columnar_transposition(text: str, key: str) -> str:
-    """
-    Aplica transposición columnar al texto usando la clave dada.
-    
-    Args:
-        text (str): Texto a transponer.
-        key (str): Clave de transposición.
-        
-    Returns:
-        str: Texto transpuesto.
-    """
     # Validar que la clave tenga caracteres únicos
     if len(key) != len(set(key)):
         raise ValueError("La clave de transposición debe tener caracteres únicos")
@@ -134,16 +89,6 @@ def apply_columnar_transposition(text: str, key: str) -> str:
     return transposed
 
 def reverse_columnar_transposition(text: str, key: str) -> str:
-    """
-    Invierte la transposición columnar usando la clave dada.
-    
-    Args:
-        text (str): Texto transpuesto.
-        key (str): Clave de transposición.
-        
-    Returns:
-        str: Texto original antes de la transposición.
-    """
     # Validar que la clave tenga caracteres únicos
     if len(key) != len(set(key)):
         raise ValueError("La clave de transposición debe tener caracteres únicos")
@@ -181,17 +126,6 @@ def reverse_columnar_transposition(text: str, key: str) -> str:
     return original
 
 def cifrar(texto: str, matriz: str, clave: str) -> str:
-    """
-    Cifra un texto usando el cifrado ADFGVX.
-    
-    Args:
-        texto (str): Texto a cifrar.
-        matriz (str): Matriz de 36 caracteres para el cuadro de Polybius.
-        clave (str): Clave de transposición.
-        
-    Returns:
-        str: Texto cifrado.
-    """
     try:
         # Crear cuadro de Polybius
         polybius = create_polybius_square(matriz)
@@ -208,17 +142,6 @@ def cifrar(texto: str, matriz: str, clave: str) -> str:
         return f"Error: {str(e)}"
 
 def descifrar(texto: str, matriz: str, clave: str) -> str:
-    """
-    Descifra un texto cifrado con ADFGVX.
-    
-    Args:
-        texto (str): Texto cifrado.
-        matriz (str): Matriz de 36 caracteres para el cuadro de Polybius.
-        clave (str): Clave de transposición.
-        
-    Returns:
-        str: Texto descifrado.
-    """
     try:
         # Validar que el texto cifrado solo contenga letras ADFGVX
         if not all(c in ADFGVX for c in texto):

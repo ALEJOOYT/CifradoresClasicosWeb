@@ -21,6 +21,7 @@
             <select id="tipoCifrado" class="dropdown">
                 <option value="afin">Cifrado Afín</option>
                 <option value="adfgvx">Cifrado ADFGVX</option>
+                <option value="playFair">Cifrado PlayFair</option>
             </select>
         </div>
         <section class="seccion">
@@ -32,8 +33,9 @@
                         required></textarea>
                     <textarea id="textoPlanoAdfgvx" class="textoAdfgvx" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoPlayFair" class="textoPlayFair" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
                 </div>
-
                 <!-- Campos para Cifrado Afín -->
                 <div id="camposAfin" class="campos-cifrado">
                     <div class="formGrid">
@@ -67,6 +69,15 @@
                         <small>La clave debe contener solo letras y sin repeticiones</small>
                     </div>
                 </div>
+
+                <!-- Campos para Cifrado PlayFair -->
+                <div id="camposPlayFair" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="clavePlayFairCifrado">Clave:</label>
+                        <input type="text" id="clavePlayFairCifrado" placeholder="Ingrese la clave para el cifrado PlayFair" required>
+                        <small>La clave debe contener solo letras</small>
+                    </div>
+                </div>
                 <div id="errorCifrado" class="mensajeError"></div>
                 <div id="cargandoCifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -88,8 +99,9 @@
                         required></textarea>
                     <textarea id="textoCifradoAdfgvx" class="textoAdfgvx" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
+                    <textarea id="textoCifradoPlayFair" class="textoPlayFair" style="display: none;"
+                        placeholder="Ingrese el texto para descifrar" required></textarea>
                 </div>
-
                 <!-- Campos para Descifrado Afín -->
                 <div id="camposAfinDescifrado" class="campos-cifrado">
                     <div class="formGrid">
@@ -122,6 +134,15 @@
                         <input type="text" id="claveAdfgvxDescifrado" placeholder="Ingrese la clave de transposición"
                             required>
                         <small>La clave debe contener solo letras y sin repeticiones</small>
+                    </div>
+                </div>
+
+                <!-- Campos para Descifrado PlayFair -->
+                <div id="camposPlayFairDescifrado" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="clavePlayFairDescifrado">Clave:</label>
+                        <input type="text" id="clavePlayFairDescifrado" placeholder="Ingrese la clave para el descifrado PlayFair" required>
+                        <small>La clave debe contener solo letras</small>
                     </div>
                 </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
@@ -169,35 +190,61 @@
             const tipoCifrado = document.getElementById('tipoCifrado');
             const camposAfin = document.getElementById('camposAfin');
             const camposAdfgvx = document.getElementById('camposAdfgvx');
+            const camposPlayFair = document.getElementById('camposPlayFair');
             const camposAfinDescifrado = document.getElementById('camposAfinDescifrado');
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
+            const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
             const seccionFuerzaBruta = document.getElementById('seccionFuerzaBruta');
             const textoPlano = document.getElementById('textoPlano');
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
+            const textoPlanoPlayFair = document.getElementById('textoPlanoPlayFair');
             const textoCifrado = document.getElementById('textoCifrado');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
+            const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
 
             tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
                     camposAfin.style.display = 'block';
                     camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
                     camposAfinDescifrado.style.display = 'block';
                     camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
                     seccionFuerzaBruta.style.display = 'block';
                     textoPlano.style.display = 'block';
                     textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
                     textoCifrado.style.display = 'block';
                     textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
                 } else if (this.value === 'adfgvx') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'block';
+                    camposPlayFair.style.display = 'none';
                     camposAfinDescifrado.style.display = 'none';
                     camposAdfgvxDescifrado.style.display = 'block';
+                    camposPlayFairDescifrado.style.display = 'none';
                     seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para ADFGVX
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'block';
+                    textoPlanoPlayFair.style.display = 'none';
                     textoCifrado.style.display = 'none';
                     textoCifradoAdfgvx.style.display = 'block';
+                    textoCifradoPlayFair.style.display = 'none';
+                } else if (this.value === 'playFair') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para PlayFair
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'block';
                 }
             });
 

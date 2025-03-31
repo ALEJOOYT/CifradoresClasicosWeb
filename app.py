@@ -6,7 +6,9 @@ from cifradores.afin import descifrarFuerzaBruta
 from cifradores.adfgvx import cifrar as cifrar_adfgvx
 from cifradores.adfgvx import descifrar as descifrar_adfgvx
 from cifradores.adfgvx import generate_random_polybius_key
-
+from cifradores.playFair import cifrar as cifrar_playfair
+from cifradores.playFair import descifrar as descifrar_playfair
+from cifradores.playFair import fuerzaBruta as fuerzaBruta_playfair
 app = Flask(__name__)
 
 # Ruta principal
@@ -120,6 +122,68 @@ def apiGenerarMatrizAdfgvx():
     except Exception as e:
         return jsonify({
             "error": f"Error al generar matriz: {str(e)}",
+            "exito": False
+        })
+
+# API para cifrar con PlayFair
+@app.route('/api/cifrarPlayFair', methods=['POST'])
+def apiCifrarPlayFair():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+
+    try:
+        resultado = cifrar_playfair(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "exito": not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "resultado_texto": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar con PlayFair
+@app.route('/api/descifrarPlayFair', methods=['POST'])
+def apiDescifrarPlayFair():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+
+    try:
+        resultado = descifrar_playfair(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "exito": not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "resultado_texto": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para fuerza bruta con PlayFair
+@app.route('/api/fuerzaBrutaPlayFair', methods=['POST'])
+def apiFuerzaBrutaPlayFair():
+    datos = request.json
+    texto = datos.get('texto', '')
+
+    try:
+        resultados = fuerzaBruta_playfair(texto)
+        return jsonify({
+            "resultados": resultados,
+            "listaResultados": resultados,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultados": [f"Error: {str(e)}"],
+            "listaResultados": [f"Error: {str(e)}"],
             "exito": False
         })
 
