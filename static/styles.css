@@ -1,5 +1,6 @@
 /*
- * Estilos para la aplicación web del Cifrador Afín
+ * Estilos para la aplicación web de Cifradores Clásicos
+ * (Cifrado Afín y Cifrado ADFGVX)
  * Diseño limpio, profesional y formal
  */
 
@@ -92,7 +93,8 @@ body {
 }
 
 .grupoFormulario input,
-.grupoFormulario textarea {
+.grupoFormulario textarea,
+.grupoFormulario select {
   width: 100%;
   padding: 12px;
   border: 1px solid var(--color-border);
@@ -102,7 +104,8 @@ body {
 }
 
 .grupoFormulario input:focus,
-.grupoFormulario textarea:focus {
+.grupoFormulario textarea:focus,
+.grupoFormulario select:focus {
   outline: none;
   border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(58, 90, 120, 0.2);
@@ -304,4 +307,74 @@ body {
   .seccion {
     padding: 20px 15px;
   }
+}
+
+/* Selector de cifrado */
+.selectorCifrado {
+  margin-bottom: 30px;
+  background-color: white;
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.selectorCifrado select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  background-color: white;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%233a5a78" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: calc(100% - 12px) center;
+  padding-right: 35px;
+  transition: border-color 0.3s;
+}
+
+.selectorCifrado select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(58, 90, 120, 0.2);
+}
+
+.selectorCifrado label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+/* Elementos específicos para ADFGVX */
+.matrizContainer {
+  margin-bottom: 20px;
+}
+
+.matrizContainer textarea {
+  font-family: 'Courier New', Courier, monospace;
+  resize: none;
+  height: 100px;
+}
+
+.matrizInfo {
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  background-color: var(--color-secondary);
+  padding: 8px;
+  border-radius: var(--border-radius);
+  border-left: 3px solid var(--color-primary);
+}
+
+/* Control de visibilidad condicional */
+.formularioAfin, .formularioAdfgvx {
+  display: none;
+}
+
+.formularioAfin.activo, .formularioAdfgvx.activo {
+  display: block;
 }

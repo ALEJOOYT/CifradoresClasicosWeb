@@ -1,72 +1,13 @@
 from flask import Flask, render_template, request, jsonify
-import math
+# Importar módulos de cifrado
+from cifradores.afin import cifrar as cifrar_afin
+from cifradores.afin import descifrar as descifrar_afin
+from cifradores.afin import descifrarFuerzaBruta
+from cifradores.adfgvx import cifrar as cifrar_adfgvx
+from cifradores.adfgvx import descifrar as descifrar_adfgvx
+from cifradores.adfgvx import generate_random_polybius_key
 
 app = Flask(__name__)
-
-# Constantes del cifrado Afín
-alfabeto = "abcdefghijklmnñopqrstuvwxyz"
-TAMAÑO_ALFABETO = len(alfabeto)
-
-# Función para calcular el inverso multiplicativo módulo m
-def calcularInversoMultiplicativo(a, m):
-    for i in range(1, m):
-        if (a * i) % m == 1:
-            return i
-    return 1
-
-# Función para verificar si dos números son coprimos
-def sonCoprimos(a, b):
-    return math.gcd(a, b) == 1
-
-# Función para cifrar un mensaje usando el cifrado Afín
-def cifrar(palabra, a, b):
-    if not sonCoprimos(a, TAMAÑO_ALFABETO):
-        return "Error: El valor de 'a' debe ser coprimo con el tamaño del alfabeto."
-
-    resultado = ""
-    for letra in palabra.lower():
-        if letra in alfabeto:
-            indice = alfabeto.index(letra)
-            nuevoIndice = (a * indice + b) % TAMAÑO_ALFABETO
-            resultado += alfabeto[nuevoIndice]
-        else:
-            resultado += letra
-
-    return resultado
-
-# Función para descifrar un mensaje cifrado con el cifrado Afín
-def descifrar(palabraCifrada, a, b):
-    if not sonCoprimos(a, TAMAÑO_ALFABETO):
-        return "Error: El valor de 'a' debe ser coprimo con el tamaño del alfabeto."
-
-    aInverso = calcularInversoMultiplicativo(a, TAMAÑO_ALFABETO)
-    resultado = ""
-
-    for letra in palabraCifrada.lower():
-        if letra in alfabeto:
-            indice = alfabeto.index(letra)
-            nuevoIndice = (aInverso * (indice - b)) % TAMAÑO_ALFABETO
-            resultado += alfabeto[nuevoIndice]
-        else:
-            resultado += letra
-
-    return resultado
-
-# Función para descifrar usando fuerza bruta
-def descifrarFuerzaBruta(palabraCifrada):
-    posiblesResultados = []
-
-    for a in range(1, TAMAÑO_ALFABETO):
-        if sonCoprimos(a, TAMAÑO_ALFABETO):
-            for b in range(TAMAÑO_ALFABETO):
-                posibleTextoOriginal = descifrar(palabraCifrada, a, b)
-                posiblesResultados.append({
-                    "a": a,
-                    "b": b,
-                    "textoDescifrado": posibleTextoOriginal
-                })
-
-    return posiblesResultados
 
 # Ruta principal
 @app.route('/')
@@ -81,7 +22,7 @@ def apiCifrar():
     a = int(datos.get('a', 1))
     b = int(datos.get('b', 0))
 
-    resultado = cifrar(texto, a, b)
+    resultado = cifrar_afin(texto, a, b)
 
     return jsonify({
         "resultado": resultado,
@@ -97,7 +38,7 @@ def apiDescifrar():
     a = int(datos.get('a', 1))
     b = int(datos.get('b', 0))
 
-    resultado = descifrar(texto, a, b)
+    resultado = descifrar_afin(texto, a, b)
 
     return jsonify({
         "resultado": resultado,
@@ -119,6 +60,68 @@ def apiFuerzaBruta():
         "exito": True
     })
 
+# API para cifrar con ADFGVX
+@app.route('/api/cifrarAdfgvx', methods=['POST'])
+def apiCifrarAdfgvx():
+    datos = request.json
+    texto = datos.get('texto', '')
+    matriz = datos.get('matriz', '')
+    clave_transposicion = datos.get('clave', '')  # Changed from 'claveTransposicion' to 'clave' to match frontend
+    
+    # Generar una matriz aleatoria si no se proporciona una
+    if not matriz:
+        matriz = generate_random_polybius_key()
+    
+    try:
+        resultado = cifrar_adfgvx(texto, matriz, clave_transposicion)
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "matriz": matriz,  # Devolver la matriz para que el usuario la vea
+            "exito": not resultado.startswith("Error")
+        })
+    except ValueError as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "resultado_texto": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar con ADFGVX
+@app.route('/api/descifrarAdfgvx', methods=['POST'])
+def apiDescifrarAdfgvx():
+    datos = request.json
+    texto = datos.get('texto', '')
+    matriz = datos.get('matriz', '')
+    clave_transposicion = datos.get('clave', '')  # Changed from 'claveTransposicion' to 'clave' to match frontend
+
+    try:
+        resultado = descifrar_adfgvx(texto, matriz, clave_transposicion)
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "exito": not resultado.startswith("Error")
+        })
+    except ValueError as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "resultado_texto": f"Error: {str(e)}",
+            "exito": False
+        })
+# API para generar matriz aleatoria para ADFGVX
+@app.route('/api/generarMatrizAdfgvx', methods=['GET'])
+def apiGenerarMatrizAdfgvx():
+    try:
+        matriz = generate_random_polybius_key()
+        return jsonify({
+            "matriz": matriz,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "error": f"Error al generar matriz: {str(e)}",
+            "exito": False
+        })
+
 if __name__ == '__main__':
     app.run(debug=True)
-
