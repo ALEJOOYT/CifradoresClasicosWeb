@@ -23,6 +23,7 @@
                 <option value="adfgvx">Cifrado ADFGVX</option>
                 <option value="playFair">Cifrado PlayFair</option>
                 <option value="cesar">Cifrado César</option>
+                <option value="hill">Cifrado Hill</option>
             </select>
         </div>
         <section class="seccion">
@@ -37,6 +38,8 @@
                     <textarea id="textoPlanoPlayFair" class="textoPlayFair" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoCesar" class="textoCesar" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                 </div>
                 <!-- Campos para Cifrado Afín -->
@@ -89,6 +92,17 @@
                         <small>El desplazamiento debe ser un número entre 1 y 25</small>
                     </div>
                 </div>
+
+                <!-- Campos para Cifrado Hill -->
+                <div id="camposHill" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="matrizHillCifrado">Matriz Clave:</label>
+                        <textarea id="matrizHillCifrado" placeholder="Ingrese la matriz clave para el cifrado Hill" required></textarea>
+                        <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
+                        <br>1 2
+                        <br>3 4</small>
+                    </div>
+                </div>
                 <div id="errorCifrado" class="mensajeError"></div>
                 <div id="cargandoCifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -113,6 +127,8 @@
                     <textarea id="textoCifradoPlayFair" class="textoPlayFair" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
                     <textarea id="textoCifradoCesar" class="textoCesar" style="display: none;"
+                        placeholder="Ingrese el texto para descifrar" required></textarea>
+                    <textarea id="textoCifradoHill" class="textoHill" style="display: none;"
                         placeholder="Ingrese el texto para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -167,6 +183,17 @@
                         <small>El desplazamiento debe ser un número entre 1 y 25</small>
                     </div>
                 </div>
+
+                <!-- Campos para Descifrado Hill -->
+                <div id="camposHillDescifrado" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="matrizHillDescifrado">Matriz Clave:</label>
+                        <textarea id="matrizHillDescifrado" placeholder="Ingrese la matriz clave para el descifrado Hill" required></textarea>
+                        <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
+                        <br>1 2
+                        <br>3 4</small>
+                    </div>
+                </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
                 <div id="cargandoDescifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -186,6 +213,25 @@
                     <label for="textoFuerzaBruta">Texto cifrado:</label>
                     <textarea id="textoFuerzaBruta"
                         placeholder="Ingrese el texto cifrado para descifrar por fuerza bruta" required></textarea>
+                </div>
+                
+                <!-- Campos adicionales para Fuerza Bruta Hill -->
+                <div id="campos-fuerza-bruta-hill" class="campos-fuerza-bruta-hill" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="textoOriginalFuerzaBruta">Texto original conocido:</label>
+                        <textarea id="textoOriginalFuerzaBruta"
+                            placeholder="Ingrese una porción del texto original que conoce" required></textarea>
+                        <small>Este texto se utilizará para verificar si una clave candidata es correcta</small>
+                    </div>
+                    <div class="grupoFormulario">
+                        <label for="claveInicialFuerzaBruta">Matriz clave inicial:</label>
+                        <textarea id="claveInicialFuerzaBruta" 
+                            placeholder="Ingrese una matriz inicial para comenzar la búsqueda" required></textarea>
+                        <small>Ingrese la matriz como números separados por espacios. Ejemplo para matriz 2x2:
+                        <br>1 2
+                        <br>3 4
+                        <br>Esta será la matriz de partida para el algoritmo de fuerza bruta</small>
+                    </div>
                 </div>
                 <div id="errorFuerzaBruta" class="mensajeError"></div>
                 <div id="cargandoFuerzaBruta" class="indicadorCargando">
@@ -214,19 +260,21 @@
             const camposAdfgvx = document.getElementById('camposAdfgvx');
             const camposPlayFair = document.getElementById('camposPlayFair');
             const camposCesar = document.getElementById('camposCesar');
+            const camposHill = document.getElementById('camposHill');
             const camposAfinDescifrado = document.getElementById('camposAfinDescifrado');
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
             const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
             const camposCesarDescifrado = document.getElementById('camposCesarDescifrado');
+            const camposHillDescifrado = document.getElementById('camposHillDescifrado');
             const textoPlano = document.getElementById('textoPlano');
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
             const textoPlanoPlayFair = document.getElementById('textoPlanoPlayFair');
             const textoPlanoCesar = document.getElementById('textoPlanoCesar');
-            const textoCifrado = document.getElementById('textoCifrado');
+            const textoPlanoHill = document.getElementById('textoPlanoHill');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
             const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
             const textoCifradoCesar = document.getElementById('textoCifradoCesar');
-
+            const textoCifradoHill = document.getElementById('textoCifradoHill');
             tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
                     camposAfin.style.display = 'block';
@@ -236,6 +284,7 @@
                     camposAdfgvxDescifrado.style.display = 'none';
                     camposPlayFairDescifrado.style.display = 'none';
                     seccionFuerzaBruta.style.display = 'block';
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
                     textoPlano.style.display = 'block';
                     textoPlanoAdfgvx.style.display = 'none';
                     textoPlanoPlayFair.style.display = 'none';
@@ -250,6 +299,7 @@
                     camposAdfgvxDescifrado.style.display = 'block';
                     camposPlayFairDescifrado.style.display = 'none';
                     seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para ADFGVX
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'block';
                     textoPlanoPlayFair.style.display = 'none';
@@ -264,6 +314,7 @@
                     camposAdfgvxDescifrado.style.display = 'none';
                     camposPlayFairDescifrado.style.display = 'block';
                     seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para PlayFair
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'none';
                     textoPlanoPlayFair.style.display = 'block';
@@ -280,6 +331,7 @@
                     camposPlayFairDescifrado.style.display = 'none';
                     camposCesarDescifrado.style.display = 'block';
                     seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para César
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
                     textoPlano.style.display = 'none';
                     textoPlanoAdfgvx.style.display = 'none';
                     textoPlanoPlayFair.style.display = 'none';
@@ -288,6 +340,29 @@
                     textoCifradoAdfgvx.style.display = 'none';
                     textoCifradoPlayFair.style.display = 'none';
                     textoCifradoCesar.style.display = 'block';
+                } else if (this.value === 'hill') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'none';
+                    camposHill.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'none';
+                    camposHillDescifrado.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para Hill
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'block'; // Mostrar campos adicionales para fuerza bruta Hill
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'none';
+                    textoPlanoHill.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'none';
+                    textoCifradoHill.style.display = 'block';
                 }
             });
 

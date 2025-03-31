@@ -17,6 +17,9 @@ from cifradores.cesar import Cifrar as CifrarCesar
 from cifradores.cesar import Descifrar as DescifrarCesar
 from cifradores.cesar import DescifrarFuerzaBruta as DescifrarFuerzaBrutaCesar
 
+from cifradores.hill import Cifrar as CifrarHill
+from cifradores.hill import Descifrar as DescifrarHill
+from cifradores.hill import DescifrarFuerzaBruta as DescifrarFuerzaBrutaHill
 app = Flask(__name__)
 
 # Ruta principal
@@ -186,6 +189,94 @@ def ApiFuerzaBrutaCesar():
         "listaResultados": resultados,
         "exito": True
     })
+
+
+# API para cifrar Hill
+@app.route('/api/cifrarHill', methods=['POST'])
+def ApiCifrarHill():
+    datos = request.json
+    texto = datos.get('texto', '')
+    claveStr = datos.get('clave', '')
+    
+    try:
+        # Validar y convertir la clave de string a matriz
+        filas = claveStr.strip().split('\n')
+        clave = []
+        for fila in filas:
+            valores = [int(val) for val in fila.strip().split()]
+            clave.append(valores)
+            
+        # Verificar que la matriz sea cuadrada
+        if len(clave) != len(clave[0]):
+            return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
+            
+        resultado = CifrarHill(texto, clave)
+        
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "exito": not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
+
+# API para descifrar Hill
+@app.route('/api/descifrarHill', methods=['POST'])
+def ApiDescifrarHill():
+    datos = request.json
+    texto = datos.get('texto', '')
+    claveStr = datos.get('clave', '')
+    
+    try:
+        # Validar y convertir la clave de string a matriz
+        filas = claveStr.strip().split('\n')
+        clave = []
+        for fila in filas:
+            valores = [int(val) for val in fila.strip().split()]
+            clave.append(valores)
+            
+        # Verificar que la matriz sea cuadrada
+        if len(clave) != len(clave[0]):
+            return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
+            
+        resultado = DescifrarHill(texto, clave)
+        
+        return jsonify({
+            "resultado": resultado,
+            "resultado_texto": resultado,
+            "exito": not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
+
+# API para descifrar por fuerza bruta Hill
+@app.route('/api/fuerzaBrutaHill', methods=['POST'])
+def ApiFuerzaBrutaHill():
+    datos = request.json
+    textoCifrado = datos.get('textoCifrado', '')
+    textoOriginal = datos.get('textoOriginal', '')
+    claveStr = datos.get('clave', '')
+    
+    try:
+        # Validar y convertir la clave de string a matriz
+        filas = claveStr.strip().split('\n')
+        clave = []
+        for fila in filas:
+            valores = [int(val) for val in fila.strip().split()]
+            clave.append(valores)
+            
+        # Verificar que la matriz sea cuadrada
+        if len(clave) != len(clave[0]):
+            return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
+            
+        resultado = DescifrarFuerzaBrutaHill(textoCifrado, textoOriginal, clave)
+        
+        return jsonify({
+            "resultado": resultado,
+            "exito": not resultado.startswith("Error") and not resultado.startswith("No se encontró")
+        })
+    except Exception as e:
+        return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
 
 
 if __name__ == '__main__':

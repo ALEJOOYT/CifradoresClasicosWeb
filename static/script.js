@@ -30,27 +30,38 @@ function mostrarFormulariosCifrado() {
     const elementosAdfgvx = document.querySelectorAll('.solo-adfgvx');
     const elementosPlayFair = document.querySelectorAll('.solo-playFair');
     const elementosCesar = document.querySelectorAll('.solo-cesar');
+    const elementosHill = document.querySelectorAll('.solo-hill');
 
     if (tipoCifrado === 'afin') {
         elementosAfin.forEach(elem => elem.style.display = 'block');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosHill.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'adfgvx') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'block');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosHill.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'playFair') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'block');
         elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosHill.forEach(elem => elem.style.display = 'none');
+    } else if (tipoCifrado === 'hill') {
+        elementosAfin.forEach(elem => elem.style.display = 'none');
+        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
+        elementosPlayFair.forEach(elem => elem.style.display = 'none');
+        elementosCesar.forEach(elem => elem.style.display = 'none');
+        elementosHill.forEach(elem => elem.style.display = 'block');
     } else if (tipoCifrado === 'cesar') {
         elementosAfin.forEach(elem => elem.style.display = 'none');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'block');
+        elementosHill.forEach(elem => elem.style.display = 'none');
     }
 }
 
@@ -68,6 +79,8 @@ function manejarCifrado(evento) {
         manejarCifradoPlayFair();
     } else if (tipoCifrado === 'cesar') {
         manejarCifradoCesar();
+    } else if (tipoCifrado === 'hill') {
+        manejarCifradoHill();
     }
 }
 
@@ -196,6 +209,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoPlayFair();
     } else if (tipoCifrado === 'cesar') {
         manejarDescifradoCesar();
+    } else if (tipoCifrado === 'hill') {
+        manejarDescifradoHill();
     }
 }
 
@@ -327,6 +342,8 @@ function manejarFuerzaBruta() {
         manejarFuerzaBrutaPlayFair();
     } else if (tipoCifrado === 'cesar') {
         manejarFuerzaBrutaCesar();
+    } else if (tipoCifrado === 'hill') {
+        manejarFuerzaBrutaHill();
     }
 }
 
@@ -762,3 +779,162 @@ function mostrarResultadosFuerzaBrutaCesar(resultados) {
     contenedor.innerHTML = html;
 }
 
+// Función para manejar el cifrado Hill
+function manejarCifradoHill() {
+    const textoPlano = document.getElementById('textoPlanoHill').value;
+    const matriz = document.getElementById('matrizHillCifrado').value;
+
+    // Validar los campos
+    if (!textoPlano || !matriz) {
+        mostrarError('errorCifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarHill', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano,
+            clave: matriz
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                document.getElementById('resultadoCifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado Hill
+function manejarDescifradoHill() {
+    const textoCifrado = document.getElementById('textoCifradoHill').value;
+    const matriz = document.getElementById('matrizHillDescifrado').value;
+
+    // Validar los campos
+    if (!textoCifrado || !matriz) {
+        mostrarError('errorDescifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarHill', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            clave: matriz
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado por fuerza bruta Hill
+function manejarFuerzaBrutaHill() {
+    const textoCifrado = document.getElementById('textoFuerzaBruta').value;
+    const textoOriginal = document.getElementById('textoOriginalFuerzaBruta').value;
+    const clave = document.getElementById('claveInicialFuerzaBruta').value;
+
+    // Validar que se hayan ingresado los textos necesarios
+    if (!textoCifrado) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+    
+    if (!textoOriginal) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto original para verificación');
+        return;
+    }
+    
+    if (!clave) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese una matriz clave inicial');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoFuerzaBruta').classList.add('mostrar');
+    document.getElementById('resultadoFuerzaBruta').innerHTML = '';
+    document.getElementById('errorFuerzaBruta').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/fuerzaBrutaHill', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            textoCifrado: textoCifrado,
+            textoOriginal: textoOriginal,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorFuerzaBruta', datos.error);
+            } else {
+                mostrarResultadosFuerzaBrutaHill(datos.resultados);
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            mostrarError('errorFuerzaBruta', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para mostrar los resultados del descifrado por fuerza bruta Hill
+function mostrarResultadosFuerzaBrutaHill(resultados) {
+    const contenedor = document.getElementById('resultadoFuerzaBruta');
+
+    if (!resultados || resultados.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
+        return;
+    }
+
+    let html = '<ul class="listaResultados">';
+
+    resultados.forEach(item => {
+        html += `<li>
+            <strong>Matriz: ${item.matriz}</strong>
+            <p>${item.textoDescifrado || item.texto}</p>
+        </li>`;
+    });
+
+    html += '</ul>';
+    contenedor.innerHTML = html;
+}
