@@ -30,7 +30,6 @@ from cifradores.vigenere import DescifrarFuerzaBruta as DescifrarFuerzaBrutaVige
 
 from cifradores.atbah import Cifrar as CifrarAtbash
 from cifradores.atbah import Descifrar as DescifrarAtbash
-from cifradores.atbah import DescifrarFuerzaBruta as DescifrarFuerzaBrutaAtbash
 
 from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
@@ -503,25 +502,6 @@ def ApiDescifrarAtbash():
             "exito": False
         })
 
-# API para descifrar por fuerza bruta Atbash
-@app.route('/api/fuerzaBrutaAtbash', methods=['POST'])
-def ApiFuerzaBrutaAtbash():
-    datos = request.json
-    texto = datos.get('texto', '')
-    try:
-        resultados = DescifrarFuerzaBrutaAtbash(texto)
-        return jsonify({
-            "resultados": resultados,
-            "listaResultados": resultados,
-            "exito": True
-        })
-    except Exception as e:
-        return jsonify({
-            "resultados": [],
-            "listaResultados": [],
-            "resultado": f"Error: {str(e)}",
-            "exito": False
-        })
 
 if __name__ == '__main__':
     app.run(debug=True)
