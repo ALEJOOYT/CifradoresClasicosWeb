@@ -28,6 +28,10 @@ from cifradores.vigenere import Cifrar as CifrarVigenere
 from cifradores.vigenere import Descifrar as DescifrarVigenere
 from cifradores.vigenere import DescifrarFuerzaBruta as DescifrarFuerzaBrutaVigenere
 
+from cifradores.atbah import Cifrar as CifrarAtbash
+from cifradores.atbah import Descifrar as DescifrarAtbash
+from cifradores.atbah import DescifrarFuerzaBruta as DescifrarFuerzaBrutaAtbash
+
 from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
 from cifradores.transposicionColumna import DescifradoFuerzaBruta as DescifradoFuerzaBrutaTransposicionColumna
@@ -455,6 +459,60 @@ def ApiFuerzaBrutaTransposicionColumna():
         return jsonify({
             "resultados": resultados_totales,
             "listaResultados": resultados_totales,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para cifrar Atbash
+@app.route('/api/cifrarAtbash', methods=['POST'])
+def ApiCifrarAtbash():
+    datos = request.json
+    texto = datos.get('texto', '')
+    try:
+        resultado = CifrarAtbash(texto)
+        return jsonify({
+            "resultado": resultado,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar Atbash
+@app.route('/api/descifrarAtbash', methods=['POST'])
+def ApiDescifrarAtbash():
+    datos = request.json
+    texto = datos.get('texto', '')
+    try:
+        resultado = DescifrarAtbash(texto)
+        return jsonify({
+            "resultado": resultado,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar por fuerza bruta Atbash
+@app.route('/api/fuerzaBrutaAtbash', methods=['POST'])
+def ApiFuerzaBrutaAtbash():
+    datos = request.json
+    texto = datos.get('texto', '')
+    try:
+        resultados = DescifrarFuerzaBrutaAtbash(texto)
+        return jsonify({
+            "resultados": resultados,
+            "listaResultados": resultados,
             "exito": True
         })
     except Exception as e:

@@ -33,58 +33,39 @@ function mostrarFormulariosCifrado() {
     const elementosHill = document.querySelectorAll('.solo-hill');
     const elementosVernam = document.querySelectorAll('.solo-vernam');
     const elementosVigenere = document.querySelectorAll('.solo-vigenere');
+    const elementosTransposicionColumna = document.querySelectorAll('.solo-transposicionColumna');
+    const elementosAtbash = document.querySelectorAll('.solo-atbash');
 
+    // Ocultar todos los elementos específicos
+    elementosAfin.forEach(elem => elem.style.display = 'none');
+    elementosAdfgvx.forEach(elem => elem.style.display = 'none');
+    elementosPlayFair.forEach(elem => elem.style.display = 'none');
+    elementosCesar.forEach(elem => elem.style.display = 'none');
+    elementosHill.forEach(elem => elem.style.display = 'none');
+    elementosVernam.forEach(elem => elem.style.display = 'none');
+    elementosVigenere.forEach(elem => elem.style.display = 'none');
+    elementosTransposicionColumna.forEach(elem => elem.style.display = 'none');
+    elementosAtbash.forEach(elem => elem.style.display = 'none');
+
+    // Mostrar solo los elementos del cifrado seleccionado
     if (tipoCifrado === 'afin') {
         elementosAfin.forEach(elem => elem.style.display = 'block');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosHill.forEach(elem => elem.style.display = 'none');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
+    } else if (tipoCifrado === 'adfgvx') {
         elementosAdfgvx.forEach(elem => elem.style.display = 'block');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosHill.forEach(elem => elem.style.display = 'none');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'playFair') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
         elementosPlayFair.forEach(elem => elem.style.display = 'block');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosHill.forEach(elem => elem.style.display = 'none');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'hill') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
         elementosHill.forEach(elem => elem.style.display = 'block');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'cesar') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
         elementosCesar.forEach(elem => elem.style.display = 'block');
-        elementosHill.forEach(elem => elem.style.display = 'none');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'vernam') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosHill.forEach(elem => elem.style.display = 'none');
         elementosVernam.forEach(elem => elem.style.display = 'block');
-        elementosVigenere.forEach(elem => elem.style.display = 'none');
     } else if (tipoCifrado === 'vigenere') {
-        elementosAfin.forEach(elem => elem.style.display = 'none');
-        elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-        elementosPlayFair.forEach(elem => elem.style.display = 'none');
-        elementosCesar.forEach(elem => elem.style.display = 'none');
-        elementosHill.forEach(elem => elem.style.display = 'none');
-        elementosVernam.forEach(elem => elem.style.display = 'none');
         elementosVigenere.forEach(elem => elem.style.display = 'block');
+    } else if (tipoCifrado === 'transposicionColumna') {
+        elementosTransposicionColumna.forEach(elem => elem.style.display = 'block');
+    } else if (tipoCifrado === 'atbash') {
+        elementosAtbash.forEach(elem => elem.style.display = 'block');
     }
 }
 
@@ -93,7 +74,6 @@ function manejarCifrado(evento) {
     // Ya no necesitamos preventDefault ya que estamos usando botones, no envío de formularios
 
     const tipoCifrado = document.getElementById('tipoCifrado').value;
-
     if (tipoCifrado === 'afin') {
         manejarCifradoAfin();
     } else if (tipoCifrado === 'adfgvx') {
@@ -110,6 +90,8 @@ function manejarCifrado(evento) {
         manejarCifradoVigenere();
     } else if (tipoCifrado === 'transposicionColumna') {
         manejarCifradoTransposicionColumna();
+    } else if (tipoCifrado === 'atbash') {
+        manejarCifradoAtbash();
     }
 }
 
@@ -246,6 +228,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoVigenere();
     } else if (tipoCifrado === 'transposicionColumna') {
         manejarDescifradoTransposicionColumna();
+    } else if (tipoCifrado === 'atbash') {
+        manejarDescifradoAtbash();
     }
 }
 
@@ -383,6 +367,8 @@ function manejarFuerzaBruta() {
         manejarFuerzaBrutaVigenere();
     } else if (tipoCifrado === 'transposicionColumna') {
         manejarFuerzaBrutaTransposicionColumna();
+    } else if (tipoCifrado === 'atbash') {
+        manejarFuerzaBrutaAtbash();
     }
 }
 
@@ -1438,5 +1424,147 @@ function mostrarResultadosFuerzaBrutaTransposicionColumna(resultados) {
     });
 
     html += '</ul>';
+    contenedor.innerHTML = html;
+}
+
+// Función para manejar el cifrado Atbash
+function manejarCifradoAtbash() {
+    const textoPlano = document.getElementById('textoPlanoAtbash').value;
+
+    // Validar los campos
+    if (!textoPlano) {
+        mostrarError('errorCifrado', 'Por favor, ingrese el texto a cifrar');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarAtbash', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                document.getElementById('resultadoCifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado Atbash
+function manejarDescifradoAtbash() {
+    const textoCifrado = document.getElementById('textoCifradoAtbash').value;
+
+    // Validar los campos
+    if (!textoCifrado) {
+        mostrarError('errorDescifrado', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarAtbash', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar la fuerza bruta Atbash
+function manejarFuerzaBrutaAtbash() {
+    const textoCifrado = document.getElementById('textoFuerzaBruta').value;
+
+    // Validar que se haya ingresado texto
+    if (!textoCifrado) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoFuerzaBruta').classList.add('mostrar');
+    document.getElementById('resultadoFuerzaBruta').innerHTML = '';
+    document.getElementById('errorFuerzaBruta').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/fuerzaBrutaAtbash', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorFuerzaBruta', datos.error);
+            } else {
+                // En realidad Atbash no tiene múltiples opciones para fuerza bruta,
+                // ya que solo existe una forma de descifrar, pero mantenemos el formato
+                // similar a los otros cifradores
+                mostrarResultadosFuerzaBrutaAtbash(datos.resultado);
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            mostrarError('errorFuerzaBruta', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para mostrar los resultados de la fuerza bruta Atbash
+function mostrarResultadosFuerzaBrutaAtbash(resultado) {
+    const contenedor = document.getElementById('resultadoFuerzaBruta');
+
+    if (!resultado) {
+        contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
+        return;
+    }
+
+    let html = '<ul class="listaResultados">';
+    html += `<li>
+        <strong>Resultado Atbash:</strong>
+        <p>${resultado}</p>
+    </li>`;
+    html += '</ul>';
+    
     contenedor.innerHTML = html;
 }

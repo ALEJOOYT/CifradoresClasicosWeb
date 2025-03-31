@@ -27,6 +27,7 @@
                 <option value="vernam">Cifrado Vernam</option>
                 <option value="vigenere">Cifrado Vigenère</option>
                 <option value="transposicionColumna">Transposición por Columna</option>
+                <option value="atbash">Cifrado Atbash</option>
             </select>
         </div>
         <section class="seccion">
@@ -42,15 +43,15 @@
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoCesar" class="textoCesar" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;" <textarea id="textoPlanoHill"
-                        class="textoHill" style="display: none;" placeholder="Ingrese el texto para cifrar"
-                        required></textarea>
-                    <textarea id="textoPlanoVernam" class="textoVernam" style="display: none;" <textarea
-                        id="textoPlanoVernam" class="textoVernam" style="display: none;"
+                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;" 
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoVernam" class="textoVernam" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoVigenere" class="textoVigenere" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoAtbash" class="textoAtbash solo-atbash" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <div id="camposAfin" class="campos-cifrado">
                         <div class="formGrid">
@@ -176,6 +177,8 @@
                     <textarea id="textoCifradoVigenere" class="textoVigenere" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                     <textarea id="textoCifradoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
+                        placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
+                    <textarea id="textoCifradoAtbash" class="textoAtbash solo-atbash" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -364,12 +367,17 @@
             const camposVigenere = document.getElementById('camposVigenere');
             const transposicionColumnaInputs = document.getElementById('transposicionColumnaInputs');
             const transposicionColumnaDescifradoInputs = document.getElementById('transposicionColumnaDescifradoInputs');
+            const textoPlanoAtbash = document.getElementById('textoPlanoAtbash');
+            const textoCifradoAtbash = document.getElementById('textoCifradoAtbash');
+            const textoCifrado = document.getElementById('textoCifrado'); // Agregada esta línea para garantizar que textoCifrado esté definido
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
+            const camposAfinDescifrado = document.getElementById('camposAfinDescifrado');
             const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
             const camposCesarDescifrado = document.getElementById('camposCesarDescifrado');
             const camposHillDescifrado = document.getElementById('camposHillDescifrado');
             const camposVernamDescifrado = document.getElementById('camposVernamDescifrado');
             const camposVigenereDescifrado = document.getElementById('camposVigenereDescifrado');
+            const seccionFuerzaBruta = document.getElementById('seccionFuerzaBruta');
             const textoPlano = document.getElementById('textoPlano');
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
             const textoPlanoPlayFair = document.getElementById('textoPlanoPlayFair');
@@ -385,8 +393,15 @@
             const textoCifradoVernam = document.getElementById('textoCifradoVernam');
             const textoCifradoVigenere = document.getElementById('textoCifradoVigenere');
             const textoCifradoTransposicionColumna = document.getElementById('textoCifradoTransposicionColumna');
+            // Establecer la visualización inicial basada en el valor seleccionado
+            actualizarInterfazSegunCifrado(tipoCifrado.value);
+            
             tipoCifrado.addEventListener('change', function () {
-                if (this.value === 'afin') {
+                actualizarInterfazSegunCifrado(this.value);
+            });
+            
+            function actualizarInterfazSegunCifrado(valor) {
+                if (valor === 'afin') {
                     camposAfin.style.display = 'block';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -401,7 +416,7 @@
                     textoCifrado.style.display = 'block';
                     textoCifradoAdfgvx.style.display = 'none';
                     textoCifradoPlayFair.style.display = 'none';
-                } else if (this.value === 'adfgvx') {
+                } else if (valor === 'adfgvx') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'block';
                     camposPlayFair.style.display = 'none';
@@ -416,7 +431,7 @@
                     textoCifrado.style.display = 'none';
                     textoCifradoAdfgvx.style.display = 'block';
                     textoCifradoPlayFair.style.display = 'none';
-                } else if (this.value === 'playFair') {
+                } else if (valor === 'playFair') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'block';
@@ -431,7 +446,7 @@
                     textoCifrado.style.display = 'none';
                     textoCifradoAdfgvx.style.display = 'none';
                     textoCifradoPlayFair.style.display = 'block';
-                } else if (this.value === 'cesar') {
+                } else if (valor === 'cesar') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -450,7 +465,7 @@
                     textoCifradoAdfgvx.style.display = 'none';
                     textoCifradoPlayFair.style.display = 'none';
                     textoCifradoCesar.style.display = 'block';
-                } else if (this.value === 'hill') {
+                } else if (valor === 'hill') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -473,7 +488,7 @@
                     textoCifradoPlayFair.style.display = 'none';
                     textoCifradoCesar.style.display = 'none';
                     textoCifradoHill.style.display = 'block';
-                } else if (this.value === 'vernam') {
+                } else if (valor === 'vernam') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -500,7 +515,7 @@
                     textoCifradoCesar.style.display = 'none';
                     textoCifradoHill.style.display = 'none';
                     textoCifradoVernam.style.display = 'block';
-                } else if (this.value === 'vigenere') {
+                } else if (valor === 'vigenere') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -531,7 +546,7 @@
                     textoCifradoHill.style.display = 'none';
                     textoCifradoVernam.style.display = 'none';
                     textoCifradoVigenere.style.display = 'block';
-                } else if (this.value === 'transposicionColumna') {
+                } else if (valor === 'transposicionColumna') {
                     camposAfin.style.display = 'none';
                     camposAdfgvx.style.display = 'none';
                     camposPlayFair.style.display = 'none';
@@ -567,8 +582,46 @@
                     textoCifradoVernam.style.display = 'none';
                     textoCifradoVigenere.style.display = 'none';
                     textoCifradoTransposicionColumna.style.display = 'block';
+                } else if (valor === 'atbash') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'none';
+                    camposHill.style.display = 'none';
+                    camposVernam.style.display = 'none';
+                    camposVigenere.style.display = 'none';
+                    transposicionColumnaInputs.style.display = 'none';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'none';
+                    camposHillDescifrado.style.display = 'none';
+                    camposVernamDescifrado.style.display = 'none';
+                    camposVigenereDescifrado.style.display = 'none';
+                    transposicionColumnaDescifradoInputs.style.display = 'none';
+                    seccionFuerzaBruta.style.display = 'none'; // Ocultar fuerza bruta para Atbash
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none';
+                    document.getElementById('transposicionColumnaFuerzaBruta').style.display = 'none';
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'none';
+                    textoPlanoHill.style.display = 'none';
+                    textoPlanoVernam.style.display = 'none';
+                    textoPlanoVigenere.style.display = 'none';
+                    textoPlanoTransposicionColumna.style.display = 'none';
+                    textoPlanoAtbash.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'none';
+                    textoCifradoHill.style.display = 'none';
+                    textoCifradoVernam.style.display = 'none';
+                    textoCifradoVigenere.style.display = 'none';
+                    textoCifradoTransposicionColumna.style.display = 'none';
+                    textoCifradoAtbash.style.display = 'block';
                 }
-            });
+            }
 
             // Funciones para generar matrices aleatorias
             document.getElementById('generarMatrizAdfgvx').addEventListener('click', function () {
