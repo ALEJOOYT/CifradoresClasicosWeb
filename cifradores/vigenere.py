@@ -64,7 +64,6 @@ def PuntuacionLegibilidad(texto, diccionario):
 
 def DescifrarFuerzaBrutaVigenere(textoCifrado, maxLargo=4, top=5):
     diccionario = PalabrasComunes()
-    print("\n🔍 Iniciando fuerza bruta (claves de hasta", maxLargo, "letras)...")
     abecedario = string.ascii_lowercase
     resultados = []
 
@@ -73,16 +72,14 @@ def DescifrarFuerzaBrutaVigenere(textoCifrado, maxLargo=4, top=5):
             clave = ''.join(claveTuple)
             descifrado = Descifrar(textoCifrado, clave)
             puntuacion = PuntuacionLegibilidad(descifrado, diccionario)
-            if puntuacion > 0:
-                resultados.append((clave, descifrado, puntuacion))
+            # Incluir todos los resultados, sin filtrar por puntuación
+            resultados.append({
+                'clave': clave,
+                'textoDescifrado': descifrado,
+                'puntuacion': puntuacion
+            })
 
-    resultados.sort(key=lambda x: x[2], reverse=True)
+    resultados.sort(key=lambda x: x['puntuacion'], reverse=True)
 
-    if resultados:
-        print(f"\n✅ Mejores {top} resultados:")
-        for clave, texto, score in resultados[:top]:
-            print(f"🔑 Clave: '{clave}' | Palabras reconocidas: {score}")
-            print(f"📜 Texto: {texto}")
-            print("-" * 40)
-    else:
-        print("❌ No se encontraron coincidencias confiables.")
+    # Devolver todos los resultados sin aplicar el límite top
+    return resultados if resultados else []

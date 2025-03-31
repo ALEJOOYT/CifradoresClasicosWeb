@@ -1188,22 +1188,87 @@ function manejarFuerzaBrutaVigenere() {
 // Función para mostrar los resultados del descifrado por fuerza bruta Vigenère
 function mostrarResultadosFuerzaBrutaVigenere(resultados) {
     const contenedor = document.getElementById('resultadoFuerzaBruta');
-
+    
     if (!resultados || resultados.length === 0) {
         contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
         return;
     }
-
-    let html = '<ul class="listaResultados">';
-
-    resultados.forEach(item => {
-        html += `<li>
-            <strong>Clave: ${item.clave}</strong>
-            <p>${item.textoDescifrado || item.texto}</p>
-            <p><small>Puntuación: ${item.puntuacion || 'N/A'}</small></p>
-        </li>`;
-    });
-
-    html += '</ul>';
-    contenedor.innerHTML = html;
+    
+    // Variables para paginación
+    let resultadosTotales = resultados.length;
+    let resultadosPorPagina = 50;
+    let paginaActual = 1;
+    let filtroMinimo = 0;
+    
+    // Función para actualizar la tabla con los resultados filtrados y paginados
+    function actualizarTabla() {
+        // Filtrar resultados por puntuación mínima
+        const resultadosFiltrados = resultados.filter(item => item.puntuacion >= filtroMinimo);
+        const totalFiltrados = resultadosFiltrados.length;
+        
+        // Calcular índices para la paginación
+        const inicio = (paginaActual - 1) * resultadosPorPagina;
+        const fin = Math.min(paginaActual * resultadosPorPagina, totalFiltrados);
+        const resultadosMostrados = resultadosFiltrados.slice(inicio, fin);
+        
+        // Generar tabla
+        let html = '<h4>Resultados del descifrado por fuerza bruta</h4>';
+        
+        // Agregar controles de filtrado
+        html += `<div class="controles-tabla">
+            <div class="filtro-puntuacion">
+                <label for="filtroPuntuacion">Puntuación mínima:</label>
+                <input type="number" id="filtroPuntuacion" min="0" value="${filtroMinimo}" />
+                <button id="aplicarFiltro">Filtrar</button>
+            </div>
+            <div class="info-resultados">
+                Mostrando ${Math.min(fin, totalFiltrados)} de ${totalFiltrados} resultados (Total: ${resultadosTotales})
+            </div>
+        </div>`;
+        
+        // Generar tabla
+        html += '<div class="tabla-resultados">';
+        html += '<table class="tabla-fuerza-bruta">';
+        html += '<thead><tr><th>Clave</th><th>Texto descifrado</th><th>Puntuación</th></tr></thead>';
+        html += '<tbody>';
+        
+        resultadosMostrados.forEach(item => {
+            html += `<tr>
+                <td><strong>${item.clave}</strong></td>
+                <td>${item.textoDescifrado || item.texto}</td>
+                <td>${item.puntuacion || '0'} palabras</td>
+            </tr>`;
+        });
+        
+        html += '</tbody></table></div>';
+        
+        // Agregar botón "Mostrar más" si hay más resultados
+        if (fin < totalFiltrados) {
+            html += `<div class="mostrar-mas">
+                <button id="mostrarMas">Mostrar más resultados</button>
+            </div>`;
+        }
+        
+        html += '<p><small>Los resultados están ordenados por número de palabras reconocidas en el diccionario.</small></p>';
+        
+        // Actualizar el contenedor
+        contenedor.innerHTML = html;
+        
+        // Agregar event listeners para los botones
+        if (fin < totalFiltrados) {
+            document.getElementById('mostrarMas').addEventListener('click', function() {
+                paginaActual++;
+                actualizarTabla();
+            });
+        }
+        
+        document.getElementById('aplicarFiltro').addEventListener('click', function() {
+            filtroMinimo = parseInt(document.getElementById('filtroPuntuacion').value) || 0;
+            paginaActual = 1; // Reiniciar a la primera página al filtrar
+            actualizarTabla();
+        });
+    }
+    
+    // Inicializar tabla
+    actualizarTabla();
 }

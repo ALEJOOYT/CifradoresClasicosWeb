@@ -353,6 +353,8 @@ def ApiFuerzaBrutaVigenere():
     datos = request.json
     texto = datos.get('texto', '')
     maxLargo = int(datos.get('maxLargo', 4))
+    # El top ya no importa ya que estamos devolviendo todos los resultados,
+    # pero lo dejamos para no romper la compatibilidad
     top = int(datos.get('top', 5))
     
     try:
