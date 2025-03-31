@@ -1,127 +1,109 @@
 from flask import Flask, render_template, request, jsonify
 # Importar módulos de cifrado
-from cifradores.afin import cifrar as cifrar_afin
-from cifradores.afin import descifrar as descifrar_afin
-from cifradores.afin import descifrarFuerzaBruta
-from cifradores.adfgvx import cifrar as cifrar_adfgvx
-from cifradores.adfgvx import descifrar as descifrar_adfgvx
-from cifradores.adfgvx import generate_random_polybius_key
+from cifradores.afin import Cifrar as CifrarAfin
+from cifradores.afin import Descifrar as DescifrarAfin
+from cifradores.afin import DescifrarFuerzaBruta as DescifrarFuerzaBrutaAfin
+
+from cifradores.adfgvx import Cifrar as CifrarAdfgvx
+from cifradores.adfgvx import Descifrar as DescifrarAdfgvx
+from cifradores.adfgvx import GenerarClaveAleatoria as GenerarClaveAleatoriaAdfgvx
+from cifradores.adfgvx import GenerarCuadro as GenerarCuadroAdfgvx
 
 app = Flask(__name__)
 
 # Ruta principal
 @app.route('/')
-def paginaPrincipal():
+def PaginaPrincipal():
     return render_template('index.html')
-
 # API para cifrar
 @app.route('/api/cifrar', methods=['POST'])
-def apiCifrar():
+def ApiCifrar():
     datos = request.json
     texto = datos.get('texto', '')
     a = int(datos.get('a', 1))
     b = int(datos.get('b', 0))
 
-    resultado = cifrar_afin(texto, a, b)
+    resultado = CifrarAfin(texto, a, b)
 
     return jsonify({
         "resultado": resultado,
         "resultado_texto": resultado,
         "exito": not resultado.startswith("Error")
     })
-
 # API para descifrar
 @app.route('/api/descifrar', methods=['POST'])
-def apiDescifrar():
+def ApiDescifrar():
     datos = request.json
     texto = datos.get('texto', '')
     a = int(datos.get('a', 1))
     b = int(datos.get('b', 0))
 
-    resultado = descifrar_afin(texto, a, b)
+    resultado = DescifrarAfin(texto, a, b)
 
     return jsonify({
         "resultado": resultado,
         "resultado_texto": resultado,
         "exito": not resultado.startswith("Error")
     })
-
 # API para descifrar por fuerza bruta
 @app.route('/api/fuerzaBruta', methods=['POST'])
-def apiFuerzaBruta():
+def ApiFuerzaBruta():
     datos = request.json
     texto = datos.get('texto', '')
 
-    resultados = descifrarFuerzaBruta(texto)
+    resultados = DescifrarFuerzaBrutaAfin(texto)
 
     return jsonify({
         "resultados": resultados,
         "listaResultados": resultados,
         "exito": True
     })
-
 # API para cifrar con ADFGVX
 @app.route('/api/cifrarAdfgvx', methods=['POST'])
-def apiCifrarAdfgvx():
+def ApiCifrarAdfgvx():
     datos = request.json
     texto = datos.get('texto', '')
     matriz = datos.get('matriz', '')
-    clave_transposicion = datos.get('clave', '')  # Changed from 'claveTransposicion' to 'clave' to match frontend
+    clave = datos.get('clave', '')
 
-    # Generar una matriz aleatoria si no se proporciona una
     if not matriz:
-        matriz = generate_random_polybius_key()
+        matriz = GenerarClaveAleatoriaAdfgvx()
 
     try:
-        resultado = cifrar_adfgvx(texto, matriz, clave_transposicion)
+        cuadro = GenerarCuadroAdfgvx(matriz)
+        resultado = CifrarAdfgvx(texto, cuadro, clave)
         return jsonify({
             "resultado": resultado,
-            "resultado_texto": resultado,
-            "matriz": matriz,  # Devolver la matriz para que el usuario la vea
-            "exito": not resultado.startswith("Error")
-        })
-    except ValueError as e:
-        return jsonify({
-            "resultado": f"Error: {str(e)}",
-            "resultado_texto": f"Error: {str(e)}",
-            "exito": False
-        })
-
-# API para descifrar con ADFGVX
-@app.route('/api/descifrarAdfgvx', methods=['POST'])
-def apiDescifrarAdfgvx():
-    datos = request.json
-    texto = datos.get('texto', '')
-    matriz = datos.get('matriz', '')
-    clave_transposicion = datos.get('clave', '')  # Changed from 'claveTransposicion' to 'clave' to match frontend
-
-    try:
-        resultado = descifrar_adfgvx(texto, matriz, clave_transposicion)
-        return jsonify({
-            "resultado": resultado,
-            "resultado_texto": resultado,
-            "exito": not resultado.startswith("Error")
-        })
-    except ValueError as e:
-        return jsonify({
-            "resultado": f"Error: {str(e)}",
-            "resultado_texto": f"Error: {str(e)}",
-            "exito": False
-        })
-# API para generar matriz aleatoria para ADFGVX
-@app.route('/api/generarMatrizAdfgvx', methods=['GET'])
-def apiGenerarMatrizAdfgvx():
-    try:
-        matriz = generate_random_polybius_key()
-        return jsonify({
             "matriz": matriz,
             "exito": True
         })
-    except Exception as e:
+    except ValueError as e:
+        return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
+# API para descifrar con ADFGVX
+@app.route('/api/descifrarAdfgvx', methods=['POST'])
+def ApiDescifrarAdfgvx():
+    datos = request.json
+    texto = datos.get('texto', '')
+    matriz = datos.get('matriz', '')
+    clave = datos.get('clave', '')
+
+    try:
+        cuadro = GenerarCuadroAdfgvx(matriz)
+        resultado = DescifrarAdfgvx(texto, cuadro, clave)
         return jsonify({
-            "error": f"Error al generar matriz: {str(e)}",
-            "exito": False
+            "resultado": resultado,
+            "exito": True
         })
+    except ValueError as e:
+        return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
+# API para generar una matriz aleatoria para ADFGVX
+@app.route('/api/generarMatrizAdfgvx', methods=['GET'])
+def ApiGenerarMatrizAdfgvx():
+    try:
+        matriz = GenerarClaveAleatoriaAdfgvx()
+        return jsonify({"matriz": matriz, "exito": True})
+    except Exception as e:
+        return jsonify({"error": f"Error al generar matriz: {str(e)}", "exito": False})
 
 if __name__ == '__main__':
     app.run(debug=True)
