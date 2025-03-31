@@ -23,6 +23,10 @@ from cifradores.hill import DescifrarFuerzaBruta as DescifrarFuerzaBrutaHill
 
 from cifradores.vernam import CifrarVernam
 from cifradores.vernam import DescifrarVernam
+
+from cifradores.vigenere import Cifrar as CifrarVigenere
+from cifradores.vigenere import Descifrar as DescifrarVigenere
+from cifradores.vigenere import DescifrarFuerzaBrutaVigenere
 app = Flask(__name__)
 
 # Ruta principal
@@ -200,7 +204,6 @@ def ApiCifrarHill():
     datos = request.json
     texto = datos.get('texto', '')
     claveStr = datos.get('clave', '')
-    
     try:
         # Validar y convertir la clave de string a matriz
         filas = claveStr.strip().split('\n')
@@ -208,13 +211,10 @@ def ApiCifrarHill():
         for fila in filas:
             valores = [int(val) for val in fila.strip().split()]
             clave.append(valores)
-            
         # Verificar que la matriz sea cuadrada
         if len(clave) != len(clave[0]):
             return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
-            
         resultado = CifrarHill(texto, clave)
-        
         return jsonify({
             "resultado": resultado,
             "resultado_texto": resultado,
@@ -229,7 +229,6 @@ def ApiDescifrarHill():
     datos = request.json
     texto = datos.get('texto', '')
     claveStr = datos.get('clave', '')
-    
     try:
         # Validar y convertir la clave de string a matriz
         filas = claveStr.strip().split('\n')
@@ -237,13 +236,10 @@ def ApiDescifrarHill():
         for fila in filas:
             valores = [int(val) for val in fila.strip().split()]
             clave.append(valores)
-            
         # Verificar que la matriz sea cuadrada
         if len(clave) != len(clave[0]):
             return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
-            
         resultado = DescifrarHill(texto, clave)
-        
         return jsonify({
             "resultado": resultado,
             "resultado_texto": resultado,
@@ -259,7 +255,6 @@ def ApiFuerzaBrutaHill():
     textoCifrado = datos.get('textoCifrado', '')
     textoOriginal = datos.get('textoOriginal', '')
     claveStr = datos.get('clave', '')
-    
     try:
         # Validar y convertir la clave de string a matriz
         filas = claveStr.strip().split('\n')
@@ -267,13 +262,10 @@ def ApiFuerzaBrutaHill():
         for fila in filas:
             valores = [int(val) for val in fila.strip().split()]
             clave.append(valores)
-            
         # Verificar que la matriz sea cuadrada
         if len(clave) != len(clave[0]):
             return jsonify({"resultado": "Error: La matriz debe ser cuadrada", "exito": False})
-            
         resultado = DescifrarFuerzaBrutaHill(textoCifrado, textoOriginal, clave)
-        
         return jsonify({
             "resultado": resultado,
             "exito": not resultado.startswith("Error") and not resultado.startswith("No se encontró")
@@ -281,16 +273,13 @@ def ApiFuerzaBrutaHill():
     except Exception as e:
         return jsonify({"resultado": f"Error: {str(e)}", "exito": False})
 
-
 # API para cifrar Vernam
 @app.route('/api/cifrarVernam', methods=['POST'])
 def ApiCifrarVernam():
     datos = request.json
     texto = datos.get('texto', '')
-
     try:
         textoCifrado, clave = CifrarVernam(texto)
-        
         return jsonify({
             "resultado": textoCifrado,
             "clave": clave,
@@ -298,7 +287,7 @@ def ApiCifrarVernam():
         })
     except Exception as e:
         return jsonify({
-            "resultado": f"Error: {str(e)}", 
+            "resultado": f"Error: {str(e)}",
             "exito": False
         })
 
@@ -308,20 +297,78 @@ def ApiDescifrarVernam():
     datos = request.json
     texto = datos.get('texto', '')
     clave = datos.get('clave', '')
-
     try:
         resultado = DescifrarVernam(texto, clave)
-        
         return jsonify({
             "resultado": resultado,
             "exito": True
         })
     except Exception as e:
         return jsonify({
-            "resultado": f"Error: {str(e)}", 
+            "resultado": f"Error: {str(e)}",
             "exito": False
         })
 
+# API para cifrar Vigenère
+@app.route('/api/cifrarVigenere', methods=['POST'])
+def ApiCifrarVigenere():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    
+    try:
+        resultado = CifrarVigenere(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": not isinstance(resultado, str) or not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar Vigenère
+@app.route('/api/descifrarVigenere', methods=['POST'])
+def ApiDescifrarVigenere():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    
+    try:
+        resultado = DescifrarVigenere(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": not isinstance(resultado, str) or not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar por fuerza bruta Vigenère
+@app.route('/api/fuerzaBrutaVigenere', methods=['POST'])
+def ApiFuerzaBrutaVigenere():
+    datos = request.json
+    texto = datos.get('texto', '')
+    maxLargo = int(datos.get('maxLargo', 4))
+    top = int(datos.get('top', 5))
+    
+    try:
+        resultados = DescifrarFuerzaBrutaVigenere(texto, maxLargo, top)
+        return jsonify({
+            "resultados": resultados,
+            "listaResultados": resultados,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
 
 if __name__ == '__main__':
     app.run(debug=True)
