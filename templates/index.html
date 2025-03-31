@@ -26,6 +26,7 @@
                 <option value="hill">Cifrado Hill</option>
                 <option value="vernam">Cifrado Vernam</option>
                 <option value="vigenere">Cifrado Vigenère</option>
+                <option value="transposicionColumna">Transposición por Columna</option>
             </select>
         </div>
         <section class="seccion">
@@ -48,6 +49,8 @@
                         id="textoPlanoVernam" class="textoVernam" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoVigenere" class="textoVigenere" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <div id="camposAfin" class="campos-cifrado">
                         <div class="formGrid">
@@ -131,6 +134,16 @@
                             <small>La clave debe contener solo letras</small>
                         </div>
                     </div>
+
+                    <!-- Campos para Cifrado Transposición por Columna -->
+                    <div id="transposicionColumnaInputs" class="campos-cifrado" style="display: none;">
+                        <div class="grupoFormulario">
+                            <label for="claveTransposicionColumnaCifrado">Clave:</label>
+                            <input type="number" id="claveTransposicionColumnaCifrado" min="2" 
+                                placeholder="Ingrese la clave (número entero mayor a 1)" required>
+                            <small>La clave debe ser un número entero mayor a 1</small>
+                        </div>
+                    </div>
                     <div id="errorCifrado" class="mensajeError"></div>
                     <div id="cargandoCifrado" class="indicadorCargando">
                         <div class="spinner"></div><span>Procesando...</span>
@@ -161,6 +174,8 @@
                     <textarea id="textoCifradoVernam" class="textoVernam" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                     <textarea id="textoCifradoVigenere" class="textoVigenere" style="display: none;"
+                        placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
+                    <textarea id="textoCifradoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -250,6 +265,16 @@
                         <small>La clave debe contener solo letras</small>
                     </div>
                 </div>
+
+                <!-- Campos para Descifrado Transposición por Columna -->
+                <div id="transposicionColumnaDescifradoInputs" class="campos-cifrado" style="display: none;">
+                    <div class="grupoFormulario">
+                        <label for="claveTransposicionColumnaDescifrado">Clave:</label>
+                        <input type="number" id="claveTransposicionColumnaDescifrado" min="2" 
+                            placeholder="Ingrese la clave (número entero mayor a 1)" required>
+                        <small>La clave debe ser un número entero mayor a 1</small>
+                    </div>
+                </div>
                 <div id="errorDescifrado" class="mensajeError"></div>
                 <div id="cargandoDescifrado" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -289,6 +314,24 @@
                             <br>Esta será la matriz de partida para el algoritmo de fuerza bruta</small>
                     </div>
                 </div>
+
+                <!-- Campos para Fuerza Bruta Transposición por Columna -->
+                <div id="transposicionColumnaFuerzaBruta" class="campos-fuerza-bruta" style="display: none;">
+                    <div class="formGrid">
+                        <div class="grupoFormulario medio">
+                            <label for="claveInicioTransposicionColumna">Clave inicio:</label>
+                            <input type="number" id="claveInicioTransposicionColumna" min="2" 
+                                placeholder="Valor inicial" required>
+                            <small>Valor inicial para la búsqueda</small>
+                        </div>
+                        <div class="grupoFormulario medio">
+                            <label for="claveFinTransposicionColumna">Clave fin:</label>
+                            <input type="number" id="claveFinTransposicionColumna" min="2" 
+                                placeholder="Valor final" required>
+                            <small>Valor final para la búsqueda</small>
+                        </div>
+                    </div>
+                </div>
                 <div id="errorFuerzaBruta" class="mensajeError"></div>
                 <div id="cargandoFuerzaBruta" class="indicadorCargando">
                     <div class="spinner"></div><span>Procesando...</span>
@@ -319,6 +362,8 @@
             const camposHill = document.getElementById('camposHill');
             const camposVernam = document.getElementById('camposVernam');
             const camposVigenere = document.getElementById('camposVigenere');
+            const transposicionColumnaInputs = document.getElementById('transposicionColumnaInputs');
+            const transposicionColumnaDescifradoInputs = document.getElementById('transposicionColumnaDescifradoInputs');
             const camposAdfgvxDescifrado = document.getElementById('camposAdfgvxDescifrado');
             const camposPlayFairDescifrado = document.getElementById('camposPlayFairDescifrado');
             const camposCesarDescifrado = document.getElementById('camposCesarDescifrado');
@@ -332,12 +377,14 @@
             const textoPlanoHill = document.getElementById('textoPlanoHill');
             const textoPlanoVernam = document.getElementById('textoPlanoVernam');
             const textoPlanoVigenere = document.getElementById('textoPlanoVigenere');
+            const textoPlanoTransposicionColumna = document.getElementById('textoPlanoTransposicionColumna');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
             const textoCifradoPlayFair = document.getElementById('textoCifradoPlayFair');
             const textoCifradoCesar = document.getElementById('textoCifradoCesar');
             const textoCifradoHill = document.getElementById('textoCifradoHill');
             const textoCifradoVernam = document.getElementById('textoCifradoVernam');
             const textoCifradoVigenere = document.getElementById('textoCifradoVigenere');
+            const textoCifradoTransposicionColumna = document.getElementById('textoCifradoTransposicionColumna');
             tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
                     camposAfin.style.display = 'block';
@@ -484,6 +531,42 @@
                     textoCifradoHill.style.display = 'none';
                     textoCifradoVernam.style.display = 'none';
                     textoCifradoVigenere.style.display = 'block';
+                } else if (this.value === 'transposicionColumna') {
+                    camposAfin.style.display = 'none';
+                    camposAdfgvx.style.display = 'none';
+                    camposPlayFair.style.display = 'none';
+                    camposCesar.style.display = 'none';
+                    camposHill.style.display = 'none';
+                    camposVernam.style.display = 'none';
+                    camposVigenere.style.display = 'none';
+                    transposicionColumnaInputs.style.display = 'block';
+                    camposAfinDescifrado.style.display = 'none';
+                    camposAdfgvxDescifrado.style.display = 'none';
+                    camposPlayFairDescifrado.style.display = 'none';
+                    camposCesarDescifrado.style.display = 'none';
+                    camposHillDescifrado.style.display = 'none';
+                    camposVernamDescifrado.style.display = 'none';
+                    camposVigenereDescifrado.style.display = 'none';
+                    transposicionColumnaDescifradoInputs.style.display = 'block';
+                    seccionFuerzaBruta.style.display = 'block'; // Mostrar fuerza bruta para Transposición por Columna
+                    document.getElementById('campos-fuerza-bruta-hill').style.display = 'none'; // Ocultar campos adicionales para fuerza bruta Hill
+                    document.getElementById('transposicionColumnaFuerzaBruta').style.display = 'block'; // Mostrar campos para fuerza bruta Transposición por Columna
+                    textoPlano.style.display = 'none';
+                    textoPlanoAdfgvx.style.display = 'none';
+                    textoPlanoPlayFair.style.display = 'none';
+                    textoPlanoCesar.style.display = 'none';
+                    textoPlanoHill.style.display = 'none';
+                    textoPlanoVernam.style.display = 'none';
+                    textoPlanoVigenere.style.display = 'none';
+                    textoPlanoTransposicionColumna.style.display = 'block';
+                    textoCifrado.style.display = 'none';
+                    textoCifradoAdfgvx.style.display = 'none';
+                    textoCifradoPlayFair.style.display = 'none';
+                    textoCifradoCesar.style.display = 'none';
+                    textoCifradoHill.style.display = 'none';
+                    textoCifradoVernam.style.display = 'none';
+                    textoCifradoVigenere.style.display = 'none';
+                    textoCifradoTransposicionColumna.style.display = 'block';
                 }
             });
 

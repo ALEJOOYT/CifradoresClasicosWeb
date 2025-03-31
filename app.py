@@ -26,7 +26,11 @@ from cifradores.vernam import DescifrarVernam
 
 from cifradores.vigenere import Cifrar as CifrarVigenere
 from cifradores.vigenere import Descifrar as DescifrarVigenere
-from cifradores.vigenere import DescifrarFuerzaBrutaVigenere
+from cifradores.vigenere import DescifrarFuerzaBruta as DescifrarFuerzaBrutaVigenere
+
+from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
+from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
+from cifradores.transposicionColumna import DescifradoFuerzaBruta as DescifradoFuerzaBrutaTransposicionColumna
 app = Flask(__name__)
 
 # Ruta principal
@@ -315,7 +319,6 @@ def ApiCifrarVigenere():
     datos = request.json
     texto = datos.get('texto', '')
     clave = datos.get('clave', '')
-    
     try:
         resultado = CifrarVigenere(texto, clave)
         return jsonify({
@@ -334,7 +337,6 @@ def ApiDescifrarVigenere():
     datos = request.json
     texto = datos.get('texto', '')
     clave = datos.get('clave', '')
-    
     try:
         resultado = DescifrarVigenere(texto, clave)
         return jsonify({
@@ -356,12 +358,103 @@ def ApiFuerzaBrutaVigenere():
     # El top ya no importa ya que estamos devolviendo todos los resultados,
     # pero lo dejamos para no romper la compatibilidad
     top = int(datos.get('top', 5))
-    
     try:
         resultados = DescifrarFuerzaBrutaVigenere(texto, maxLargo, top)
         return jsonify({
             "resultados": resultados,
             "listaResultados": resultados,
+            "exito": True
+        })
+    except Exception as e:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para cifrar Transposición por Columna
+@app.route('/api/cifrarTransposicionColumna', methods=['POST'])
+def ApiCifrarTransposicionColumna():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    try:
+        # Si la clave es un número, generar una clave alfabética secuencial
+        if clave.isdigit():
+            longitud = int(clave)
+            # Generar una clave usando letras secuenciales (A-Z)
+            clave = ''.join(chr(65 + i) for i in range(min(longitud, 26)))
+        resultado = CifrarTransposicionColumna(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": not isinstance(resultado, str) or not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar Transposición por Columna
+@app.route('/api/descifrarTransposicionColumna', methods=['POST'])
+def ApiDescifrarTransposicionColumna():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    try:
+        # Si la clave es un número, generar una clave alfabética secuencial
+        if clave.isdigit():
+            longitud = int(clave)
+            # Generar una clave usando letras secuenciales (A-Z)
+            clave = ''.join(chr(65 + i) for i in range(min(longitud, 26)))
+        resultado = DescifrarTransposicionColumna(texto, clave)
+        return jsonify({
+            "resultado": resultado,
+            "exito": not isinstance(resultado, str) or not resultado.startswith("Error")
+        })
+    except Exception as e:
+        return jsonify({
+            "resultado": f"Error: {str(e)}",
+            "exito": False
+        })
+
+# API para descifrar por fuerza bruta Transposición por Columna
+@app.route('/api/fuerzaBrutaTransposicionColumna', methods=['POST'])
+def ApiFuerzaBrutaTransposicionColumna():
+    datos = request.json
+    texto = datos.get('texto', '')
+    claveInicio = int(datos.get('claveInicio', 1))
+    claveFin = int(datos.get('claveFin', 3))
+    if claveInicio < 1:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": "Error: El valor de claveInicio debe ser mayor o igual a 1",
+            "exito": False
+        })
+    if claveFin < claveInicio:
+        return jsonify({
+            "resultados": [],
+            "listaResultados": [],
+            "resultado": "Error: El valor de claveFin debe ser mayor o igual a claveInicio",
+            "exito": False
+        })
+    try:
+        resultados_totales = []
+        # Iterar a través de cada longitud de clave en el rango
+        for longitud in range(claveInicio, claveFin + 1):
+            try:
+                resultados_parciales = DescifradoFuerzaBrutaTransposicionColumna(texto, longitud)
+                if resultados_parciales:
+                    resultados_totales.extend(resultados_parciales)
+            except Exception as e:
+                # Si hay un error con una longitud específica, continuamos con las demás
+                print(f"Error al procesar longitud {longitud}: {str(e)}")
+                continue
+        return jsonify({
+            "resultados": resultados_totales,
+            "listaResultados": resultados_totales,
             "exito": True
         })
     except Exception as e:

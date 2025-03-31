@@ -108,6 +108,8 @@ function manejarCifrado(evento) {
         manejarCifradoVernam();
     } else if (tipoCifrado === 'vigenere') {
         manejarCifradoVigenere();
+    } else if (tipoCifrado === 'transposicionColumna') {
+        manejarCifradoTransposicionColumna();
     }
 }
 
@@ -242,6 +244,8 @@ function manejarDescifrado(evento) {
         manejarDescifradoVernam();
     } else if (tipoCifrado === 'vigenere') {
         manejarDescifradoVigenere();
+    } else if (tipoCifrado === 'transposicionColumna') {
+        manejarDescifradoTransposicionColumna();
     }
 }
 
@@ -377,6 +381,8 @@ function manejarFuerzaBruta() {
         manejarFuerzaBrutaHill();
     } else if (tipoCifrado === 'vigenere') {
         manejarFuerzaBrutaVigenere();
+    } else if (tipoCifrado === 'transposicionColumna') {
+        manejarFuerzaBrutaTransposicionColumna();
     }
 }
 
@@ -1271,4 +1277,166 @@ function mostrarResultadosFuerzaBrutaVigenere(resultados) {
     
     // Inicializar tabla
     actualizarTabla();
+}
+
+// Función para manejar el cifrado de Transposición por Columna
+function manejarCifradoTransposicionColumna() {
+    const textoPlano = document.getElementById('textoPlanoTransposicionColumna').value;
+    const clave = document.getElementById('claveTransposicionColumnaCifrado').value;
+
+    // Validar los campos
+    if (!textoPlano || !clave) {
+        mostrarError('errorCifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoCifrado').classList.add('mostrar');
+    document.getElementById('resultadoCifrado').textContent = '';
+    document.getElementById('errorCifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/cifrarTransposicionColumna', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoPlano,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorCifrado', datos.error);
+            } else {
+                document.getElementById('resultadoCifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoCifrado').classList.remove('mostrar');
+            mostrarError('errorCifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado de Transposición por Columna
+function manejarDescifradoTransposicionColumna() {
+    const textoCifrado = document.getElementById('textoCifradoTransposicionColumna').value;
+    const clave = document.getElementById('claveTransposicionColumnaDescifrado').value;
+
+    // Validar los campos
+    if (!textoCifrado || !clave) {
+        mostrarError('errorDescifrado', 'Por favor, complete todos los campos');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoDescifrado').classList.add('mostrar');
+    document.getElementById('resultadoDescifrado').textContent = '';
+    document.getElementById('errorDescifrado').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/descifrarTransposicionColumna', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            clave: clave
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorDescifrado', datos.error);
+            } else {
+                document.getElementById('resultadoDescifrado').textContent = datos.resultado;
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoDescifrado').classList.remove('mostrar');
+            mostrarError('errorDescifrado', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para manejar el descifrado por fuerza bruta de Transposición por Columna
+function manejarFuerzaBrutaTransposicionColumna() {
+    const textoCifrado = document.getElementById('textoFuerzaBruta').value;
+    const claveInicio = document.getElementById('claveInicioTransposicionColumna').value;
+    const claveFin = document.getElementById('claveFinTransposicionColumna').value;
+
+    // Validar que se haya ingresado texto
+    if (!textoCifrado) {
+        mostrarError('errorFuerzaBruta', 'Por favor, ingrese el texto cifrado');
+        return;
+    }
+
+    // Validar que se haya especificado el rango de claves
+    if (!claveInicio || !claveFin) {
+        mostrarError('errorFuerzaBruta', 'Por favor, especifique el rango de longitudes de clave (inicio y fin)');
+        return;
+    }
+
+    // Validar que el rango sea válido
+    if (parseInt(claveInicio) > parseInt(claveFin)) {
+        mostrarError('errorFuerzaBruta', 'El valor de inicio debe ser menor o igual al valor de fin');
+        return;
+    }
+
+    // Mostrar indicador de carga
+    document.getElementById('cargandoFuerzaBruta').classList.add('mostrar');
+    document.getElementById('resultadoFuerzaBruta').innerHTML = '';
+    document.getElementById('errorFuerzaBruta').textContent = '';
+
+    // Realizar la petición al backend
+    fetch('/api/fuerzaBrutaTransposicionColumna', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            texto: textoCifrado,
+            claveInicio: claveInicio,
+            claveFin: claveFin
+        })
+    })
+        .then(respuesta => respuesta.json())
+        .then(datos => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            if (datos.error) {
+                mostrarError('errorFuerzaBruta', datos.error);
+            } else {
+                mostrarResultadosFuerzaBrutaTransposicionColumna(datos.resultados);
+            }
+        })
+        .catch(error => {
+            document.getElementById('cargandoFuerzaBruta').classList.remove('mostrar');
+            mostrarError('errorFuerzaBruta', 'Error al comunicarse con el servidor: ' + error.message);
+        });
+}
+
+// Función para mostrar los resultados del descifrado por fuerza bruta de Transposición por Columna
+function mostrarResultadosFuerzaBrutaTransposicionColumna(resultados) {
+    const contenedor = document.getElementById('resultadoFuerzaBruta');
+
+    if (!resultados || resultados.length === 0) {
+        contenedor.innerHTML = '<p>No se encontraron posibles descifraciones.</p>';
+        return;
+    }
+
+    let html = '<ul class="listaResultados">';
+
+    resultados.forEach(item => {
+        html += `<li>
+            <strong>Permutación: ${item.permutacion}</strong>
+            <p>${item.textoDescifrado || item.texto}</p>
+        </li>`;
+    });
+
+    html += '</ul>';
+    contenedor.innerHTML = html;
 }

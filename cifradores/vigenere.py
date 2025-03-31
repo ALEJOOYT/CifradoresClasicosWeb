@@ -62,7 +62,7 @@ def PuntuacionLegibilidad(texto, diccionario):
     palabras = ''.join(c if c.isalpha() else ' ' for c in texto.lower()).split()
     return sum(1 for palabra in palabras if palabra in diccionario)
 
-def DescifrarFuerzaBrutaVigenere(textoCifrado, maxLargo=4, top=5):
+def DescifrarFuerzaBruta(textoCifrado, maxLargo=4, top=5):
     diccionario = PalabrasComunes()
     abecedario = string.ascii_lowercase
     resultados = []
