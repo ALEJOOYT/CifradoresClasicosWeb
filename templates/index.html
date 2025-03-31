@@ -7,32 +7,6 @@
     <title>Cifradores Clásicos</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        .botonSecundario {
-            background-color: #4CAF50;
-            color: white;
-            padding: 8px 16px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .botonSecundario:hover {
-            background-color: #45a049;
-        }
-        
-        .textoAdfgvx, .textoAfin {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: vertical;
-            font-family: 'Roboto', sans-serif;
-            min-height: 100px;
-        }
-    </style>
 </head>
 
 <body>
@@ -54,10 +28,12 @@
             <form id="formCifrado" class="formulario">
                 <div class="grupoFormulario">
                     <label for="textoPlano">Texto a cifrar:</label>
-                    <textarea id="textoPlano" class="textoAfin" placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoAdfgvx" class="textoAdfgvx" style="display: none;" placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlano" class="textoAfin" placeholder="Ingrese el texto para cifrar"
+                        required></textarea>
+                    <textarea id="textoPlanoAdfgvx" class="textoAdfgvx" style="display: none;"
+                        placeholder="Ingrese el texto para cifrar" required></textarea>
                 </div>
-                
+
                 <!-- Campos para Cifrado Afín -->
                 <div id="camposAfin" class="campos-cifrado">
                     <div class="formGrid">
@@ -73,18 +49,21 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Campos para Cifrado ADFGVX -->
                 <div id="camposAdfgvx" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="matrizAdfgvxCifrado">Matriz (36 caracteres):</label>
-                        <input type="text" id="matrizAdfgvxCifrado" placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
+                        <input type="text" id="matrizAdfgvxCifrado"
+                            placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
                         <small>La matriz debe contener 36 caracteres únicos (letras y números)</small>
-                        <button type="button" id="generarMatrizAdfgvx" class="boton botonSecundario">Generar matriz aleatoria</button>
+                        <button type="button" id="generarMatrizAdfgvx" class="boton botonSecundario">Generar matriz
+                            aleatoria</button>
                     </div>
                     <div class="grupoFormulario">
                         <label for="claveAdfgvxCifrado">Clave de transposición:</label>
-                        <input type="text" id="claveAdfgvxCifrado" placeholder="Ingrese la clave de transposición" required>
+                        <input type="text" id="claveAdfgvxCifrado" placeholder="Ingrese la clave de transposición"
+                            required>
                         <small>La clave debe contener solo letras y sin repeticiones</small>
                     </div>
                 </div>
@@ -105,10 +84,12 @@
             <form id="formDescifrado" class="formulario">
                 <div class="grupoFormulario">
                     <label for="textoCifrado">Texto a descifrar:</label>
-                    <textarea id="textoCifrado" class="textoAfin" placeholder="Ingrese el texto para descifrar" required></textarea>
-                    <textarea id="textoCifradoAdfgvx" class="textoAdfgvx" style="display: none;" placeholder="Ingrese el texto para descifrar" required></textarea>
+                    <textarea id="textoCifrado" class="textoAfin" placeholder="Ingrese el texto para descifrar"
+                        required></textarea>
+                    <textarea id="textoCifradoAdfgvx" class="textoAdfgvx" style="display: none;"
+                        placeholder="Ingrese el texto para descifrar" required></textarea>
                 </div>
-                
+
                 <!-- Campos para Descifrado Afín -->
                 <div id="camposAfinDescifrado" class="campos-cifrado">
                     <div class="formGrid">
@@ -119,23 +100,27 @@
                         </div>
                         <div class="grupoFormulario medio">
                             <label for="valorBDescifrado">Clave B:</label>
-                            <input type="number" id="valorBDescifrado" min="0" max="25" placeholder="Valor de B" required>
+                            <input type="number" id="valorBDescifrado" min="0" max="25" placeholder="Valor de B"
+                                required>
                             <small>B debe estar entre 0 y 25</small>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Campos para Descifrado ADFGVX -->
                 <div id="camposAdfgvxDescifrado" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="matrizAdfgvxDescifrado">Matriz (36 caracteres):</label>
-                        <input type="text" id="matrizAdfgvxDescifrado" placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
+                        <input type="text" id="matrizAdfgvxDescifrado"
+                            placeholder="Ingrese los 36 caracteres para la matriz" maxlength="36" required>
                         <small>La matriz debe contener 36 caracteres únicos (letras y números)</small>
-                        <button type="button" id="generarMatrizAdfgvxDescifrado" class="boton botonSecundario">Generar matriz aleatoria</button>
+                        <button type="button" id="generarMatrizAdfgvxDescifrado" class="boton botonSecundario">Generar
+                            matriz aleatoria</button>
                     </div>
                     <div class="grupoFormulario">
                         <label for="claveAdfgvxDescifrado">Clave de transposición:</label>
-                        <input type="text" id="claveAdfgvxDescifrado" placeholder="Ingrese la clave de transposición" required>
+                        <input type="text" id="claveAdfgvxDescifrado" placeholder="Ingrese la clave de transposición"
+                            required>
                         <small>La clave debe contener solo letras y sin repeticiones</small>
                     </div>
                 </div>
@@ -180,7 +165,7 @@
 
     <script>
         // Script para cambiar los campos mostrados según el cifrado seleccionado
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const tipoCifrado = document.getElementById('tipoCifrado');
             const camposAfin = document.getElementById('camposAfin');
             const camposAdfgvx = document.getElementById('camposAdfgvx');
@@ -191,8 +176,8 @@
             const textoPlanoAdfgvx = document.getElementById('textoPlanoAdfgvx');
             const textoCifrado = document.getElementById('textoCifrado');
             const textoCifradoAdfgvx = document.getElementById('textoCifradoAdfgvx');
-            
-            tipoCifrado.addEventListener('change', function() {
+
+            tipoCifrado.addEventListener('change', function () {
                 if (this.value === 'afin') {
                     camposAfin.style.display = 'block';
                     camposAdfgvx.style.display = 'none';
@@ -215,22 +200,22 @@
                     textoCifradoAdfgvx.style.display = 'block';
                 }
             });
-            
+
             // Funciones para generar matrices aleatorias
-            document.getElementById('generarMatrizAdfgvx').addEventListener('click', function() {
+            document.getElementById('generarMatrizAdfgvx').addEventListener('click', function () {
                 generarMatrizAleatoria('matrizAdfgvxCifrado');
             });
-            
-            document.getElementById('generarMatrizAdfgvxDescifrado').addEventListener('click', function() {
+
+            document.getElementById('generarMatrizAdfgvxDescifrado').addEventListener('click', function () {
                 generarMatrizAleatoria('matrizAdfgvxDescifrado');
             });
-            
+
             function generarMatrizAleatoria(elementId) {
                 // Conjunto de caracteres posibles para la matriz (letras y números)
                 const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
                 let matriz = '';
                 let caracteresUsados = new Set();
-                
+
                 // Generar 36 caracteres únicos aleatorios
                 while (caracteresUsados.size < 36) {
                     const caracter = caracteres.charAt(Math.floor(Math.random() * caracteres.length));
@@ -239,7 +224,7 @@
                         matriz += caracter;
                     }
                 }
-                
+
                 document.getElementById(elementId).value = matriz;
             }
         });

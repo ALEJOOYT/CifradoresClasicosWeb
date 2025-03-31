@@ -147,6 +147,32 @@ body {
   transform: translateY(0);
 }
 
+.botonSecundario {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.botonSecundario:hover {
+  background-color: #2c4760;
+}
+
+.textoAdfgvx,
+.textoAfin {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: 'Roboto', sans-serif;
+  min-height: 100px;
+}
+
 .btnCentro {
   display: block;
   margin: 0 auto;
@@ -371,10 +397,12 @@ body {
 }
 
 /* Control de visibilidad condicional */
-.formularioAfin, .formularioAdfgvx {
+.formularioAfin,
+.formularioAdfgvx {
   display: none;
 }
 
-.formularioAfin.activo, .formularioAdfgvx.activo {
+.formularioAfin.activo,
+.formularioAdfgvx.activo {
   display: block;
 }
