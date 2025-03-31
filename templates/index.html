@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrador Afín</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="encabezado">
+        <h1>Cifrador Afín</h1>
+        <p class="subtitulo">Una aplicación web para cifrado y descifrado usando el método Afín</p>
+    </header>
+
+    <main>
+        <section class="seccion">
+            <h2>Cifrado</h2>
+            <form id="formCifrado" class="formulario">
+                <div class="grupoFormulario">
+                    <label for="textoPlano">Texto a cifrar:</label>
+                    <textarea id="textoPlano" placeholder="Ingrese el texto para cifrar" required></textarea>
+                </div>
+                <div class="formGrid">
+                    <div class="grupoFormulario medio">
+                        <label for="valorACifrado">Clave A:</label>
+                        <input type="number" id="valorACifrado" min="1" placeholder="Valor de A" required>
+                        <small>A debe ser coprimo con 26</small>
+                    </div>
+                    <div class="grupoFormulario medio">
+                        <label for="valorBCifrado">Clave B:</label>
+                        <input type="number" id="valorBCifrado" min="0" max="25" placeholder="Valor de B" required>
+                        <small>B debe estar entre 0 y 25</small>
+                    </div>
+                </div>
+                <div id="errorCifrado" class="mensajeError"></div>
+                <div id="cargandoCifrado" class="indicadorCargando"><div class="spinner"></div><span>Procesando...</span></div>
+                <button type="button" id="botonCifrar" class="boton">Cifrar</button>
+                <div class="resultados">
+                    <h3>Resultado:</h3>
+                    <div id="resultadoCifrado" class="resultadoTexto"></div>
+                </div>
+            </form>
+        </section>
+
+        <section class="seccion">
+            <h2>Descifrado</h2>
+            <form id="formDescifrado" class="formulario">
+                <div class="grupoFormulario">
+                    <label for="textoCifrado">Texto a descifrar:</label>
+                    <textarea id="textoCifrado" placeholder="Ingrese el texto para descifrar" required></textarea>
+                </div>
+                <div class="formGrid">
+                    <div class="grupoFormulario medio">
+                        <label for="valorADescifrado">Clave A:</label>
+                        <input type="number" id="valorADescifrado" min="1" placeholder="Valor de A" required>
+                        <small>A debe ser coprimo con 26</small>
+                    </div>
+                    <div class="grupoFormulario medio">
+                        <label for="valorBDescifrado">Clave B:</label>
+                        <input type="number" id="valorBDescifrado" min="0" max="25" placeholder="Valor de B" required>
+                        <small>B debe estar entre 0 y 25</small>
+                    </div>
+                </div>
+                <div id="errorDescifrado" class="mensajeError"></div>
+                <div id="cargandoDescifrado" class="indicadorCargando"><div class="spinner"></div><span>Procesando...</span></div>
+                <button type="button" id="botonDescifrar" class="boton">Descifrar</button>
+                <div class="resultados">
+                    <h3>Resultado:</h3>
+                    <div id="resultadoDescifrado" class="resultadoTexto"></div>
+                </div>
+            </form>
+        </section>
+
+        <section class="seccion">
+            <h2>Descifrado por Fuerza Bruta</h2>
+            <form id="formFuerzaBruta" class="formulario">
+                <div class="grupoFormulario">
+                    <label for="textoFuerzaBruta">Texto cifrado:</label>
+                    <textarea id="textoFuerzaBruta" placeholder="Ingrese el texto cifrado para descifrar por fuerza bruta" required></textarea>
+                </div>
+                <div id="errorFuerzaBruta" class="mensajeError"></div>
+                <div id="cargandoFuerzaBruta" class="indicadorCargando"><div class="spinner"></div><span>Procesando...</span></div>
+                <button type="button" id="botonFuerzaBruta" class="boton">Descifrar por Fuerza Bruta</button>
+                <div class="resultados">
+                    <h3>Posibles resultados:</h3>
+                    <div id="resultadoFuerzaBruta" class="resultadoTexto contenedorLista">
+                        <ul id="listaResultados" class="listaResultados"></ul>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="piePagina">
+        <p>Cifrador Afín &copy; 2023 - Seguridad Informática</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
