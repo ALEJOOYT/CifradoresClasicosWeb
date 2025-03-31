@@ -4,21 +4,21 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('botonCifrar').addEventListener('click', manejarCifrado);
     document.getElementById('botonDescifrar').addEventListener('click', manejarDescifrado);
     document.getElementById('botonFuerzaBruta').addEventListener('click', manejarFuerzaBruta);
-    
+
     // Asignar evento al selector de cifrado
-    document.getElementById('tipoCifrado').addEventListener('change', function() {
+    document.getElementById('tipoCifrado').addEventListener('change', function () {
         mostrarFormulariosCifrado();
     });
-    
+
     // Asignar eventos a los botones de generar matriz aleatoria
-    document.getElementById('generarMatrizAdfgvx').addEventListener('click', function() {
+    document.getElementById('generarMatrizAdfgvx').addEventListener('click', function () {
         generarMatrizAleatoria('matrizAdfgvxCifrado');
     });
-    
-    document.getElementById('generarMatrizAdfgvxDescifrado').addEventListener('click', function() {
+
+    document.getElementById('generarMatrizAdfgvxDescifrado').addEventListener('click', function () {
         generarMatrizAleatoria('matrizAdfgvxDescifrado');
     });
-    
+
     // Mostrar los formularios correctos al cargar la página
     mostrarFormulariosCifrado();
 });
@@ -28,8 +28,8 @@ function mostrarFormulariosCifrado() {
     const tipoCifrado = document.getElementById('tipoCifrado').value;
     const elementosAfin = document.querySelectorAll('.solo-afin');
     const elementosAdfgvx = document.querySelectorAll('.solo-adfgvx');
-    const elementosPlayFair = document.querySelectorAll('.solo-playfair');
-    
+    const elementosPlayFair = document.querySelectorAll('.solo-playFair');
+
     if (tipoCifrado === 'afin') {
         elementosAfin.forEach(elem => elem.style.display = 'block');
         elementosAdfgvx.forEach(elem => elem.style.display = 'none');
@@ -48,9 +48,9 @@ function mostrarFormulariosCifrado() {
 // Función para manejar el cifrado
 function manejarCifrado(evento) {
     // Ya no necesitamos preventDefault ya que estamos usando botones, no envío de formularios
-    
+
     const tipoCifrado = document.getElementById('tipoCifrado').value;
-    
+
     if (tipoCifrado === 'afin') {
         manejarCifradoAfin();
     } else if (tipoCifrado === 'adfgvx') {
@@ -133,7 +133,7 @@ function manejarCifradoAdfgvx() {
         mostrarError('errorCifrado', 'La clave de transposición no puede estar vacía');
         return;
     }
-    
+
     if (new Set(clave.split('')).size !== clave.length) {
         mostrarError('errorCifrado', 'La clave de transposición no debe contener caracteres repetidos');
         return;
@@ -174,9 +174,9 @@ function manejarCifradoAdfgvx() {
 // Función para manejar el descifrado
 function manejarDescifrado(evento) {
     // Ya no necesitamos preventDefault ya que estamos usando botones, no envío de formularios
-    
+
     const tipoCifrado = document.getElementById('tipoCifrado').value;
-    
+
     if (tipoCifrado === 'afin') {
         manejarDescifradoAfin();
     } else if (tipoCifrado === 'adfgvx') {
@@ -259,7 +259,7 @@ function manejarDescifradoAdfgvx() {
         mostrarError('errorDescifrado', 'La clave de transposición no puede estar vacía');
         return;
     }
-    
+
     if (new Set(clave.split('')).size !== clave.length) {
         mostrarError('errorDescifrado', 'La clave de transposición no debe contener caracteres repetidos');
         return;
@@ -307,7 +307,7 @@ function manejarDescifradoAdfgvx() {
 // Función para manejar el descifrado por fuerza bruta (para Afín y PlayFair)
 function manejarFuerzaBruta() {
     const tipoCifrado = document.getElementById('tipoCifrado').value;
-    
+
     if (tipoCifrado === 'afin') {
         manejarFuerzaBrutaAfin();
     } else if (tipoCifrado === 'playFair') {
