@@ -91,7 +91,7 @@ def Descifrar(textoCifrado, clave):
     except Exception as e:
         return f"Error: {str(e)}"
 
-def FuerzaBruta(textoCifrado, palabrasClave=None):
+def DescifrarFuerzaBruta(textoCifrado, palabrasClave=None):
     try:
         if not textoCifrado:
             return {"error": "El texto cifrado es requerido para la fuerza bruta.", "resultados": []}
@@ -100,42 +100,62 @@ def FuerzaBruta(textoCifrado, palabrasClave=None):
         if len(textoCifrado) < 2:
             return {"error": "El texto cifrado debe tener al menos 2 caracteres alfabéticos.", "resultados": []}
             
-        # Lista predeterminada de palabras clave comunes
-        if palabrasClave is None or len(palabrasClave) == 0:
-            palabrasClave = [
-                "CLAVE", "CONTRASEÑA", "CRIPTOGRAFIA", "SEGURIDAD", "CIFRADO",
-                "SECRETO", "CONFIDENCIAL", "CLASIFICADO", "PRIVADO", "SEGURO",
-                "ENCRIPTACION", "DESENCRIPTACION", "ALGORITMO", "LLAVE", "CODIGO",
-                "PLAYFAIR", "MATRIZ", "PALABRACLAVE", "ROMPECABEZAS", "ENIGMA"
-            ]
-        # Aseguramos que todas las claves estén en formato correcto
-        palabrasClave = [clave.upper().strip() for clave in palabrasClave if clave.strip()]
+        # Lista predeterminada de palabras clave comunes en español
+        palabras_predeterminadas = [
+            "CLAVE", "SECRETO", "ENIGMA", "CIFRADO", "CODIGO",
+            "MENSAJE", "SEGURO", "OCULTO", "PRIVADO", "PLAYFAIR",
+            "MATRIZ", "SISTEMA", "METODO", "PALABRA", "TEXTO"
+        ]
         
+        # Si se proporcionaron palabras clave, usarlas; si no, usar las predeterminadas
+        if palabrasClave and isinstance(palabrasClave, (list, tuple)) and len(palabrasClave) > 0:
+            palabras_a_probar = [p.strip().upper() for p in palabrasClave if p.strip()]
+        else:
+            palabras_a_probar = palabras_predeterminadas
+
+        if not palabras_a_probar:
+            return {"error": "No hay palabras clave válidas para probar.", "resultados": []}
+
         resultados = []
-        for clave in palabrasClave:
+        for clave in palabras_a_probar:
             if not any(c.isalpha() for c in clave):
-                continue  # Saltamos claves sin letras
-                
-            textoDescifrado = Descifrar(textoCifrado, clave)
-            if not isinstance(textoDescifrado, str) or textoDescifrado.startswith("Error"):
-                continue  # Saltamos resultados con errores
-                
-            # Calculamos un simple puntaje de legibilidad basado en frecuencia de vocales
-            vocales = sum(1 for c in textoDescifrado if c in "AEIOU")
-            puntaje = (vocales / len(textoDescifrado)) * 100 if len(textoDescifrado) > 0 else 0
-            
-            resultados.append({
-                "clave": clave,
-                "textoDescifrado": textoDescifrado,
-                "puntaje": round(puntaje, 2)
-            })
-        
-        # Ordenamos los resultados por puntaje descendente (mejores primero)
+                continue
+
+            try:
+                texto_descifrado = Descifrar(textoCifrado, clave)
+                if isinstance(texto_descifrado, str) and not texto_descifrado.startswith("Error"):
+                    # Calcular puntuación basada en frecuencia de letras en español
+                    vocales = sum(1 for c in texto_descifrado if c in "AEIOU")
+                    consonantes_comunes = sum(1 for c in texto_descifrado if c in "NRSLT")
+                    puntaje = (vocales * 1.5 + consonantes_comunes) / len(texto_descifrado) * 100
+
+                    resultados.append({
+                        "clave": clave,
+                        "textoDescifrado": texto_descifrado,
+                        "puntaje": round(puntaje, 2)
+                    })
+            except Exception:
+                continue
+
+        # Ordenar resultados por puntaje descendente
         resultados = sorted(resultados, key=lambda x: x["puntaje"], reverse=True)
-        
+
+        if not resultados:
+            return {
+                "error": "No se encontraron resultados válidos con las claves probadas.",
+                "resultados": []
+            }
+
+        # Limitar a los 10 mejores resultados
+        resultados = resultados[:10]
+
         return {
-            "error": None if resultados else "No se encontraron resultados con las claves proporcionadas.",
+            "error": None,
             "resultados": resultados
         }
+
     except Exception as e:
-        return {"error": f"Error en la fuerza bruta: {str(e)}", "resultados": []}
+        return {
+            "error": f"Error en la fuerza bruta: {str(e)}",
+            "resultados": []
+        }

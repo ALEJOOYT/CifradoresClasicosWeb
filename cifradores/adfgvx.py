@@ -14,14 +14,22 @@ CUADRO_ADFGVX = {
     'XA': 'U', 'XD': 'V', 'XF': 'W', 'XG': 'X', 'XV': 'Y', 'XX': 'Z'
 }
 
-def GenerarClaveAleatoria(longitud=10):
-    """Genera una clave aleatoria para el cifrado"""
-    caracteres = string.ascii_uppercase
-    return ''.join(random.choice(caracteres) for _ in range(longitud))
+def GenerarClaveAleatoria():
+    """Genera una clave aleatoria de 36 caracteres para el cifrado ADFGVX"""
+    caracteres = string.ascii_uppercase + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(36))
 
 def Cifrar(textoPlano, clave):
     if not textoPlano or not clave:
         raise ValueError("El texto y la clave son requeridos")
+    
+    # Validar longitud de clave exactamente 36 caracteres
+    if len(clave) != 36:
+        raise ValueError("La clave debe tener exactamente 36 caracteres")
+        
+    # Verificar que la clave solo contenga letras mayúsculas y números
+    if not all(c in string.ascii_uppercase + string.digits for c in clave):
+        raise ValueError("La clave debe contener solo letras mayúsculas y números")
     
     # Limpiar el texto plano (solo letras y números)
     textoPlano = ''.join(c for c in textoPlano.upper() if c.isalnum())
@@ -62,6 +70,14 @@ def Cifrar(textoPlano, clave):
 def Descifrar(textoCifrado, clave):
     if not textoCifrado or not clave:
         raise ValueError("El texto cifrado y la clave son requeridos")
+        
+    # Validar longitud de clave exactamente 36 caracteres
+    if len(clave) != 36:
+        raise ValueError("La clave debe tener exactamente 36 caracteres")
+        
+    # Verificar que la clave solo contenga letras mayúsculas y números
+    if not all(c in string.ascii_uppercase + string.digits for c in clave):
+        raise ValueError("La clave debe contener solo letras mayúsculas y números")
     
     try:
         longitudClave = len(clave)

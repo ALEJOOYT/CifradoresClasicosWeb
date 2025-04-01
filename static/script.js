@@ -35,7 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         'playfair': {
             params: [
-                { id: 'clave', label: 'Clave', type: 'text' }
+                { id: 'clave', label: 'Clave', type: 'text' },
+                { id: 'palabrasClave', label: 'Palabras clave para fuerza bruta (separadas por comas)', type: 'text' }
             ],
             tieneFuerzaBruta: true
         },
@@ -206,6 +207,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const params = obtenerParametros();
+        
+        // Procesar palabrasClave para Playfair
+        if (cifrador === 'playfair' && params.palabrasClave) {
+            params.palabrasClave = params.palabrasClave.split(',').map(p => p.trim()).filter(p => p);
+        }
 
         try {
             const response = await fetch('/fuerza_bruta', {
@@ -219,7 +225,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     parametros: params
                 })
             });
-
             const data = await response.json();
             if (data.error) {
                 alert(data.error);
@@ -229,7 +234,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     textoSalida.value = data.resultados.map((resultado, index) => {
                         let displayText = `Posible solución ${index + 1}: `;
                         
-                        if (resultado.key && resultado.text) {
+                        // Check if the result is already formatted (like from PlayFair)
+                        if (typeof resultado === 'string' && resultado.includes('|')) {
+                            return resultado;
+                        } else if (resultado.key && resultado.text) {
                             displayText += `Key: ${resultado.key}, Text: ${resultado.text}`;
                         } else if (resultado.clave && resultado.textoDescifrado) {
                             displayText += `Clave: ${resultado.clave}, Texto: ${resultado.textoDescifrado}`;

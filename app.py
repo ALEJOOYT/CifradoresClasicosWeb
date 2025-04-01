@@ -11,31 +11,29 @@ from cifradores.adfgvx import GenerarClaveAleatoria
 
 from cifradores.playFair import Cifrar as CifrarPlayfair
 from cifradores.playFair import Descifrar as DescifrarPlayfair
-from cifradores.playFair import FuerzaBruta as FuerzaBrutaPlayfair
+from cifradores.playFair import DescifrarFuerzaBruta as FuerzaBrutaPlayfair
+
 from cifradores.cesar import Cifrar as CifrarCesar
 from cifradores.cesar import Descifrar as DescifrarCesar
 from cifradores.cesar import DescifrarFuerzaBruta as FuerzaBrutaCesar
+
 from cifradores.hill import Cifrar as CifrarHill
 from cifradores.hill import Descifrar as DescifrarHill
+from cifradores.hill import GenerarMatrizAleatoria
 from cifradores.hill import DescifrarFuerzaBruta as FuerzaBrutaHill
-from cifradores.vernam import Cifrar as CifrarVernam
-from cifradores.vernam import Descifrar as DescifrarVernam
 
 from cifradores.vigenere import Cifrar as CifrarVigenere
 from cifradores.vigenere import Descifrar as DescifrarVigenere
 from cifradores.vigenere import DescifrarFuerzaBruta as FuerzaBrutaVigenere
-from cifradores.atbash import Cifrar as CifrarAtbash
-from cifradores.atbash import Descifrar as DescifrarAtbash
 
 from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
 from cifradores.transposicionColumna import DescifradoFuerzaBruta as FuerzaBrutaTransposicionColumna
-from cifradores.transposicionFilas import Cifrar as CifrarTransposicionFilas
-from cifradores.transposicionFilas import Descifrar as DescifrarTransposicionFilas
 
 from cifradores.transposicionRail import Cifrar as CifrarRailFence
 from cifradores.transposicionRail import Descifrar as DescifrarRailFence
 from cifradores.transposicionRail import DescifrarFuerzaBruta as FuerzaBrutaRailFence
+
 app = Flask(__name__)
 
 # Diccionario de funciones de cifrado y descifrado
@@ -45,11 +43,8 @@ CIFRADORES = {
     'adfgvx': {'cifrar': CifrarAdfgvx, 'descifrar': DescifrarAdfgvx},
     'playfair': {'cifrar': CifrarPlayfair, 'descifrar': DescifrarPlayfair},
     'hill': {'cifrar': CifrarHill, 'descifrar': DescifrarHill},
-    'vernam': {'cifrar': CifrarVernam, 'descifrar': DescifrarVernam},
     'vigenere': {'cifrar': CifrarVigenere, 'descifrar': DescifrarVigenere},
-    'atbash': {'cifrar': CifrarAtbash, 'descifrar': DescifrarAtbash},
     'transposicionColumna': {'cifrar': CifrarTransposicionColumna, 'descifrar': DescifrarTransposicionColumna},
-    'transposicionFilas': {'cifrar': CifrarTransposicionFilas, 'descifrar': DescifrarTransposicionFilas},
     'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence}
 }
 
@@ -65,27 +60,27 @@ FUERZA_BRUTA = {
 }
 
 @app.route('/')
-def PaginaPrincipal():
+def index():
     return render_template('index.html')
 
 @app.route('/procesar', methods=['POST'])
 def ProcesarTexto():
     try:
         datos = request.get_json()
-        cifrador = datos.get('cifrador')
         operacion = datos.get('operacion')
+        cifrador = datos.get('cifrador')
         texto = datos.get('texto')
         parametros = datos.get('parametros', {})
 
-        if not cifrador or not operacion or not texto:
+        if not all([operacion, cifrador, texto]):
             return jsonify({'error': 'Faltan parámetros requeridos'}), 400
 
         if cifrador not in CIFRADORES:
-            return jsonify({'error': 'Cifrador no válido'}), 400
+            return jsonify({'error': 'Cifrador no soportado'}), 400
 
-        funcion = CIFRADORES[cifrador]['cifrar' if operacion == 'cifrar' else 'descifrar']
+        funcion = CIFRADORES[cifrador]['cifrar'] if operacion == 'cifrar' else CIFRADORES[cifrador]['descifrar']
 
-        # Procesar parámetros según el tipo de cifrador
+        # Procesar según el cifrador
         if cifrador == 'cesar':
             resultado = funcion(texto, int(parametros['desplazamiento']))
         elif cifrador == 'afin':
@@ -95,24 +90,47 @@ def ProcesarTexto():
         elif cifrador in ['playfair', 'vigenere', 'transposicionColumna']:
             resultado = funcion(texto, parametros['clave'])
         elif cifrador == 'hill':
-            # Convertir la matriz de texto a lista de números
-            matriz = [int(x.strip()) for x in parametros['clave'].split(',')]
-            resultado = funcion(texto, matriz)
-        elif cifrador == 'vernam':
-            if operacion == 'cifrar':
-                resultado = CifrarVernam(texto)
+            if 'matriz' in parametros:
+                matriz = json.loads(parametros['matriz'])
             else:
-                resultado = DescifrarVernam(texto, parametros['clave'])
-        elif cifrador == 'atbash':
-            resultado = funcion(texto)
-        elif cifrador == 'transposicionFilas':
-            resultado = funcion(texto, int(parametros['filas']))
+                return jsonify({'error': 'Se requiere la matriz para el cifrado Hill'}), 400
+            resultado = funcion(texto, matriz)
         elif cifrador == 'transposicionRail':
             resultado = funcion(texto, int(parametros['rieles']))
         else:
-            return jsonify({'error': 'Operación no soportada'}), 400
+            return jsonify({'error': 'Método de cifrado no soportado'}), 400
 
         return jsonify({'resultado': resultado})
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/operaciones-especiales', methods=['POST'])
+def OperacionesEspeciales():
+    try:
+        datos = request.get_json()
+        cifrador = datos.get('cifrador')
+        operacion = datos.get('operacion')
+
+        if not cifrador or not operacion:
+            return jsonify({'error': 'Faltan parámetros requeridos'}), 400
+
+        if cifrador == 'hill':
+            if operacion == 'generarMatriz':
+                matriz = GenerarMatrizAleatoria()
+                return jsonify({'resultado': matriz})
+            else:
+                return jsonify({'error': 'Operación no soportada para el cifrador Hill'}), 400
+        elif cifrador == 'adfgvx':
+            if operacion == 'generarClave':
+                clave = GenerarClaveAleatoria()
+                return jsonify({'resultado': clave})
+            else:
+                return jsonify({'error': 'Operación no soportada para el cifrador ADFGVX'}), 400
+        else:
+            return jsonify({'error': 'Cifrador no soportado para operaciones especiales'}), 400
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -139,7 +157,23 @@ def FuerzaBrutaTexto():
         elif cifrador == 'playfair':
             # Si hay palabras clave proporcionadas, usarlas
             palabras_clave = parametros.get('palabrasClave', None)
-            resultados = FuerzaBrutaPlayfair(texto, palabras_clave)
+            if palabras_clave:
+                # Convertir string de palabras clave separadas por comas a lista
+                palabras_clave = [p.strip() for p in palabras_clave.split(',')]
+            resultado = FuerzaBrutaPlayfair(texto, palabras_clave)
+            
+            # Manejar errores específicos de Playfair
+            if resultado.get('error'):
+                return jsonify({'error': resultado['error']}), 400
+            
+            # Formatear los resultados de Playfair
+            resultados = []
+            for r in resultado['resultados']:
+                resultados.append(
+                    f"Clave: {r['clave']} | "
+                    f"Texto descifrado: {r['textoDescifrado']} | "
+                    f"Puntaje: {r['puntaje']}%"
+                )
         elif cifrador == 'hill':
             resultados = FuerzaBrutaHill(texto)
         elif cifrador == 'vigenere':
@@ -156,29 +190,10 @@ def FuerzaBrutaTexto():
         else:
             return jsonify({'error': 'El cifrador seleccionado no soporta fuerza bruta'}), 400
 
+        if not resultados:
+            return jsonify({'error': 'No se encontraron resultados'}), 400
+
         return jsonify({'resultados': resultados})
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/operaciones-especiales', methods=['POST'])
-def OperacionesEspeciales():
-    try:
-        datos = request.get_json()
-        cifrador = datos.get('cifrador')
-        operacion = datos.get('operacion')
-
-        if not cifrador or not operacion:
-            return jsonify({'error': 'Faltan parámetros requeridos'}), 400
-
-        if cifrador == 'adfgvx':
-            if operacion == 'generarClave':
-                clave = GenerarClaveAleatoria()
-                return jsonify({'resultado': clave})
-            else:
-                return jsonify({'error': 'Operación no soportada para el cifrador ADFGVX'}), 400
-        else:
-            return jsonify({'error': 'Operaciones especiales no soportadas para este cifrador'}), 400
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
