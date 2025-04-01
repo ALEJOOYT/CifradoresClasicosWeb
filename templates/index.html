@@ -19,17 +19,17 @@
         <div class="selectorCifrado">
             <label for="tipoCifrado">Seleccionar método de cifrado:</label>
             <select id="tipoCifrado" class="dropdown">
-                <option value="afin">Cifrado Afín</option>
                 <option value="adfgvx">Cifrado ADFGVX</option>
-                <option value="playFair">Cifrado PlayFair</option>
+                <option value="afin">Cifrado Afín</option>
+                <option value="atbash">Cifrado Atbash</option>
                 <option value="cesar">Cifrado César</option>
                 <option value="hill">Cifrado Hill</option>
-                <option value="vernam">Cifrado Vernam</option>
-                <option value="vigenere">Cifrado Vigenère</option>
+                <option value="playFair">Cifrado PlayFair</option>
+                <option value="railFence">Cifrado Rail Fence</option>
                 <option value="transposicionColumna">Transposición por Columna</option>
                 <option value="transposicionFilas">Transposición por Filas</option>
-                <option value="railFence">Cifrado Rail Fence</option>
-                <option value="atbash">Cifrado Atbash</option>
+                <option value="vernam">Cifrado Vernam</option>
+                <option value="vigenere">Cifrado Vigenère</option>
             </select>
         </div>
         <section class="seccion">
@@ -45,19 +45,19 @@
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoCesar" class="textoCesar" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;" 
+                    <textarea id="textoPlanoHill" class="textoHill" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoVernam" class="textoVernam" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoVigenere" class="textoVigenere" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
-                        placeholder="Ingrese el texto para cifrar" required></textarea>
+                    <textarea id="textoPlanoTransposicionColumna" class="textoTransposicionColumna"
+                        style="display: none;" placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoAtbash" class="textoAtbash solo-atbash" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <textarea id="textoPlanoRailFence" class="textoRailFence" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
-                    <textarea id="textoPlanoTransposicionFilas" class="textoTransposicionFilas" style="display: none;" 
+                    <textarea id="textoPlanoTransposicionFilas" class="textoTransposicionFilas" style="display: none;"
                         placeholder="Ingrese el texto para cifrar" required></textarea>
                     <div id="camposAfin" class="campos-cifrado">
                         <div class="formGrid">
@@ -146,27 +146,27 @@
                     <div id="transposicionColumnaInputs" class="campos-cifrado" style="display: none;">
                         <div class="grupoFormulario">
                             <label for="claveTransposicionColumnaCifrado">Clave:</label>
-                            <input type="number" id="claveTransposicionColumnaCifrado" min="2" 
+                            <input type="number" id="claveTransposicionColumnaCifrado" min="2"
                                 placeholder="Ingrese la clave (número entero mayor a 1)" required>
                             <small>La clave debe ser un número entero mayor a 1</small>
                         </div>
                     </div>
-                    
+
                     <!-- Campos para Cifrado Rail Fence -->
                     <div id="camposRailFence" class="campos-cifrado" style="display: none;">
                         <div class="grupoFormulario">
                             <label for="claveRailFenceCifrado">Número de rieles:</label>
-                            <input type="number" id="claveRailFenceCifrado" min="2" 
+                            <input type="number" id="claveRailFenceCifrado" min="2"
                                 placeholder="Ingrese el número de rieles (mayor a 1)" required>
                             <small>El número de rieles debe ser un entero mayor a 1</small>
                         </div>
                     </div>
-                    
+
                     <!-- Campos para Cifrado Transposición por Filas -->
                     <div id="transposicionFilasInputs" class="campos-cifrado" style="display: none;">
                         <div class="grupoFormulario">
                             <label for="claveTransposicionFilasCifrado">Clave:</label>
-                            <input type="number" id="claveTransposicionFilasCifrado" min="2" 
+                            <input type="number" id="claveTransposicionFilasCifrado" min="2"
                                 placeholder="Ingrese la clave (número entero mayor a 1)" required>
                             <small>La clave debe ser un número entero mayor a 1</small>
                         </div>
@@ -202,13 +202,14 @@
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                     <textarea id="textoCifradoVigenere" class="textoVigenere" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
-                    <textarea id="textoCifradoTransposicionColumna" class="textoTransposicionColumna" style="display: none;"
-                        placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
+                    <textarea id="textoCifradoTransposicionColumna" class="textoTransposicionColumna"
+                        style="display: none;" placeholder="Ingrese el texto cifrado para descifrar"
+                        required></textarea>
                     <textarea id="textoCifradoAtbash" class="textoAtbash solo-atbash" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                     <textarea id="textoCifradoRailFence" class="textoRailFence" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
-                    <textarea id="textoCifradoTransposicionFilas" class="textoTransposicionFilas" style="display: none;" 
+                    <textarea id="textoCifradoTransposicionFilas" class="textoTransposicionFilas" style="display: none;"
                         placeholder="Ingrese el texto cifrado para descifrar" required></textarea>
                 </div>
                 <!-- Campos para Descifrado Afín -->
@@ -303,28 +304,28 @@
                 <div id="transposicionColumnaDescifradoInputs" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="claveTransposicionColumnaDescifrado">Clave:</label>
-                        <input type="number" id="claveTransposicionColumnaDescifrado" min="2" 
+                        <input type="number" id="claveTransposicionColumnaDescifrado" min="2"
                             placeholder="Ingrese la clave (número entero mayor a 1)" required>
                         <small>La clave debe ser un número entero mayor a 1</small>
                     </div>
                 </div>
-                
+
                 <!-- Campos para Descifrado Rail Fence -->
                 <div id="camposRailFenceDescifrado" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="claveRailFenceDescifrado">Número de rieles:</label>
-                        <input type="number" id="claveRailFenceDescifrado" min="2" 
+                        <input type="number" id="claveRailFenceDescifrado" min="2"
                             placeholder="Ingrese el número de rieles (mayor a 1)" required>
                         <small>El número de rieles debe ser un entero mayor a 1</small>
                     </div>
-                    </div>
                 </div>
-                
+                </div>
+
                 <!-- Campos para Descifrado Transposición por Filas -->
                 <div id="transposicionFilasDescifradoInputs" class="campos-cifrado" style="display: none;">
                     <div class="grupoFormulario">
                         <label for="claveTransposicionFilasDescifrado">Clave:</label>
-                        <input type="number" id="claveTransposicionFilasDescifrado" min="2" 
+                        <input type="number" id="claveTransposicionFilasDescifrado" min="2"
                             placeholder="Ingrese la clave (número entero mayor a 1)" required>
                         <small>La clave debe ser un número entero mayor a 1</small>
                     </div>
@@ -374,50 +375,48 @@
                     <div class="formGrid">
                         <div class="grupoFormulario medio">
                             <label for="claveInicioTransposicionColumna">Clave inicio:</label>
-                            <input type="number" id="claveInicioTransposicionColumna" min="2" 
+                            <input type="number" id="claveInicioTransposicionColumna" min="2"
                                 placeholder="Valor inicial" required>
                             <small>Valor inicial para la búsqueda</small>
                         </div>
                         <div class="grupoFormulario medio">
                             <label for="claveFinTransposicionColumna">Clave fin:</label>
-                            <input type="number" id="claveFinTransposicionColumna" min="2" 
-                                placeholder="Valor final" required>
+                            <input type="number" id="claveFinTransposicionColumna" min="2" placeholder="Valor final"
+                                required>
                             <small>Valor final para la búsqueda</small>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Campos para Fuerza Bruta Rail Fence -->
                 <div id="railFenceFuerzaBruta" class="campos-fuerza-bruta" style="display: none;">
                     <div class="formGrid">
                         <div class="grupoFormulario medio">
                             <label for="claveInicioRailFence">Rieles inicio:</label>
-                            <input type="number" id="claveInicioRailFence" min="2" 
-                                placeholder="Valor inicial" required>
+                            <input type="number" id="claveInicioRailFence" min="2" placeholder="Valor inicial" required>
                             <small>Valor inicial para la búsqueda</small>
                         </div>
                         <div class="grupoFormulario medio">
                             <label for="claveFinRailFence">Rieles fin:</label>
-                            <input type="number" id="claveFinRailFence" min="2" 
-                                placeholder="Valor final" required>
+                            <input type="number" id="claveFinRailFence" min="2" placeholder="Valor final" required>
                             <small>Valor final para la búsqueda</small>
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Campos para Fuerza Bruta Transposición por Filas -->
                 <div id="transposicionFilasFuerzaBruta" class="campos-fuerza-bruta" style="display: none;">
                     <div class="formGrid">
                         <div class="grupoFormulario medio">
                             <label for="claveInicioTransposicionFilas">Clave inicio:</label>
-                            <input type="number" id="claveInicioTransposicionFilas" min="2" 
-                                placeholder="Valor inicial" required>
+                            <input type="number" id="claveInicioTransposicionFilas" min="2" placeholder="Valor inicial"
+                                required>
                             <small>Valor inicial para la búsqueda</small>
                         </div>
                         <div class="grupoFormulario medio">
                             <label for="claveFinTransposicionFilas">Clave fin:</label>
-                            <input type="number" id="claveFinTransposicionFilas" min="2" 
-                                placeholder="Valor final" required>
+                            <input type="number" id="claveFinTransposicionFilas" min="2" placeholder="Valor final"
+                                required>
                             <small>Valor final para la búsqueda</small>
                         </div>
                     </div>
@@ -486,16 +485,16 @@
             const textoCifradoRailFence = document.getElementById('textoCifradoRailFence');
             // Establecer la visualización inicial basada en el valor seleccionado
             actualizarInterfazSegunCifrado(tipoCifrado.value);
-            
+
             tipoCifrado.addEventListener('change', function () {
                 actualizarInterfazSegunCifrado(this.value);
             });
-            
+
             const transposicionFilasInputs = document.getElementById('transposicionFilasInputs');
             const transposicionFilasDescifradoInputs = document.getElementById('transposicionFilasDescifradoInputs');
             const textoPlanoTransposicionFilas = document.getElementById('textoPlanoTransposicionFilas');
             const textoCifradoTransposicionFilas = document.getElementById('textoCifradoTransposicionFilas');
-            
+
             function actualizarInterfazSegunCifrado(valor) {
                 if (valor === 'afin') {
                     camposAfin.style.display = 'block';

@@ -26,50 +26,143 @@ document.addEventListener('DOMContentLoaded', function () {
 // Función para mostrar/ocultar elementos según el tipo de cifrado seleccionado
 function mostrarFormulariosCifrado() {
     const tipoCifrado = document.getElementById('tipoCifrado').value;
-    const elementosAfin = document.querySelectorAll('.solo-afin');
-    const elementosAdfgvx = document.querySelectorAll('.solo-adfgvx');
-    const elementosPlayFair = document.querySelectorAll('.solo-playFair');
-    const elementosCesar = document.querySelectorAll('.solo-cesar');
-    const elementosHill = document.querySelectorAll('.solo-hill');
-    const elementosVernam = document.querySelectorAll('.solo-vernam');
-    const elementosVigenere = document.querySelectorAll('.solo-vigenere');
-    const elementosTransposicionColumna = document.querySelectorAll('.solo-transposicionColumna');
-    const elementosAtbash = document.querySelectorAll('.solo-atbash');
-
-    // Ocultar todos los elementos específicos
-    elementosAfin.forEach(elem => elem.style.display = 'none');
-    elementosAdfgvx.forEach(elem => elem.style.display = 'none');
-    elementosPlayFair.forEach(elem => elem.style.display = 'none');
-    elementosCesar.forEach(elem => elem.style.display = 'none');
-    elementosHill.forEach(elem => elem.style.display = 'none');
-    elementosVernam.forEach(elem => elem.style.display = 'none');
-    elementosVigenere.forEach(elem => elem.style.display = 'none');
-    elementosTransposicionColumna.forEach(elem => elem.style.display = 'none');
-    elementosAtbash.forEach(elem => elem.style.display = 'none');
-    const elementosRailFence = document.querySelectorAll('.solo-railFence');
-    elementosRailFence.forEach(elem => elem.style.display = 'none');
-
-    // Mostrar solo los elementos del cifrado seleccionado
-    if (tipoCifrado === 'afin') {
-        elementosAfin.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'adfgvx') {
-        elementosAdfgvx.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'playFair') {
-        elementosPlayFair.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'hill') {
-        elementosHill.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'cesar') {
-        elementosCesar.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'vernam') {
-        elementosVernam.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'vigenere') {
-        elementosVigenere.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'transposicionColumna') {
-        elementosTransposicionColumna.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'atbash') {
-        elementosAtbash.forEach(elem => elem.style.display = 'block');
-    } else if (tipoCifrado === 'railFence') {
-        elementosRailFence.forEach(elem => elem.style.display = 'block');
+    
+    // Ocultar todos los campos de texto para cifrado
+    const textosPlanos = {
+        'afin': 'textoPlano',
+        'adfgvx': 'textoPlanoAdfgvx',
+        'playFair': 'textoPlanoPlayFair',
+        'cesar': 'textoPlanoCesar',
+        'hill': 'textoPlanoHill',
+        'vernam': 'textoPlanoVernam',
+        'vigenere': 'textoPlanoVigenere',
+        'transposicionColumna': 'textoPlanoTransposicionColumna',
+        'transposicionFilas': 'textoPlanoTransposicionFilas',
+        'railFence': 'textoPlanoRailFence',
+        'atbash': 'textoPlanoAtbash'
+    };
+    
+    // Ocultar todos los campos de texto para descifrado
+    const textosCifrados = {
+        'afin': 'textoCifrado',
+        'adfgvx': 'textoCifradoAdfgvx',
+        'playFair': 'textoCifradoPlayFair',
+        'cesar': 'textoCifradoCesar',
+        'hill': 'textoCifradoHill',
+        'vernam': 'textoCifradoVernam',
+        'vigenere': 'textoCifradoVigenere',
+        'transposicionColumna': 'textoCifradoTransposicionColumna',
+        'transposicionFilas': 'textoCifradoTransposicionFilas',
+        'railFence': 'textoCifradoRailFence',
+        'atbash': 'textoCifradoAtbash'
+    };
+    
+    // Ocultar todos los campos específicos para cifrado
+    const camposCifrado = {
+        'afin': 'camposAfin',
+        'adfgvx': 'camposAdfgvx',
+        'playFair': 'camposPlayFair',
+        'cesar': 'camposCesar',
+        'hill': 'camposHill',
+        'vernam': 'camposVernam',
+        'vigenere': 'camposVigenere',
+        'transposicionColumna': 'transposicionColumnaInputs',
+        'transposicionFilas': 'transposicionFilasInputs',
+        'railFence': 'camposRailFence',
+        'atbash': null // Atbash no tiene campos adicionales
+    };
+    
+    // Ocultar todos los campos específicos para descifrado
+    const camposDescifrado = {
+        'afin': 'camposAfinDescifrado',
+        'adfgvx': 'camposAdfgvxDescifrado',
+        'playFair': 'camposPlayFairDescifrado',
+        'cesar': 'camposCesarDescifrado',
+        'hill': 'camposHillDescifrado',
+        'vernam': 'camposVernamDescifrado',
+        'vigenere': 'camposVigenereDescifrado',
+        'transposicionColumna': 'transposicionColumnaDescifradoInputs',
+        'transposicionFilas': 'transposicionFilasDescifradoInputs',
+        'railFence': 'camposRailFenceDescifrado',
+        'atbash': null // Atbash no tiene campos adicionales
+    };
+    
+    // Ocultar todos los campos de fuerza bruta específicos
+    const camposFuerzaBruta = {
+        'transposicionColumna': 'transposicionColumnaFuerzaBruta',
+        'transposicionFilas': 'transposicionFilasFuerzaBruta',
+        'railFence': 'railFenceFuerzaBruta',
+        'hill': 'campos-fuerza-bruta-hill'
+    };
+    
+    // Cifrados que no tienen fuerza bruta
+    const sinFuerzaBruta = ['adfgvx', 'vernam'];
+    
+    // Primero ocultar todos los elementos
+    for (const cifrador in textosPlanos) {
+        const elemento = document.getElementById(textosPlanos[cifrador]);
+        if (elemento) elemento.style.display = 'none';
+    }
+    
+    for (const cifrador in textosCifrados) {
+        const elemento = document.getElementById(textosCifrados[cifrador]);
+        if (elemento) elemento.style.display = 'none';
+    }
+    
+    for (const cifrador in camposCifrado) {
+        if (camposCifrado[cifrador]) {
+            const elemento = document.getElementById(camposCifrado[cifrador]);
+            if (elemento) elemento.style.display = 'none';
+        }
+    }
+    
+    for (const cifrador in camposDescifrado) {
+        if (camposDescifrado[cifrador]) {
+            const elemento = document.getElementById(camposDescifrado[cifrador]);
+            if (elemento) elemento.style.display = 'none';
+        }
+    }
+    
+    for (const cifrador in camposFuerzaBruta) {
+        const elemento = document.getElementById(camposFuerzaBruta[cifrador]);
+        if (elemento) elemento.style.display = 'none';
+    }
+    
+    // Mostrar los elementos del cifrador seleccionado
+    if (textosPlanos[tipoCifrado]) {
+        const elementoTextoPlano = document.getElementById(textosPlanos[tipoCifrado]);
+        if (elementoTextoPlano) elementoTextoPlano.style.display = 'block';
+    }
+    
+    if (textosCifrados[tipoCifrado]) {
+        const elementoTextoCifrado = document.getElementById(textosCifrados[tipoCifrado]);
+        if (elementoTextoCifrado) elementoTextoCifrado.style.display = 'block';
+    }
+    
+    if (camposCifrado[tipoCifrado]) {
+        const elementoCamposCifrado = document.getElementById(camposCifrado[tipoCifrado]);
+        if (elementoCamposCifrado) elementoCamposCifrado.style.display = 'block';
+    }
+    
+    if (camposDescifrado[tipoCifrado]) {
+        const elementoCamposDescifrado = document.getElementById(camposDescifrado[tipoCifrado]);
+        if (elementoCamposDescifrado) elementoCamposDescifrado.style.display = 'block';
+    }
+    
+    // Manejar la sección de fuerza bruta
+    const seccionFuerzaBruta = document.getElementById('seccionFuerzaBruta');
+    if (seccionFuerzaBruta) {
+        if (sinFuerzaBruta.includes(tipoCifrado)) {
+            seccionFuerzaBruta.style.display = 'none';
+        } else {
+            seccionFuerzaBruta.style.display = 'block';
+            
+            // Mostrar campos específicos de fuerza bruta si existen para el cifrador seleccionado
+            if (camposFuerzaBruta[tipoCifrado]) {
+                const elementoCamposFuerzaBruta = document.getElementById(camposFuerzaBruta[tipoCifrado]);
+                if (elementoCamposFuerzaBruta) elementoCamposFuerzaBruta.style.display = 'block';
+            }
+        }
     }
 }
 
