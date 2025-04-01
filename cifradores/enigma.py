@@ -1,8 +1,8 @@
 class Rotor:
     def __init__(self, cableadoInterno, muesca):
-        self.cableadoInterno = cableadoInterno  # Cableado interno del rotor
-        self.muesca = muesca  # Posición de giro (notch)
-        self.posicion = 0  # Posición inicial del rotor
+        self.cableadoInterno = cableadoInterno
+        self.muesca = muesca
+        self.posicion = 0
 
     def Adelante(self, letra):
         indice = (ord(letra) - ord('A') + self.posicion) % 26
@@ -46,19 +46,13 @@ class MaquinaEnigma:
 
     def CodificarLetra(self, letra):
         letra = self.tableroConexion.Intercambiar(letra)
-        
         for rotor in self.rotores:
             letra = rotor.Adelante(letra)
-        
         letra = self.reflector.Reflejar(letra)
-        
         for rotor in reversed(self.rotores):
             letra = rotor.Atras(letra)
-        
         letra = self.tableroConexion.Intercambiar(letra)
-        
         self.GirarRotores()
-        
         return letra
 
     def GirarRotores(self):
@@ -92,42 +86,10 @@ def ObtenerMaquinaEnigmaPorDefecto():
 
 
 def Cifrar(texto, rotores=None, reflector=None, conexiones=None):
-    """
-    Cifra un texto utilizando la máquina Enigma.
-    
-    Args:
-        texto: El texto a cifrar
-        rotores: Configuración personalizada de rotores (opcional)
-        reflector: Configuración personalizada del reflector (opcional)
-        conexiones: Configuración personalizada de conexiones (opcional)
-        
-    Returns:
-        El texto cifrado
-    """
     maquina = ObtenerMaquinaEnigmaPorDefecto()
-    
-    # Aquí se podrían agregar opciones para configurar la máquina
-    # según los parámetros adicionales
-    
     return maquina.CodificarMensaje(texto)
 
 
 def Descifrar(textoCifrado, rotores=None, reflector=None, conexiones=None):
-    """
-    Descifra un texto utilizando la máquina Enigma.
-    
-    Args:
-        textoCifrado: El texto cifrado a descifrar
-        rotores: Configuración personalizada de rotores (opcional)
-        reflector: Configuración personalizada del reflector (opcional)
-        conexiones: Configuración personalizada de conexiones (opcional)
-        
-    Returns:
-        El texto descifrado
-    """
     maquina = ObtenerMaquinaEnigmaPorDefecto()
-    
-    # Aquí se podrían agregar opciones para configurar la máquina
-    # según los parámetros adicionales
-    
     return maquina.CodificarMensaje(textoCifrado)

@@ -22,20 +22,16 @@ def GenerarClaveAleatoria():
 def Cifrar(textoPlano, clave):
     if not textoPlano or not clave:
         raise ValueError("El texto y la clave son requeridos")
-    
     # Validar longitud de clave exactamente 36 caracteres
     if len(clave) != 36:
         raise ValueError("La clave debe tener exactamente 36 caracteres")
-        
     # Verificar que la clave solo contenga letras mayúsculas y números
     if not all(c in string.ascii_uppercase + string.digits for c in clave):
         raise ValueError("La clave debe contener solo letras mayúsculas y números")
-    
     # Limpiar el texto plano (solo letras y números)
     textoPlano = ''.join(c for c in textoPlano.upper() if c.isalnum())
     if not textoPlano:
         raise ValueError("El texto debe contener al menos un carácter válido")
-    
     try:
         # Usar el cuadro fijo
         # Buscar cada carácter del texto en el cuadro y obtener sus coordenadas
@@ -49,20 +45,16 @@ def Cifrar(textoPlano, clave):
                     break
             if not found:
                 continue
-        
         if not intermedio:
             raise ValueError("No se pudo cifrar el texto con el cuadro proporcionado")
-            
         # Distribuir el texto intermedio en columnas según la clave
         columnas = {i: "" for i in range(len(clave))}
         ciclo = itertools.cycle(range(len(clave)))
         for caracter in intermedio:
             columnas[next(ciclo)] += caracter
-        
         # Reordenar las columnas según el orden alfabético de la clave
         claveConIndice = [(char, i) for i, char in enumerate(clave)]
         claveOrdenada = sorted(claveConIndice)
-        
         return "".join(columnas[i] for _, i in claveOrdenada)
     except Exception as e:
         raise ValueError(f"Error al cifrar: {str(e)}")
@@ -70,26 +62,20 @@ def Cifrar(textoPlano, clave):
 def Descifrar(textoCifrado, clave):
     if not textoCifrado or not clave:
         raise ValueError("El texto cifrado y la clave son requeridos")
-        
     # Validar longitud de clave exactamente 36 caracteres
     if len(clave) != 36:
         raise ValueError("La clave debe tener exactamente 36 caracteres")
-        
     # Verificar que la clave solo contenga letras mayúsculas y números
     if not all(c in string.ascii_uppercase + string.digits for c in clave):
         raise ValueError("La clave debe contener solo letras mayúsculas y números")
-    
     try:
         longitudClave = len(clave)
         longitudTexto = len(textoCifrado)
-        
         base = longitudTexto // longitudClave
         extra = longitudTexto % longitudClave
         longitudesColumnas = {i: base + (1 if i < extra else 0) for i in range(longitudClave)}
-
         claveConIndice = [(char, i) for i, char in enumerate(clave)]
         claveOrdenada = sorted(claveConIndice)
-        
         columnas = {}
         posicion = 0
         for _, indice in claveOrdenada:
@@ -113,7 +99,6 @@ def Descifrar(textoCifrado, clave):
 
         if not textoPlano:
             raise ValueError("No se pudo descifrar el texto con la clave proporcionada")
-            
         return textoPlano
     except Exception as e:
         raise ValueError(f"Error al descifrar: {str(e)}")
