@@ -38,6 +38,8 @@ from cifradores.transposicionRail import DescifrarFuerzaBruta as FuerzaBrutaRail
 from cifradores.vernam import Cifrar as CifrarVernam
 from cifradores.vernam import Descifrar as DescifrarVernam
 
+from cifradores.atbash import Cifrar as CifrarAtbash
+from cifradores.atbash import Descifrar as DescifrarAtbash
 app = Flask(__name__)
 
 # Configurar logging
@@ -54,7 +56,8 @@ CIFRADORES = {
     'vernam': {'cifrar': CifrarVernam, 'descifrar': DescifrarVernam},
     'vigenere': {'cifrar': CifrarVigenere, 'descifrar': DescifrarVigenere},
     'transposicionColumna': {'cifrar': CifrarTransposicionColumna, 'descifrar': DescifrarTransposicionColumna},
-    'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence}
+    'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence},
+    'atbash': {'cifrar': CifrarAtbash, 'descifrar': DescifrarAtbash}
 }
 # Diccionario de funciones de fuerza bruta
 FUERZA_BRUTA = {
@@ -210,6 +213,8 @@ def ProcesarTexto():
                 return jsonify({'error': f'Error al procesar la matriz: {str(e)}. Por favor, verifica el formato de la matriz.'}), 400
         elif cifrador == 'transposicionRail':
             resultado = funcion(texto, int(parametros['rieles']))
+        elif cifrador == 'atbash':
+            resultado = funcion(texto)
         else:
             return jsonify({'error': 'Método de cifrado no soportado'}), 400
 
