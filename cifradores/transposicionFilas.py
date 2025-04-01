@@ -1,27 +1,17 @@
 def OrdenarClave(clave):
-    """
-    Ordena la clave alfabéticamente y devuelve la lista de índices
-    que representan el orden original de las letras
-    """
     letrasConIndices = [(letra, i) for i, letra in enumerate(clave)]
     letrasOrdenadas = sorted(letrasConIndices, key=lambda x: x[0])
     orden = [indice for _, indice in letrasOrdenadas]
     return orden
 
 def Cifrar(mensaje, clave):
-    """
-    Realiza el cifrado de transposición por filas simples
-    """
-    # Validar que clave sea de tipo string
     if not isinstance(clave, str):
         try:
             clave = str(clave)
         except:
             raise ValueError("La clave debe ser una cadena de texto")
-    
     if not clave:
         raise ValueError("La clave no puede estar vacía")
-    
     mensaje = mensaje.replace(" ", "")
     numFilas = len(clave)
     longitudMensaje = len(mensaje)
@@ -40,19 +30,13 @@ def Cifrar(mensaje, clave):
     return mensajeCifrado
 
 def Descifrar(mensajeCifrado, clave):
-    """
-    Realiza el descifrado de transposición por filas simples
-    """
-    # Validar que clave sea de tipo string
     if not isinstance(clave, str):
         try:
             clave = str(clave)
         except:
             raise ValueError("La clave debe ser una cadena de texto")
-            
     if not clave:
         raise ValueError("La clave no puede estar vacía")
-    
     numFilas = len(clave)
     longitudMensaje = len(mensajeCifrado)
     numColumnas = (longitudMensaje + numFilas - 1) // numFilas
@@ -70,41 +54,28 @@ def Descifrar(mensajeCifrado, clave):
     mensajeDescifrado = ""
     for col in range(numColumnas):
         for fila in range(numFilas):
-            # Check if the column exists in this row
             if matriz[fila] and col < len(matriz[fila]) and matriz[fila][col]:
                 mensajeDescifrado += matriz[fila][col]
     return mensajeDescifrado
 
 def FormatearMensaje(mensaje, longitudBloque=5):
-    """
-    Formatea el mensaje en bloques para facilitar la lectura
-    """
     mensajeFormateado = ''
     for i in range(0, len(mensaje), longitudBloque):
         mensajeFormateado += mensaje[i:i+longitudBloque] + ' '
     return mensajeFormateado.strip()
 
 def MostrarMatriz(matriz):
-    """
-    Muestra la matriz de forma visual
-    """
     for fila in matriz:
         print(''.join(fila))
 
 def CrearMatriz(mensaje, clave):
-    """
-    Crea y muestra la matriz de cifrado para propósitos educativos
-    """
-    # Validar que clave sea de tipo string
     if not isinstance(clave, str):
         try:
             clave = str(clave)
         except:
             raise ValueError("La clave debe ser una cadena de texto")
-            
     if not clave:
         raise ValueError("La clave no puede estar vacía")
-    
     mensaje = mensaje.replace(" ", "")
     numFilas = len(clave)
     longitudMensaje = len(mensaje)

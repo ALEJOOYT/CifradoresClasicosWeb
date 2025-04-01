@@ -62,19 +62,14 @@ def DescifradoFuerzaBruta(cifrado, longitudClaveOriginal):
     resultados = []
 
     for permutacion in posiblesPermutaciones:
-        # Convertir la permutación de números a una clave de texto
-        # Usamos caracteres ASCII para representar cada número (0=A, 1=B, etc.)
         clave = ''.join(chr(65 + num) for num in permutacion)
-        
         try:
             textoDescifrado = Descifrar(cifrado, clave)
-            # Guardar el resultado en el formato requerido
             resultados.append({
                 "permutacion": ''.join(str(num) for num in permutacion),
                 "textoDescifrado": textoDescifrado
             })
         except Exception:
-            # Ignorar errores de descifrado (como claves con caracteres repetidos)
             continue
 
     return resultados

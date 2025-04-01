@@ -1,5 +1,4 @@
 def Cifrar(texto, clave):
-    """Función para cifrar un mensaje usando el cifrado Rail Fence"""
     cerca = [['\n' for _ in range(len(texto))] for _ in range(clave)]
     direccionAbajo = False
     fila, columna = 0, 0
@@ -19,7 +18,6 @@ def Cifrar(texto, clave):
     return "".join(resultado)
 
 def Descifrar(cifrado, clave):
-    """Función para descifrar un texto cifrado con Rail Fence"""
     cerca = [['\n' for _ in range(len(cifrado))] for _ in range(clave)]
     direccionAbajo = None
     fila, columna = 0, 0
@@ -54,12 +52,11 @@ def Descifrar(cifrado, clave):
     return "".join(resultado)
 
 def DescifrarFuerzaBruta(cifrado, claveInicio=2, claveFin=10):
-    """Función para aplicar fuerza bruta al cifrado Rail Fence"""
     resultados = []
     for clave in range(claveInicio, claveFin + 1):
         try:
             descifrado = Descifrar(cifrado, clave)
             resultados.append((clave, descifrado))
         except:
-            continue  # Si hay un error, simplemente continuamos con el siguiente
+            continue
     return resultados

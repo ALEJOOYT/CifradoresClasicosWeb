@@ -95,19 +95,14 @@ def DescifrarFuerzaBruta(textoCifrado, palabrasClave=None):
     try:
         if not textoCifrado:
             return {"error": "El texto cifrado es requerido para la fuerza bruta.", "resultados": []}
-        
         textoCifrado = ''.join(c.upper() for c in textoCifrado if c.isalpha())
         if len(textoCifrado) < 2:
             return {"error": "El texto cifrado debe tener al menos 2 caracteres alfabéticos.", "resultados": []}
-            
-        # Lista predeterminada de palabras clave comunes en español
         palabras_predeterminadas = [
             "CLAVE", "SECRETO", "ENIGMA", "CIFRADO", "CODIGO",
             "MENSAJE", "SEGURO", "OCULTO", "PRIVADO", "PLAYFAIR",
             "MATRIZ", "SISTEMA", "METODO", "PALABRA", "TEXTO"
         ]
-        
-        # Si se proporcionaron palabras clave, usarlas; si no, usar las predeterminadas
         if palabrasClave and isinstance(palabrasClave, (list, tuple)) and len(palabrasClave) > 0:
             palabras_a_probar = [p.strip().upper() for p in palabrasClave if p.strip()]
         else:
@@ -124,7 +119,6 @@ def DescifrarFuerzaBruta(textoCifrado, palabrasClave=None):
             try:
                 texto_descifrado = Descifrar(textoCifrado, clave)
                 if isinstance(texto_descifrado, str) and not texto_descifrado.startswith("Error"):
-                    # Calcular puntuación basada en frecuencia de letras en español
                     vocales = sum(1 for c in texto_descifrado if c in "AEIOU")
                     consonantes_comunes = sum(1 for c in texto_descifrado if c in "NRSLT")
                     puntaje = (vocales * 1.5 + consonantes_comunes) / len(texto_descifrado) * 100
@@ -137,16 +131,13 @@ def DescifrarFuerzaBruta(textoCifrado, palabrasClave=None):
             except Exception:
                 continue
 
-        # Ordenar resultados por puntaje descendente
         resultados = sorted(resultados, key=lambda x: x["puntaje"], reverse=True)
-
         if not resultados:
             return {
                 "error": "No se encontraron resultados válidos con las claves probadas.",
                 "resultados": []
             }
 
-        # Limitar a los 10 mejores resultados
         resultados = resultados[:10]
 
         return {

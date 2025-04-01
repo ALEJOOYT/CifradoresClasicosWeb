@@ -72,7 +72,6 @@ def DescifrarFuerzaBruta(textoCifrado, maxLargo=4, top=5):
             clave = ''.join(claveTuple)
             descifrado = Descifrar(textoCifrado, clave)
             puntuacion = PuntuacionLegibilidad(descifrado, diccionario)
-            # Incluir todos los resultados, sin filtrar por puntuación
             resultados.append({
                 'clave': clave,
                 'textoDescifrado': descifrado,
@@ -80,6 +79,4 @@ def DescifrarFuerzaBruta(textoCifrado, maxLargo=4, top=5):
             })
 
     resultados.sort(key=lambda x: x['puntuacion'], reverse=True)
-
-    # Devolver todos los resultados sin aplicar el límite top
     return resultados if resultados else []
