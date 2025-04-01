@@ -40,6 +40,9 @@ from cifradores.vernam import Descifrar as DescifrarVernam
 
 from cifradores.atbash import Cifrar as CifrarAtbash
 from cifradores.atbash import Descifrar as DescifrarAtbash
+
+from cifradores.transposicionFilas import Cifrar as CifrarTransposicionFilas
+from cifradores.transposicionFilas import Descifrar as DescifrarTransposicionFilas
 app = Flask(__name__)
 
 # Configurar logging
@@ -57,7 +60,8 @@ CIFRADORES = {
     'vigenere': {'cifrar': CifrarVigenere, 'descifrar': DescifrarVigenere},
     'transposicionColumna': {'cifrar': CifrarTransposicionColumna, 'descifrar': DescifrarTransposicionColumna},
     'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence},
-    'atbash': {'cifrar': CifrarAtbash, 'descifrar': DescifrarAtbash}
+    'atbash': {'cifrar': CifrarAtbash, 'descifrar': DescifrarAtbash},
+    'transposicionFilas': {'cifrar': CifrarTransposicionFilas, 'descifrar': DescifrarTransposicionFilas}
 }
 # Diccionario de funciones de fuerza bruta
 FUERZA_BRUTA = {
@@ -213,6 +217,10 @@ def ProcesarTexto():
                 return jsonify({'error': f'Error al procesar la matriz: {str(e)}. Por favor, verifica el formato de la matriz.'}), 400
         elif cifrador == 'transposicionRail':
             resultado = funcion(texto, int(parametros['rieles']))
+        elif cifrador == 'transposicionFilas':
+            if 'filas' not in parametros:
+                return jsonify({'error': 'Se requiere el número de filas para la transposición por filas'}), 400
+            resultado = funcion(texto, int(parametros['filas']))
         elif cifrador == 'atbash':
             resultado = funcion(texto)
         else:
