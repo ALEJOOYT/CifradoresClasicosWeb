@@ -391,6 +391,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (operacion === 'generarClave') {
                     const inputClave = document.getElementById('clave');
                     if (inputClave) inputClave.value = data.resultado;
+                } else if (cifrador === 'adfgvx' && operacion === 'generarMatriz') {
+                    // Para ADFGVX, actualizar el campo de matriz con el resultado
+                    const inputMatriz = document.getElementById('matriz');
+                    if (inputMatriz) inputMatriz.value = data.resultado;
+                    // No mostrar nada en el área de resultado
                 } else {
                     textoSalida.value = data.resultado;
                 }

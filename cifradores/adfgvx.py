@@ -20,11 +20,6 @@ def ValidarMatrizAdfgvx(cuadro):
     if len(cuadro) != 36:
         raise ValueError("La matriz ADFGVX debe contener exactamente 36 caracteres")
     
-    # Check for duplicates in values
-    valores = list(cuadro.values())
-    if len(set(valores)) != len(valores):
-        raise ValueError("La matriz ADFGVX no puede contener caracteres repetidos")
-    
     # Validate all coordinates are valid ADFGVX combinations
     coordenadas_validas = set(i + j for i in COORDENADAS_ADFGVX for j in COORDENADAS_ADFGVX)
     if set(cuadro.keys()) != coordenadas_validas:
