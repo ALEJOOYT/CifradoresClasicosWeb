@@ -436,13 +436,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 cell.dataset.col = j;
                 cell.value = 0;
                 cell.min = 0;
-                cell.max = 25;
+                cell.max = 100;
                 cell.required = true;
 
                 cell.addEventListener('input', function() {
                     let value = parseInt(this.value) || 0;
                     if (value < 0) value = 0;
-                    if (value > 25) value = 25;
+                    if (value > 100) value = 100;
                     this.value = value;
                     actualizarValorMatriz();
                 });
@@ -533,8 +533,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const matrixValues = hiddenInput.value.split(';').map(row => row.split(',').map(Number));
         for (let i = 0; i < matrixValues.length; i++) {
             for (let j = 0; j < matrixValues[i].length; j++) {
-                if (isNaN(matrixValues[i][j]) || matrixValues[i][j] < 0 || matrixValues[i][j] > 25) {
-                    alert('Error: La matriz contiene valores inválidos. Todos deben ser números entre 0 y 25.');
+                if (isNaN(matrixValues[i][j]) || matrixValues[i][j] < 0 || matrixValues[i][j] > 100) {
+                    alert('Error: La matriz contiene valores inválidos. Todos deben ser números entre 0 y 100.');
                     return false;
                 }
             }
