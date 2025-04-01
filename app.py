@@ -155,11 +155,18 @@ def FuerzaBrutaTexto():
         elif cifrador == 'afin':
             resultados = FuerzaBrutaAfin(texto)
         elif cifrador == 'playfair':
-            # Si hay palabras clave proporcionadas, usarlas
+            # Si hay palabras clave proporcionadas, procesarlas
             palabras_clave = parametros.get('palabrasClave', None)
             if palabras_clave:
-                # Convertir string de palabras clave separadas por comas a lista
-                palabras_clave = [p.strip() for p in palabras_clave.split(',')]
+                # Si es una cadena, convertirla a lista
+                if isinstance(palabras_clave, str):
+                    palabras_clave = [p.strip() for p in palabras_clave.split(',')]
+                # Si ya es una lista, asegurarse de que cada elemento sea una cadena
+                elif isinstance(palabras_clave, list):
+                    palabras_clave = [str(p).strip() for p in palabras_clave if p]
+                else:
+                    return jsonify({'error': 'Formato inválido para palabras clave'}), 400
+            
             resultado = FuerzaBrutaPlayfair(texto, palabras_clave)
             
             # Manejar errores específicos de Playfair
