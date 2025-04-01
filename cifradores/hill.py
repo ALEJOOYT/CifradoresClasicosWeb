@@ -20,13 +20,13 @@ def GenerarMatrizAleatoria(tamano=3):
     Genera una matriz aleatoria invertible módulo 26 para el cifrado Hill
     
     Args:
-        tamano (int): Tamaño de la matriz cuadrada (cualquier valor positivo)
+        tamano (int): Tamaño de la matriz cuadrada (solo 2 o 3)
         
     Returns:
         list: Matriz representada como lista de listas
     """
-    if tamano < 2:
-        raise ValueError("El tamaño de la matriz debe ser al menos 2x2")
+    if tamano not in [2, 3]:
+        raise ValueError("El tamaño de la matriz solo puede ser 2x2 o 3x3")
         
     while True:
         # Generar matriz aleatoria con valores entre 0 y 25
@@ -68,6 +68,29 @@ def ParsearMatriz(matrizTexto):
         return np.array(matriz)
     except Exception as e:
         raise ValueError(f"Formato de matriz inválido: {str(e)}")
+
+def FormatearMatrizBonita(matriz):
+    """
+    Formatea una matriz para mostrarla de manera bonita
+    
+    Args:
+        matriz: Matriz a formatear (numpy array o lista de listas)
+        
+    Returns:
+        str: Representación bonita de la matriz
+    """
+    if isinstance(matriz, list):
+        matriz = np.array(matriz)
+    
+    filas, columnas = matriz.shape
+    resultado = "┌" + "─" * (columnas * 4 - 1) + "┐\n"
+    
+    for i, fila in enumerate(matriz):
+        resultado += "│ " + " ".join(f"{x:2d}" for x in fila) + " │\n"
+        
+    resultado += "└" + "─" * (columnas * 4 - 1) + "┘"
+    return resultado
+
 def ValidarMatriz(matriz):
     """
     Valida que la matriz sea cuadrada e invertible módulo 26
@@ -91,6 +114,10 @@ def ValidarMatriz(matriz):
         filas, columnas = matriz.shape
         if filas != columnas:
             raise ValueError("La matriz debe ser cuadrada (mismo número de filas y columnas)")
+            
+        if filas not in [2, 3]:
+            raise ValueError("Solo se permiten matrices de 2x2 o 3x3")
+        
         # Verificar que la matriz sea invertible
         matrizSympy = Matrix(matriz)
         determinante = int(matrizSympy.det()) % 26
@@ -190,14 +217,18 @@ def DescifrarFuerzaBruta(textoCifrado):
     """
     posiblesSoluciones = []
     
-    # Genera soluciones con matrices de diferentes tamaños
-    for tamano in [2, 3, 4, 5]:
+    # Genera soluciones solo con matrices de 2x2 y 3x3
+    for tamano in [2, 3]:
         for i in range(3):  # 3 intentos con cada tamaño
             try:
                 matriz = GenerarMatrizAleatoria(tamano)
                 textoDescifrado = Descifrar(textoCifrado, matriz)
                 matrizStr = MatrizToString(matriz)
-                posiblesSoluciones.append((f"Matriz {tamano}x{tamano} #{i+1}: {matrizStr}", textoDescifrado))
+                matrizFormateada = FormatearMatrizBonita(matriz)
+                posiblesSoluciones.append((
+                    f"Matriz {tamano}x{tamano} #{i+1}:\n{matrizFormateada}",
+                    textoDescifrado
+                ))
             except Exception as e:
                 continue
     

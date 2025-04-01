@@ -41,33 +41,36 @@ document.addEventListener('DOMContentLoaded', function () {
             tieneFuerzaBruta: true
         },
         'hill': {
-            params: [
-                { id: 'matrizSize', label: 'Tamaño de la matriz', type: 'number', min: 2, max: 10, value: 2 }
-            ],
-            botonesExtra: [
-                { id: 'btnGenerarMatrizAleatoria', label: 'Generar Matriz Aleatoria', operacion: 'generarMatrizAleatoria' }
-            ],
-            tieneFuerzaBruta: true,
+            params: [],
             customRender: function (parametrosCifrador) {
-                // Tamaño de matriz
-                const div = document.createElement('div');
-                div.className = 'parametroEntrada';
+                // Container for matrix size selection
+                const sizeDiv = document.createElement('div');
+                sizeDiv.className = 'matriz-controls';
 
-                const label = document.createElement('label');
-                label.htmlFor = 'matrizSize';
-                label.textContent = 'Tamaño de la matriz';
+                const sizeLabel = document.createElement('label');
+                sizeLabel.htmlFor = 'matrizSize';
+                sizeLabel.textContent = 'Tamaño de la matriz: ';
 
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.id = 'matrizSize';
-                input.name = 'matrizSize';
-                input.min = 2;
-                input.max = 10;
-                input.value = 2;
+                const sizeSelect = document.createElement('select');
+                sizeSelect.id = 'matrizSize';
+                sizeSelect.className = 'matriz-size-select';
+                
+                [2, 3].forEach(size => {
+                    const option = document.createElement('option');
+                    option.value = size;
+                    option.textContent = `${size}x${size}`;
+                    sizeSelect.appendChild(option);
+                });
 
-                div.appendChild(label);
-                div.appendChild(input);
-                parametrosCifrador.appendChild(div);
+                sizeDiv.appendChild(sizeLabel);
+                sizeDiv.appendChild(sizeSelect);
+                parametrosCifrador.appendChild(sizeDiv);
+
+                // Título para la matriz
+                const title = document.createElement('h3');
+                title.className = 'matriz-title';
+                title.textContent = 'Matriz de cifrado';
+                parametrosCifrador.appendChild(title);
 
                 // Contenedor para la matriz
                 const matrizContainer = document.createElement('div');
@@ -75,9 +78,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 matrizContainer.className = 'matriz-container';
                 parametrosCifrador.appendChild(matrizContainer);
 
-                // Botón para generar matriz aleatoria
+                // Botones para generar matriz y validar
                 const btnDiv = document.createElement('div');
-                btnDiv.className = 'botonesExtra';
+                btnDiv.className = 'matriz-controls';
 
                 const btnGenerarMatriz = document.createElement('button');
                 btnGenerarMatriz.textContent = 'Generar Matriz Aleatoria';
@@ -87,24 +90,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 btnDiv.appendChild(btnGenerarMatriz);
                 parametrosCifrador.appendChild(btnDiv);
 
-                // Campo oculto para almacenar la matriz como string
-                // Campo oculto para almacenar la matriz como string
+                // Campo oculto para la matriz
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
                 hiddenInput.id = 'matriz';
                 hiddenInput.name = 'matriz';
                 parametrosCifrador.appendChild(hiddenInput);
-                // Crear matriz inicial
+
+                // Crear matriz inicial 2x2
                 crearMatriz(2);
 
-                // Event listener para cambiar tamaño de matriz
-                input.addEventListener('change', function () {
+                // Event listener para cambio de tamaño
+                sizeSelect.addEventListener('change', function() {
                     const size = parseInt(this.value);
-                    if (size >= 2 && size <= 10) {
-                        crearMatriz(size);
-                    }
+                    crearMatriz(size);
                 });
-            }
+            },
+            tieneFuerzaBruta: true
         },
         'vernam': {
             params: [
@@ -412,15 +414,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 cell.value = 0;
                 cell.min = 0;
                 cell.max = 25;
+                cell.required = true;
 
-                // Actualizar matriz cuando cambie un valor
-                cell.addEventListener('change', actualizarValorMatriz);
+                cell.addEventListener('input', function() {
+                    let value = parseInt(this.value) || 0;
+                    if (value < 0) value = 0;
+                    if (value > 25) value = 25;
+                    this.value = value;
+                    actualizarValorMatriz();
+                });
 
                 container.appendChild(cell);
             }
         }
 
-        // Inicializar la matriz con valores por defecto
         actualizarMatriz();
     }
 
@@ -455,22 +462,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Función para generar una matriz aleatoria
-    function generarMatrizAleatoria() {
-        const sizeInput = document.getElementById('matrizSize');
-        if (!sizeInput) return;
+    async function generarMatrizAleatoria() {
+        const sizeSelect = document.getElementById('matrizSize');
+        if (!sizeSelect) return;
 
-        const size = parseInt(sizeInput.value) || 2;
-        const container = document.getElementById('matrizContainer');
-        if (!container) return;
+        const size = parseInt(sizeSelect.value);
+        
+        try {
+            const response = await fetch('/operaciones-especiales', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cifrador: 'hill',
+                    operacion: 'generarMatrizAleatoria',
+                    parametros: { tamano: size }
+                })
+            });
 
-        // Generar valores aleatorios para cada celda
-        const cells = container.querySelectorAll('.matriz-cell');
-        cells.forEach(cell => {
-            cell.value = Math.floor(Math.random() * 26); // Valores entre 0 y 25
-        });
-
-        // Actualizar matriz
-        actualizarMatriz();
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+            } else {
+                const matriz = data.resultado.split(';').map(row => row.split(',').map(Number));
+                const cells = document.querySelectorAll('.matriz-cell');
+                cells.forEach((cell, index) => {
+                    const row = Math.floor(index / size);
+                    const col = index % size;
+                    cell.value = matriz[row][col];
+                });
+                actualizarMatriz();
+            }
+        } catch (error) {
+            alert('Error al generar matriz aleatoria: ' + error.message);
+        }
     }
 
     // Validar matriz antes de enviar

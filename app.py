@@ -216,21 +216,19 @@ def OperacionesEspeciales():
             return jsonify({'error': 'Faltan parámetros requeridos'}), 400
 
         if cifrador == 'hill':
-            if operacion == 'generarMatriz':
-                # Get the size parameter, default to 3 if not provided
-                tamano = datos.get('tamano', 3)
+            if operacion == 'generarMatrizAleatoria':
+                # Get the size parameter from parametros
+                tamano = parametros.get('tamano', 2)
                 logger.debug(f"Generando matriz aleatoria de tamaño: {tamano}")
                 try:
                     tamano = int(tamano)
-                    if tamano < 2:
+                    if tamano not in [2, 3]:
                         logger.error(f"Tamaño de matriz inválido: {tamano}")
-                        return jsonify({'error': 'El tamaño de la matriz debe ser al menos 2x2'}), 400
-                    if tamano > 10:
-                        logger.warning(f"Tamaño de matriz grande: {tamano}")
-                        return jsonify({'error': 'Para un mejor rendimiento, el tamaño máximo recomendado es 10x10'}), 400
+                        return jsonify({'error': 'El tamaño de la matriz solo puede ser 2x2 o 3x3'}), 400
+                    
                     matriz = GenerarMatrizAleatoria(tamano)
                     logger.debug(f"Matriz generada: {matriz}")
-                    return jsonify({'resultado': matriz})
+                    return jsonify({'resultado': ';'.join(','.join(str(num) for num in fila) for fila in matriz)})
                 except ValueError:
                     logger.error(f"Valor no numérico para tamaño: {tamano}")
                     return jsonify({'error': 'El tamaño de la matriz debe ser un número entero'}), 400

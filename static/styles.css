@@ -786,3 +786,56 @@ body {
     padding: 2px;
   }
 }
+
+/* Estilos para la matriz de Hill */
+.matriz-container {
+    display: grid;
+    gap: 5px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    max-width: fit-content;
+    margin: 15px auto;
+}
+
+.matriz-cell {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border: 2px solid #3498db;
+    border-radius: 4px;
+    font-size: 18px;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+.matriz-cell:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    outline: none;
+}
+
+.matriz-cell:invalid {
+    border-color: #e74c3c;
+}
+
+.matriz-title {
+    text-align: center;
+    margin: 10px 0;
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+.matriz-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.matriz-size-select {
+    padding: 5px;
+    border: 2px solid #3498db;
+    border-radius: 4px;
+    font-size: 16px;
+}
