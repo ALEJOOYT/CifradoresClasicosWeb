@@ -28,8 +28,8 @@ from cifradores.vigenere import Cifrar as CifrarVigenere
 from cifradores.vigenere import Descifrar as DescifrarVigenere
 from cifradores.vigenere import DescifrarFuerzaBruta as DescifrarFuerzaBrutaVigenere
 
-from cifradores.atbah import Cifrar as CifrarAtbash
-from cifradores.atbah import Descifrar as DescifrarAtbash
+from cifradores.atbash import Cifrar as CifrarAtbash
+from cifradores.atbash import Descifrar as DescifrarAtbash
 
 from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
