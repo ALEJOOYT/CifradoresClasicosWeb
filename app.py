@@ -41,6 +41,9 @@ from cifradores.vernam import Descifrar as DescifrarVernam
 from cifradores.atbash import Cifrar as CifrarAtbash
 from cifradores.atbash import Descifrar as DescifrarAtbash
 
+from cifradores.enigma import Cifrar as CifrarEnigma
+from cifradores.enigma import Descifrar as DescifrarEnigma
+
 from cifradores.transposicionFilas import Cifrar as CifrarTransposicionFilas
 from cifradores.transposicionFilas import Descifrar as DescifrarTransposicionFilas
 app = Flask(__name__)
@@ -61,9 +64,11 @@ CIFRADORES = {
     'transposicionColumna': {'cifrar': CifrarTransposicionColumna, 'descifrar': DescifrarTransposicionColumna},
     'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence},
     'atbash': {'cifrar': CifrarAtbash, 'descifrar': DescifrarAtbash},
+    'enigma': {'cifrar': CifrarEnigma, 'descifrar': DescifrarEnigma},
     'transposicionFilas': {'cifrar': CifrarTransposicionFilas, 'descifrar': DescifrarTransposicionFilas}
 }
-# Diccionario de funciones de fuerza bruta
+
+# Diccionario para operaciones de fuerza bruta
 FUERZA_BRUTA = {
     'cesar': FuerzaBrutaCesar,
     'afin': FuerzaBrutaAfin,
@@ -223,6 +228,34 @@ def ProcesarTexto():
             resultado = funcion(texto, int(parametros['filas']))
         elif cifrador == 'atbash':
             resultado = funcion(texto)
+        elif cifrador == 'enigma':
+            # Procesando parámetros específicos para Enigma
+            if not all(param in parametros for param in ['rotor1', 'rotor2', 'rotor3', 'tableroConexiones']):
+                return jsonify({'error': 'Faltan parámetros requeridos para el cifrador Enigma'}), 400
+            
+            # Convertir posiciones de rotores a enteros
+            try:
+                rotor1 = int(parametros['rotor1'])
+                rotor2 = int(parametros['rotor2'])
+                rotor3 = int(parametros['rotor3'])
+                
+                # Procesar el tablero de conexiones (formato: "A-Z,B-Y,C-X")
+                conexiones_str = parametros['tableroConexiones']
+                conexiones = []
+                
+                if conexiones_str:
+                    pares = conexiones_str.split(',')
+                    for par in pares:
+                        if '-' in par:
+                            letras = par.split('-')
+                            if len(letras) == 2:
+                                conexiones.append((letras[0].strip().upper(), letras[1].strip().upper()))
+                
+                # Llamar a la función de cifrado/descifrado con los parámetros procesados
+                resultado = funcion(texto, [rotor1, rotor2, rotor3], None, conexiones)
+                
+            except ValueError as e:
+                return jsonify({'error': f'Error en los parámetros de Enigma: {str(e)}'}), 400
         else:
             return jsonify({'error': 'Método de cifrado no soportado'}), 400
 

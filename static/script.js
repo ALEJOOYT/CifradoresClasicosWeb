@@ -141,9 +141,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 { id: 'rieles', label: 'Número de Rieles', type: 'number', min: 2 }
             ],
             tieneFuerzaBruta: true
+        },
+        'enigma': {
+            params: [
+                { id: 'rotor1', label: 'Posición inicial del Rotor 1 (0-25)', type: 'number', min: 0, max: 25, value: 0 },
+                { id: 'rotor2', label: 'Posición inicial del Rotor 2 (0-25)', type: 'number', min: 0, max: 25, value: 0 },
+                { id: 'rotor3', label: 'Posición inicial del Rotor 3 (0-25)', type: 'number', min: 0, max: 25, value: 0 },
+                { id: 'tableroConexiones', label: 'Tablero de Conexiones (ej: A-Z,B-Y,C-X)', type: 'text', placeholder: 'A-Z,B-Y,C-X' }
+            ],
+            tieneFuerzaBruta: false
         }
     };
-
     // Función para actualizar los campos de parámetros y botones
     function actualizarInterfaz() {
         const cifrador = tipoCifrador.value;
