@@ -20,13 +20,13 @@ def GenerarMatrizAleatoria(tamano=3):
     Genera una matriz aleatoria invertible módulo 26 para el cifrado Hill
     
     Args:
-        tamano (int): Tamaño de la matriz cuadrada (2 o 3)
+        tamano (int): Tamaño de la matriz cuadrada (cualquier valor positivo)
         
     Returns:
         list: Matriz representada como lista de listas
     """
-    if tamano not in [2, 3]:
-        raise ValueError("El tamaño de la matriz debe ser 2x2 o 3x3")
+    if tamano < 2:
+        raise ValueError("El tamaño de la matriz debe ser al menos 2x2")
         
     while True:
         # Generar matriz aleatoria con valores entre 0 y 25
@@ -68,14 +68,13 @@ def ParsearMatriz(matrizTexto):
         return np.array(matriz)
     except Exception as e:
         raise ValueError(f"Formato de matriz inválido: {str(e)}")
-
 def ValidarMatriz(matriz):
     """
-    Valida que la matriz sea cuadrada (2x2 o 3x3) e invertible módulo 26
+    Valida que la matriz sea cuadrada e invertible módulo 26
     
     Args:
         matriz: Puede ser una lista de listas, un array de NumPy o una cadena
-               con el formato 'fila1;fila2;[fila3]'
+               con el formato 'fila1;fila2;...' donde cada fila está separada por punto y coma
                
     Returns:
         numpy.ndarray: Matriz validada
@@ -88,10 +87,10 @@ def ValidarMatriz(matriz):
         elif isinstance(matriz, list):
             matriz = np.array(matriz)
         
-        # Verificar que la matriz sea de tamaño válido
-        if matriz.shape not in [(2, 2), (3, 3)]:
-            raise ValueError("La matriz debe ser 2x2 o 3x3")
-        
+        # Verificar que la matriz sea cuadrada
+        filas, columnas = matriz.shape
+        if filas != columnas:
+            raise ValueError("La matriz debe ser cuadrada (mismo número de filas y columnas)")
         # Verificar que la matriz sea invertible
         matrizSympy = Matrix(matriz)
         determinante = int(matrizSympy.det()) % 26
@@ -179,7 +178,6 @@ def MatrizToString(matriz):
         matriz = matriz.tolist()
         
     return ';'.join([','.join(map(str, fila)) for fila in matriz])
-
 def DescifrarFuerzaBruta(textoCifrado):
     """
     Simula un ataque de fuerza bruta generando algunas posibles soluciones
@@ -192,8 +190,8 @@ def DescifrarFuerzaBruta(textoCifrado):
     """
     posiblesSoluciones = []
     
-    # Genera soluciones con matrices 2x2 y 3x3
-    for tamano in [2, 3]:
+    # Genera soluciones con matrices de diferentes tamaños
+    for tamano in [2, 3, 4, 5]:
         for i in range(3):  # 3 intentos con cada tamaño
             try:
                 matriz = GenerarMatrizAleatoria(tamano)

@@ -1,159 +1,159 @@
 /* Estilos generales */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    background-color: #f0f2f5;
-    color: #333;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.6;
+  background-color: #f0f2f5;
+  color: #333;
 }
 
 /* Encabezado */
 .encabezado {
-    background-color: #2c3e50;
-    color: #fff;
-    text-align: center;
-    padding: 2rem;
-    margin-bottom: 2rem;
+  background-color: #2c3e50;
+  color: #fff;
+  text-align: center;
+  padding: 2rem;
+  margin-bottom: 2rem;
 }
 
 .encabezado h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .subtitulo {
-    font-size: 1.2rem;
-    opacity: 0.9;
+  font-size: 1.2rem;
+  opacity: 0.9;
 }
 
 /* Contenedor principal */
 .contenedor {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
 /* Selector de cifrador */
 .selectorCifrador {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .selectorCifrador label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 select {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 /* Formulario de cifrado */
 .formularioCifrado {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .campoTexto {
-    margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .campoTexto label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 textarea {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    resize: vertical;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  resize: vertical;
 }
 
 /* Parámetros del cifrador */
 .parametrosCifrador {
-    margin-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .parametroEntrada {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .parametroEntrada label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
 }
 
 .parametroEntrada input {
-    width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
 }
 
 /* Botones */
 .botones {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .boton {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  padding: 0.8rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 #btnCifrar {
-    background-color: #2ecc71;
-    color: white;
+  background-color: #2ecc71;
+  color: white;
 }
 
 #btnDescifrar {
-    background-color: #3498db;
-    color: white;
+  background-color: #3498db;
+  color: white;
 }
 
 #btnLimpiar {
-    background-color: #e74c3c;
-    color: white;
+  background-color: #e74c3c;
+  color: white;
 }
 
 .boton:hover {
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
 /* Resultado */
 .resultado {
-    margin-top: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 /* Pie de página */
 .piePagina {
-    text-align: center;
-    padding: 2rem;
-    margin-top: 2rem;
-    background-color: #2c3e50;
-    color: #fff;
+  text-align: center;
+  padding: 2rem;
+  margin-top: 2rem;
+  background-color: #2c3e50;
+  color: #fff;
 }
 
 /*
@@ -567,99 +567,222 @@ body {
 
 /* Estilos para la tabla de resultados de fuerza bruta */
 .tabla-resultados {
-    overflow-x: auto;
-    margin: 20px 0;
+  overflow-x: auto;
+  margin: 20px 0;
 }
 
 .tabla-fuerza-bruta {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0;
-    margin-bottom: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 10px;
 }
 
-.tabla-fuerza-bruta th, .tabla-fuerza-bruta td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
+.tabla-fuerza-bruta th,
+.tabla-fuerza-bruta td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 
 .tabla-fuerza-bruta th {
-    background-color: #f2f2f2;
-    font-weight: bold;
+  background-color: #f2f2f2;
+  font-weight: bold;
 }
 
 .tabla-fuerza-bruta tr:hover {
-    background-color: #f5f5f5;
+  background-color: #f5f5f5;
 }
 
 .tabla-fuerza-bruta td:first-child {
-    font-weight: bold;
-    width: 100px;
+  font-weight: bold;
+  width: 100px;
 }
 
 .tabla-fuerza-bruta td:last-child {
-    text-align: center;
-    width: 120px;
+  text-align: center;
+  width: 120px;
 }
 
 /* Estilos para los controles de la tabla de resultados */
 .controles-tabla {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
 .filtro-puntuacion {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
 }
 
 .filtro-puntuacion input {
-    width: 60px;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .filtro-puntuacion button {
-    padding: 5px 15px;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  padding: 5px 15px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .filtro-puntuacion button:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .info-resultados {
-    font-size: 0.9em;
-    color: #666;
-    margin: 10px 0;
+  font-size: 0.9em;
+  color: #666;
+  margin: 10px 0;
 }
 
 .mostrar-mas {
-    text-align: center;
-    margin: 20px 0;
+  text-align: center;
+  margin: 20px 0;
 }
 
 .mostrar-mas button {
-    padding: 8px 20px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+  padding: 8px 20px;
+  background-color: #f8f8f8;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .mostrar-mas button:hover {
-    background-color: #e8e8e8;
+  background-color: #e8e8e8;
 }
 
+/* Estilos para la matriz del cifrador Hill */
+.matrix-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0;
+  gap: 15px;
+}
+
+.matrix-controls {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 10px;
+}
+
+.matrix-size-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.matrix-size-control label {
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+
+.matrix-size-control select {
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  background-color: white;
+}
+
+.btn-generate-matrix {
+  padding: 8px 16px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-weight: 600;
+}
+
+.btn-generate-matrix:hover {
+  background-color: #2c4760;
+  transform: translateY(-2px);
+}
+
+.btn-generate-matrix:active {
+  transform: translateY(0);
+}
+
+.matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--matrix-size, 3), 60px);
+  grid-template-rows: repeat(var(--matrix-size, 3), 60px);
+  gap: 5px;
+  margin: 0 auto;
+}
+
+.matrix-cell {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  transition: border-color 0.3s;
+  position: relative;
+}
+
+.matrix-cell input {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  text-align: center;
+  font-size: 1rem;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+.matrix-cell:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(58, 90, 120, 0.2);
+}
+
+/* Estilos responsivos para la matriz */
+@media (max-width: 768px) {
+  .matrix-grid {
+    grid-template-columns: repeat(var(--matrix-size, 3), 50px);
+    grid-template-rows: repeat(var(--matrix-size, 3), 50px);
+  }
+
+  .matrix-cell input {
+    font-size: 0.9rem;
+  }
+
+  .matrix-controls {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .matrix-grid {
+    grid-template-columns: repeat(var(--matrix-size, 3), 40px);
+    grid-template-rows: repeat(var(--matrix-size, 3), 40px);
+    gap: 3px;
+  }
+
+  .matrix-cell input {
+    font-size: 0.8rem;
+    padding: 2px;
+  }
+}
