@@ -1,14 +1,16 @@
 from flask import Flask, render_template, request, jsonify
 import json
 import logging
+import itertools
 # Importar módulos de cifrado
 from cifradores.afin import Cifrar as CifrarAfin
 from cifradores.afin import Descifrar as DescifrarAfin
 from cifradores.afin import DescifrarFuerzaBruta as FuerzaBrutaAfin
 
-from cifradores.adfgvx import Cifrar as CifrarAdfgvx
-from cifradores.adfgvx import Descifrar as DescifrarAdfgvx
-from cifradores.adfgvx import GenerarClaveAleatoria
+from cifradores.adfgvx import CifrarAdfgvx
+from cifradores.adfgvx import DescifrarAdfgvx
+from cifradores.adfgvx import GenerarMatrizAleatoria as GenerarMatrizAdfgvx
+from cifradores.adfgvx import COORDENADAS_ADFGVX
 
 from cifradores.playFair import Cifrar as CifrarPlayfair
 from cifradores.playFair import Descifrar as DescifrarPlayfair
@@ -122,7 +124,31 @@ def ProcesarTexto():
         elif cifrador == 'afin':
             resultado = funcion(texto, int(parametros['a']), int(parametros['b']))
         elif cifrador == 'adfgvx':
-            resultado = funcion(texto, parametros['clave'])
+            matriz = parametros.get('matriz')
+            clave = parametros.get('clave')
+            
+            if not matriz or not clave:
+                return jsonify({'error': 'Se requiere la matriz y la clave'}), 400
+            
+            # Convert string matrix to dictionary format
+            matriz_dict = {}
+            if len(matriz) != 36:
+                return jsonify({'error': 'La matriz debe tener exactamente 36 caracteres'}), 400
+            
+            idx = 0
+            for fila in COORDENADAS_ADFGVX:
+                for columna in COORDENADAS_ADFGVX:
+                    matriz_dict[fila + columna] = matriz[idx]
+                    idx += 1
+
+            try:
+                if operacion == 'cifrar':
+                    resultado = CifrarAdfgvx(texto, matriz_dict, clave)
+                else:
+                    resultado = DescifrarAdfgvx(texto, matriz_dict, clave)
+                return jsonify({'resultado': resultado})
+            except ValueError as e:
+                return jsonify({'error': str(e)}), 400
         elif cifrador in ['playfair', 'vigenere', 'transposicionColumna']:
             resultado = funcion(texto, parametros['clave'])
         elif cifrador == 'hill':
@@ -277,9 +303,20 @@ def OperacionesEspeciales():
             else:
                 return jsonify({'error': 'Operación no soportada para el cifrador Hill'}), 400
         elif cifrador == 'adfgvx':
-            if operacion == 'generarClave':
-                clave = GenerarClaveAleatoria()
-                return jsonify({'resultado': clave})
+            if operacion == 'generarMatriz':
+                try:
+                    # GenerarMatrizAdfgvx returns a dictionary with coordinate pairs
+                    matriz = GenerarMatrizAdfgvx()
+                    # Convert dictionary values to a single string
+                    matriz_str = ''
+                    for i in COORDENADAS_ADFGVX:
+                        for j in COORDENADAS_ADFGVX:
+                            matriz_str += matriz[i + j]
+                    logging.info(f"Generated matrix string: {matriz_str}")
+                    return jsonify({'resultado': matriz_str})
+                except Exception as e:
+                    logging.error(f"Error generating matrix: {str(e)}")
+                    return jsonify({'error': f'Error al generar matriz: {str(e)}'}), 500
             else:
                 return jsonify({'error': 'Operación no soportada para el cifrador ADFGVX'}), 400
         else:

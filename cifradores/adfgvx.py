@@ -1,104 +1,134 @@
 import itertools
-import string
 import random
+import string
 
-charsetPredeterminado = string.ascii_uppercase + string.digits
+COORDENADAS_ADFGVX = "ADFGVX"
 
-# Definir el cuadro ADFGVX estándar
-CUADRO_ADFGVX = {
-    'AA': 'N', 'AD': 'A', 'AF': '4', 'AG': 'B', 'AV': 'C', 'AX': '5',
-    'DA': 'D', 'DD': 'E', 'DF': '6', 'DG': 'F', 'DV': 'G', 'DX': '7',
-    'FA': 'H', 'FD': 'I', 'FF': '8', 'FG': 'J', 'FV': 'K', 'FX': '9',
-    'GA': 'L', 'GD': 'M', 'GF': '0', 'GG': 'O', 'GV': 'P', 'GX': '1',
-    'VA': 'Q', 'VD': 'R', 'VF': '2', 'VG': 'S', 'VV': 'T', 'VX': '3',
-    'XA': 'U', 'XD': 'V', 'XF': 'W', 'XG': 'X', 'XV': 'Y', 'XX': 'Z'
-}
+caracteresPermitidos = string.ascii_uppercase + string.digits
 
-def GenerarClaveAleatoria():
-    """Genera una clave aleatoria de 36 caracteres para el cifrado ADFGVX"""
-    caracteres = string.ascii_uppercase + string.digits
-    return ''.join(random.choice(caracteres) for _ in range(36))
+def GenerarCuadroAdfgvx(matriz):
+    cuadro = {}
+    indice = 0
+    for i in COORDENADAS_ADFGVX:
+        for j in COORDENADAS_ADFGVX:
+            cuadro[i + j] = matriz[indice]
+            indice += 1
+    return cuadro
 
-def Cifrar(textoPlano, clave):
-    if not textoPlano or not clave:
-        raise ValueError("El texto y la clave son requeridos")
-    # Validar longitud de clave exactamente 36 caracteres
-    if len(clave) != 36:
-        raise ValueError("La clave debe tener exactamente 36 caracteres")
-    # Verificar que la clave solo contenga letras mayúsculas y números
-    if not all(c in string.ascii_uppercase + string.digits for c in clave):
-        raise ValueError("La clave debe contener solo letras mayúsculas y números")
-    # Limpiar el texto plano (solo letras y números)
-    textoPlano = ''.join(c for c in textoPlano.upper() if c.isalnum())
+def ValidarMatrizAdfgvx(cuadro):
+    # Validate that the matrix has all 36 characters
+    if len(cuadro) != 36:
+        raise ValueError("La matriz ADFGVX debe contener exactamente 36 caracteres")
+    
+    # Check for duplicates in values
+    valores = list(cuadro.values())
+    if len(set(valores)) != len(valores):
+        raise ValueError("La matriz ADFGVX no puede contener caracteres repetidos")
+    
+    # Validate all coordinates are valid ADFGVX combinations
+    coordenadas_validas = set(i + j for i in COORDENADAS_ADFGVX for j in COORDENADAS_ADFGVX)
+    if set(cuadro.keys()) != coordenadas_validas:
+        raise ValueError("La matriz ADFGVX contiene coordenadas inválidas")
+
+def CifrarAdfgvx(textoPlano, cuadro, clave):
+    # Validate inputs
     if not textoPlano:
-        raise ValueError("El texto debe contener al menos un carácter válido")
-    try:
-        # Usar el cuadro fijo
-        # Buscar cada carácter del texto en el cuadro y obtener sus coordenadas
-        intermedio = ""
-        for c in textoPlano:
-            found = False
-            for k, v in CUADRO_ADFGVX.items():
-                if v == c:
-                    intermedio += k
-                    found = True
-                    break
-            if not found:
-                continue
-        if not intermedio:
-            raise ValueError("No se pudo cifrar el texto con el cuadro proporcionado")
-        # Distribuir el texto intermedio en columnas según la clave
-        columnas = {i: "" for i in range(len(clave))}
-        ciclo = itertools.cycle(range(len(clave)))
-        for caracter in intermedio:
-            columnas[next(ciclo)] += caracter
-        # Reordenar las columnas según el orden alfabético de la clave
-        claveConIndice = [(char, i) for i, char in enumerate(clave)]
-        claveOrdenada = sorted(claveConIndice)
-        return "".join(columnas[i] for _, i in claveOrdenada)
-    except Exception as e:
-        raise ValueError(f"Error al cifrar: {str(e)}")
+        raise ValueError("El texto a cifrar no puede estar vacío")
+    if not clave:
+        raise ValueError("La clave de transposición no puede estar vacía")
+    
+    # Validate matrix
+    ValidarMatrizAdfgvx(cuadro)
+    
+    # Validate all characters in input text are in the matrix
+    valores_permitidos = set(cuadro.values())
+    caracteres_invalidos = set(textoPlano.upper()) - valores_permitidos
+    if caracteres_invalidos:
+        raise ValueError(f"El texto contiene caracteres no permitidos: {', '.join(sorted(caracteres_invalidos))}")
+    
+    # Continue with existing encryption logic
+    intermedio = "".join([k for c in textoPlano.upper() for k, v in cuadro.items() if v == c])
+    columnas = {i: "" for i in range(len(clave))}
+    ciclo = itertools.cycle(range(len(clave)))
+    for caracter in intermedio:
+        columnas[next(ciclo)] += caracter
+    claveConIndice = [(char, i) for i, char in enumerate(clave)]
+    claveOrdenada = sorted(claveConIndice)
+    return "".join(columnas[i] for _, i in claveOrdenada)
 
-def Descifrar(textoCifrado, clave):
-    if not textoCifrado or not clave:
-        raise ValueError("El texto cifrado y la clave son requeridos")
-    # Validar longitud de clave exactamente 36 caracteres
-    if len(clave) != 36:
-        raise ValueError("La clave debe tener exactamente 36 caracteres")
-    # Verificar que la clave solo contenga letras mayúsculas y números
-    if not all(c in string.ascii_uppercase + string.digits for c in clave):
-        raise ValueError("La clave debe contener solo letras mayúsculas y números")
-    try:
-        longitudClave = len(clave)
-        longitudTexto = len(textoCifrado)
-        base = longitudTexto // longitudClave
-        extra = longitudTexto % longitudClave
-        longitudesColumnas = {i: base + (1 if i < extra else 0) for i in range(longitudClave)}
-        claveConIndice = [(char, i) for i, char in enumerate(clave)]
-        claveOrdenada = sorted(claveConIndice)
-        columnas = {}
-        posicion = 0
-        for _, indice in claveOrdenada:
-            longitud = longitudesColumnas[indice]
-            columnas[indice] = textoCifrado[posicion:posicion + longitud]
-            posicion += longitud
+def DescifrarAdfgvx(textoCifrado, cuadro, clave):
+    # Validate inputs
+    if not textoCifrado:
+        raise ValueError("El texto cifrado no puede estar vacío")
+    if not clave:
+        raise ValueError("La clave de transposición no puede estar vacía")
+        
+    # Validate matrix
+    ValidarMatrizAdfgvx(cuadro)
+    
+    # Validate text contains only valid ADFGVX characters
+    caracteres_validos = set(COORDENADAS_ADFGVX)
+    caracteres_invalidos = set(textoCifrado.upper()) - caracteres_validos
+    if caracteres_invalidos:
+        raise ValueError(f"El texto cifrado contiene caracteres inválidos: {', '.join(sorted(caracteres_invalidos))}")
+    
+    # Validate text length is even (should be pairs of coordinates)
+    if len(textoCifrado) % 2 != 0:
+        raise ValueError("El texto cifrado debe tener una longitud par")
+    
+    # Continue with existing decryption logic
+    longitudClave = len(clave)
+    longitudTexto = len(textoCifrado)
+    base = longitudTexto // longitudClave
+    extra = longitudTexto % longitudClave
 
-        intermedio = ""
-        maxLongitud = max(longitudesColumnas.values())
-        for i in range(maxLongitud):
-            for j in range(longitudClave):
-                if i < longitudesColumnas[j] and i < len(columnas[j]):
-                    intermedio += columnas[j][i]
+    longitudesColumnas = {i: base + (1 if i < extra else 0) for i in range(longitudClave)}
 
-        textoPlano = ""
-        for i in range(0, len(intermedio), 2):
-            if i + 1 < len(intermedio):
-                par = intermedio[i:i+2]
-                if par in CUADRO_ADFGVX:
-                    textoPlano += CUADRO_ADFGVX[par]
+    claveConIndice = [(char, i) for i, char in enumerate(clave)]
+    claveOrdenada = sorted(claveConIndice)
+    columnas = {}
+    posicion = 0
+    for _, indice in claveOrdenada:
+        longitud = longitudesColumnas[indice]
+        columnas[indice] = textoCifrado[posicion:posicion + longitud]
+        posicion += longitud
 
-        if not textoPlano:
-            raise ValueError("No se pudo descifrar el texto con la clave proporcionada")
-        return textoPlano
-    except Exception as e:
-        raise ValueError(f"Error al descifrar: {str(e)}")
+    intermedio = ""
+    maxLongitud = max(longitudesColumnas.values())
+    for i in range(maxLongitud):
+        for j in range(longitudClave):
+            if i < longitudesColumnas[j] and i < len(columnas[j]):
+                intermedio += columnas[j][i]
+
+    textoPlano = ""
+    for i in range(0, len(intermedio) - 1, 2):
+        par = intermedio[i:i+2]
+        if par in cuadro:
+            textoPlano += cuadro[par]
+        else:
+            raise ValueError(f"Par de coordenadas inválido encontrado: {par}")
+
+    return textoPlano
+
+def GenerarMatrizAleatoria() -> dict:
+    # Generate a cuadro (dictionary) with ADFGVX coordinates and random unique characters
+    caracteres_disponibles = list(string.ascii_uppercase + string.digits)  # A-Z and 0-9
+    
+    if len(caracteres_disponibles) < 36:
+        raise ValueError("No hay suficientes caracteres para generar una matriz ADFGVX")
+    
+    # Obtener 36 caracteres únicos aleatorios
+    caracteres_seleccionados = random.sample(caracteres_disponibles, 36)
+    
+    # Crear el cuadro ADFGVX
+    cuadro = {}
+    indice = 0
+    for i in COORDENADAS_ADFGVX:
+        for j in COORDENADAS_ADFGVX:
+            cuadro[i + j] = caracteres_seleccionados[indice]
+            indice += 1
+    
+    # Validar el cuadro generado
+    ValidarMatrizAdfgvx(cuadro)
+    
+    return cuadro

@@ -26,10 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         'adfgvx': {
             params: [
-                { id: 'clave', label: 'Clave', type: 'text' }
+                { id: 'matriz', label: 'Matriz (36 caracteres alfanuméricos)', type: 'text', placeholder: 'Ingrese 36 caracteres (A-Z, 0-9) o use el botón para generar' },
+                { id: 'clave', label: 'Clave de transposición', type: 'text', placeholder: 'Ingrese la clave de transposición' }
             ],
             botonesExtra: [
-                { id: 'btnGenerarClave', label: 'Generar Clave Aleatoria', operacion: 'generarClave' }
+                { id: 'btnGenerarMatriz', label: 'Generar Matriz Aleatoria', operacion: 'generarMatriz' }
             ],
             tieneFuerzaBruta: false
         },
