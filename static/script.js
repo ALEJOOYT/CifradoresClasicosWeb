@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const sizeSelect = document.createElement('select');
                 sizeSelect.id = 'matrizSize';
                 sizeSelect.className = 'matriz-size-select';
-                
                 [2, 3].forEach(size => {
                     const option = document.createElement('option');
                     option.value = size;
@@ -485,7 +484,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!sizeSelect) return;
 
         const size = parseInt(sizeSelect.value);
-        
         try {
             const response = await fetch('/operaciones-especiales', {
                 method: 'POST',

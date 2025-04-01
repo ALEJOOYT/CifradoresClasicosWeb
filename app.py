@@ -129,16 +129,13 @@ def ProcesarTexto():
             if 'matriz' not in parametros:
                 logger.error("Falta el parámetro 'matriz' para el cifrador Hill")
                 return jsonify({'error': 'Se requiere la matriz para el cifrado Hill. Por favor, asegúrate de que la matriz se haya enviado correctamente.'}), 400
-            
             try:
                 # Intentar cargar la matriz desde el parámetro
                 matriz_str = parametros['matriz']
                 logger.debug(f"Matriz recibida: {matriz_str}")
-                
                 if not matriz_str or matriz_str.isspace():
                     logger.error("La matriz está vacía")
                     return jsonify({'error': 'La matriz no puede estar vacía. Por favor, ingresa valores numéricos en la matriz.'}), 400
-                
                 # Determinar si la matriz está en formato plano o como matriz anidada
                 if '[' in matriz_str:
                     # Formato de matriz anidada (JSON)
@@ -156,7 +153,6 @@ def ProcesarTexto():
                         # Dividir las filas por punto y coma
                         filas = matriz_str.strip().split(';')
                         matriz = []
-                        
                         for fila in filas:
                             # Procesar cada fila (separada por comas)
                             valores_fila = []
@@ -168,52 +164,42 @@ def ProcesarTexto():
                                         logger.error(f"Valor no numérico encontrado: '{val.strip()}'")
                                         return jsonify({'error': f"El valor '{val.strip()}' no es un número válido. Todos los elementos de la matriz deben ser números enteros."}), 400
                             matriz.append(valores_fila)
-                        
                         logger.debug(f"Matriz procesada: {matriz}")
-                        
                         # Verificar que la matriz no esté vacía
                         if not matriz:
                             logger.error("La matriz está vacía después del procesamiento")
                             return jsonify({'error': 'La matriz no puede estar vacía. Por favor, ingresa valores numéricos.'}), 400
-                        
                         # Verificar si la matriz es cuadrada
                         num_filas = len(matriz)
                         if num_filas < 2:
                             logger.error("La matriz debe tener al menos 2 filas")
                             return jsonify({'error': 'La matriz debe tener al menos 2 filas para el cifrado Hill.'}), 400
-                        
                         # Verificar que todas las filas tengan la misma longitud
                         longitud_esperada = len(matriz[0])
                         if longitud_esperada < 2:
                             logger.error("Cada fila debe tener al menos 2 columnas")
                             return jsonify({'error': 'Cada fila de la matriz debe tener al menos 2 columnas.'}), 400
-                        
                         # Verificar que todas las filas tengan la misma longitud
                         for i, fila in enumerate(matriz):
                             if len(fila) != longitud_esperada:
                                 logger.error(f"La fila {i+1} tiene una longitud diferente ({len(fila)}) a la esperada ({longitud_esperada})")
                                 return jsonify({'error': f'La matriz debe ser cuadrada. La fila {i+1} tiene {len(fila)} elementos pero se esperaban {longitud_esperada}.'}), 400
-                        
                         # Verificar que la matriz sea cuadrada
                         if num_filas != longitud_esperada:
                             logger.error(f"La matriz no es cuadrada: {num_filas} filas x {longitud_esperada} columnas")
                             return jsonify({'error': f'La matriz debe ser cuadrada. Actualmente tiene {num_filas} filas y {longitud_esperada} columnas.'}), 400
-                        
                         logger.debug(f"Matriz cuadrada validada: {matriz}")
                     except Exception as e:
                         logger.error(f"Error al procesar los valores de la matriz: {str(e)}")
                         return jsonify({'error': f'Error al procesar los valores de la matriz: {str(e)}'}), 400
-                
                 # Validar que la matriz sea cuadrada
                 # Estas validaciones ya se realizaron en el procesamiento anterior
                 if not matriz:
                     logger.error("La matriz está vacía después del procesamiento")
                     return jsonify({'error': 'La matriz no puede estar vacía después del procesamiento.'}), 400
-                
                 logger.debug(f"Procesando con matriz: {matriz}")
                 resultado = funcion(texto, matriz)
                 logger.debug(f"Resultado obtenido: {resultado}")
-                
             except ValueError as e:
                 logger.error(f"Error de valor en la matriz: {str(e)}")
                 return jsonify({'error': f'Formato de matriz inválido: {str(e)}. Asegúrate de que todos los valores sean números enteros.'}), 400
@@ -232,17 +218,14 @@ def ProcesarTexto():
             # Procesando parámetros específicos para Enigma
             if not all(param in parametros for param in ['rotor1', 'rotor2', 'rotor3', 'tableroConexiones']):
                 return jsonify({'error': 'Faltan parámetros requeridos para el cifrador Enigma'}), 400
-            
             # Convertir posiciones de rotores a enteros
             try:
                 rotor1 = int(parametros['rotor1'])
                 rotor2 = int(parametros['rotor2'])
                 rotor3 = int(parametros['rotor3'])
-                
                 # Procesar el tablero de conexiones (formato: "A-Z,B-Y,C-X")
                 conexiones_str = parametros['tableroConexiones']
                 conexiones = []
-                
                 if conexiones_str:
                     pares = conexiones_str.split(',')
                     for par in pares:
@@ -250,10 +233,8 @@ def ProcesarTexto():
                             letras = par.split('-')
                             if len(letras) == 2:
                                 conexiones.append((letras[0].strip().upper(), letras[1].strip().upper()))
-                
                 # Llamar a la función de cifrado/descifrado con los parámetros procesados
                 resultado = funcion(texto, [rotor1, rotor2, rotor3], None, conexiones)
-                
             except ValueError as e:
                 return jsonify({'error': f'Error en los parámetros de Enigma: {str(e)}'}), 400
         else:
@@ -287,7 +268,6 @@ def OperacionesEspeciales():
                     if tamano not in [2, 3]:
                         logger.error(f"Tamaño de matriz inválido: {tamano}")
                         return jsonify({'error': 'El tamaño de la matriz solo puede ser 2x2 o 3x3'}), 400
-                    
                     matriz = GenerarMatrizAleatoria(tamano)
                     logger.debug(f"Matriz generada: {matriz}")
                     return jsonify({'resultado': ';'.join(','.join(str(num) for num in fila) for fila in matriz)})
@@ -339,13 +319,10 @@ def FuerzaBrutaTexto():
                     palabras_clave = [str(p).strip() for p in palabras_clave if p]
                 else:
                     return jsonify({'error': 'Formato inválido para palabras clave'}), 400
-            
             resultado = FuerzaBrutaPlayfair(texto, palabras_clave)
-            
             # Manejar errores específicos de Playfair
             if resultado.get('error'):
                 return jsonify({'error': resultado['error']}), 400
-            
             # Formatear los resultados de Playfair
             resultados = []
             for r in resultado['resultados']:
