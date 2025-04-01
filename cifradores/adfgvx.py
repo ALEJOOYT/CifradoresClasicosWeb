@@ -1,73 +1,103 @@
 import itertools
-import random
 import string
+import random
 
 charsetPredeterminado = string.ascii_uppercase + string.digits
 
-def GenerarCuadro(matriz):
-    adfgvx = "ADFGVX"
-    cuadro = {}
-    indice = 0
-    for i in adfgvx:
-        for j in adfgvx:
-            cuadro[i + j] = matriz[indice]
-            indice += 1
-    return cuadro
+# Definir el cuadro ADFGVX estándar
+CUADRO_ADFGVX = {
+    'AA': 'N', 'AD': 'A', 'AF': '4', 'AG': 'B', 'AV': 'C', 'AX': '5',
+    'DA': 'D', 'DD': 'E', 'DF': '6', 'DG': 'F', 'DV': 'G', 'DX': '7',
+    'FA': 'H', 'FD': 'I', 'FF': '8', 'FG': 'J', 'FV': 'K', 'FX': '9',
+    'GA': 'L', 'GD': 'M', 'GF': '0', 'GG': 'O', 'GV': 'P', 'GX': '1',
+    'VA': 'Q', 'VD': 'R', 'VF': '2', 'VG': 'S', 'VV': 'T', 'VX': '3',
+    'XA': 'U', 'XD': 'V', 'XF': 'W', 'XG': 'X', 'XV': 'Y', 'XX': 'Z'
+}
 
-def Cifrar(textoPlano, cuadro, clave):
-    intermedio = "".join([k for c in textoPlano.upper() for k, v in cuadro.items() if v == c])
-    columnas = {i: "" for i in range(len(clave))}
-    ciclo = itertools.cycle(range(len(clave)))
-    for caracter in intermedio:
-        columnas[next(ciclo)] += caracter
-    claveConIndice = [(char, i) for i, char in enumerate(clave)]
-    claveOrdenada = sorted(claveConIndice)
-    return "".join(columnas[i] for _, i in claveOrdenada)
+def GenerarClaveAleatoria(longitud=10):
+    """Genera una clave aleatoria para el cifrado"""
+    caracteres = string.ascii_uppercase
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
 
-def Descifrar(textoCifrado, cuadro, clave):
-    longitudClave = len(clave)
-    longitudTexto = len(textoCifrado)
-    base = longitudTexto // longitudClave
-    extra = longitudTexto % longitudClave
+def Cifrar(textoPlano, clave):
+    if not textoPlano or not clave:
+        raise ValueError("El texto y la clave son requeridos")
+    
+    # Limpiar el texto plano (solo letras y números)
+    textoPlano = ''.join(c for c in textoPlano.upper() if c.isalnum())
+    if not textoPlano:
+        raise ValueError("El texto debe contener al menos un carácter válido")
+    
+    try:
+        # Usar el cuadro fijo
+        # Buscar cada carácter del texto en el cuadro y obtener sus coordenadas
+        intermedio = ""
+        for c in textoPlano:
+            found = False
+            for k, v in CUADRO_ADFGVX.items():
+                if v == c:
+                    intermedio += k
+                    found = True
+                    break
+            if not found:
+                continue
+        
+        if not intermedio:
+            raise ValueError("No se pudo cifrar el texto con el cuadro proporcionado")
+            
+        # Distribuir el texto intermedio en columnas según la clave
+        columnas = {i: "" for i in range(len(clave))}
+        ciclo = itertools.cycle(range(len(clave)))
+        for caracter in intermedio:
+            columnas[next(ciclo)] += caracter
+        
+        # Reordenar las columnas según el orden alfabético de la clave
+        claveConIndice = [(char, i) for i, char in enumerate(clave)]
+        claveOrdenada = sorted(claveConIndice)
+        
+        return "".join(columnas[i] for _, i in claveOrdenada)
+    except Exception as e:
+        raise ValueError(f"Error al cifrar: {str(e)}")
 
-    longitudesColumnas = {i: base + (1 if i < extra else 0) for i in range(longitudClave)}
+def Descifrar(textoCifrado, clave):
+    if not textoCifrado or not clave:
+        raise ValueError("El texto cifrado y la clave son requeridos")
+    
+    try:
+        longitudClave = len(clave)
+        longitudTexto = len(textoCifrado)
+        
+        base = longitudTexto // longitudClave
+        extra = longitudTexto % longitudClave
+        longitudesColumnas = {i: base + (1 if i < extra else 0) for i in range(longitudClave)}
 
-    claveConIndice = [(char, i) for i, char in enumerate(clave)]
-    claveOrdenada = sorted(claveConIndice)
-    columnas = {}
-    posicion = 0
-    for _, indice in claveOrdenada:
-        longitud = longitudesColumnas[indice]
-        columnas[indice] = textoCifrado[posicion:posicion + longitud]
-        posicion += longitud
+        claveConIndice = [(char, i) for i, char in enumerate(clave)]
+        claveOrdenada = sorted(claveConIndice)
+        
+        columnas = {}
+        posicion = 0
+        for _, indice in claveOrdenada:
+            longitud = longitudesColumnas[indice]
+            columnas[indice] = textoCifrado[posicion:posicion + longitud]
+            posicion += longitud
 
-    intermedio = ""
-    maxLongitud = max(longitudesColumnas.values())
-    for i in range(maxLongitud):
-        for j in range(longitudClave):
-            if i < longitudesColumnas[j] and i < len(columnas[j]):
-                intermedio += columnas[j][i]
+        intermedio = ""
+        maxLongitud = max(longitudesColumnas.values())
+        for i in range(maxLongitud):
+            for j in range(longitudClave):
+                if i < longitudesColumnas[j] and i < len(columnas[j]):
+                    intermedio += columnas[j][i]
 
-    textoPlano = ""
-    for i in range(0, len(intermedio) - 1, 2):
-        par = intermedio[i:i+2]
-        if par in cuadro:
-            textoPlano += cuadro[par]
+        textoPlano = ""
+        for i in range(0, len(intermedio), 2):
+            if i + 1 < len(intermedio):
+                par = intermedio[i:i+2]
+                if par in CUADRO_ADFGVX:
+                    textoPlano += CUADRO_ADFGVX[par]
 
-    return textoPlano
-
-def GenerarClaveAleatoria() -> str:
-    # Crear una lista de todos los caracteres posibles
-    todosLosCaracteres = list(charsetPredeterminado)
-
-    # Asegurarse de que hay al menos 36 caracteres disponibles
-    if len(todosLosCaracteres) < 36:
-        raise ValueError("No hay suficientes caracteres para generar una clave Polybius de 36 caracteres")
-
-    # Mezclar los caracteres aleatoriamente
-    random.shuffle(todosLosCaracteres)
-
-    # Tomar los primeros 36 caracteres
-    clavePolybius = ''.join(todosLosCaracteres[:36])
-
-    return clavePolybius
+        if not textoPlano:
+            raise ValueError("No se pudo descifrar el texto con la clave proporcionada")
+            
+        return textoPlano
+    except Exception as e:
+        raise ValueError(f"Error al descifrar: {str(e)}")

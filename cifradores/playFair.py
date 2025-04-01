@@ -94,22 +94,48 @@ def Descifrar(textoCifrado, clave):
 def FuerzaBruta(textoCifrado, palabrasClave=None):
     try:
         if not textoCifrado:
-            return []
-        if palabrasClave is None:
+            return {"error": "El texto cifrado es requerido para la fuerza bruta.", "resultados": []}
+        
+        textoCifrado = ''.join(c.upper() for c in textoCifrado if c.isalpha())
+        if len(textoCifrado) < 2:
+            return {"error": "El texto cifrado debe tener al menos 2 caracteres alfabéticos.", "resultados": []}
+            
+        # Lista predeterminada de palabras clave comunes
+        if palabrasClave is None or len(palabrasClave) == 0:
             palabrasClave = [
                 "CLAVE", "CONTRASEÑA", "CRIPTOGRAFIA", "SEGURIDAD", "CIFRADO",
                 "SECRETO", "CONFIDENCIAL", "CLASIFICADO", "PRIVADO", "SEGURO",
                 "ENCRIPTACION", "DESENCRIPTACION", "ALGORITMO", "LLAVE", "CODIGO",
                 "PLAYFAIR", "MATRIZ", "PALABRACLAVE", "ROMPECABEZAS", "ENIGMA"
             ]
+        # Aseguramos que todas las claves estén en formato correcto
+        palabrasClave = [clave.upper().strip() for clave in palabrasClave if clave.strip()]
+        
         resultados = []
         for clave in palabrasClave:
+            if not any(c.isalpha() for c in clave):
+                continue  # Saltamos claves sin letras
+                
             textoDescifrado = Descifrar(textoCifrado, clave)
-            if not textoDescifrado.startswith("Error"):
-                resultados.append({
-                    "clave": clave,
-                    "textoDescifrado": textoDescifrado
-                })
-        return resultados
+            if not isinstance(textoDescifrado, str) or textoDescifrado.startswith("Error"):
+                continue  # Saltamos resultados con errores
+                
+            # Calculamos un simple puntaje de legibilidad basado en frecuencia de vocales
+            vocales = sum(1 for c in textoDescifrado if c in "AEIOU")
+            puntaje = (vocales / len(textoDescifrado)) * 100 if len(textoDescifrado) > 0 else 0
+            
+            resultados.append({
+                "clave": clave,
+                "textoDescifrado": textoDescifrado,
+                "puntaje": round(puntaje, 2)
+            })
+        
+        # Ordenamos los resultados por puntaje descendente (mejores primero)
+        resultados = sorted(resultados, key=lambda x: x["puntaje"], reverse=True)
+        
+        return {
+            "error": None if resultados else "No se encontraron resultados con las claves proporcionadas.",
+            "resultados": resultados
+        }
     except Exception as e:
-        return []
+        return {"error": f"Error en la fuerza bruta: {str(e)}", "resultados": []}

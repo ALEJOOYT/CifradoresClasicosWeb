@@ -15,8 +15,8 @@ def DescifrarFuerzaBruta(textoCifrado):
     resultados = []
     for i in range(1, 26):
         posibleDescifrado = Descifrar(textoCifrado, i)
-        resultados.append((i, posibleDescifrado))
-    print("\nResultados de Fuerza Bruta:")
-    for i, descifrado in resultados:
-        print(f"Desplazamiento {i}: {descifrado}")
+        resultados.append({
+            "key": f"Desplazamiento {i}",
+            "text": posibleDescifrado
+        })
     return resultados

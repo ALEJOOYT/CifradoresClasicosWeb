@@ -29,9 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 { id: 'clave', label: 'Clave', type: 'text' }
             ],
             botonesExtra: [
-                { id: 'btnGenerarClave', label: 'Generar Clave', operacion: 'generarClave' },
-                { id: 'btnGenerarCuadro', label: 'Generar Cuadro', operacion: 'generarCuadro' }
-            ]
+                { id: 'btnGenerarClave', label: 'Generar Clave Aleatoria', operacion: 'generarClave' }
+            ],
+            tieneFuerzaBruta: false
         },
         'playfair': {
             params: [
@@ -48,7 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'vernam': {
             params: [
                 { id: 'clave', label: 'Clave (para descifrar)', type: 'text' }
-            ]
+            ],
+            tieneFuerzaBruta: false
         },
         'vigenere': {
             params: [
@@ -57,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
             tieneFuerzaBruta: true
         },
         'atbash': {
-            params: []
+            params: [],
+            tieneFuerzaBruta: false
         },
         'transposicionColumna': {
             params: [
@@ -68,7 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
         'transposicionFilas': {
             params: [
                 { id: 'filas', label: 'Número de Filas', type: 'number', min: 2 }
-            ]
+            ],
+            tieneFuerzaBruta: false
         },
         'transposicionRail': {
             params: [
@@ -83,9 +86,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const cifrador = tipoCifrador.value;
         parametrosCifrador.innerHTML = '';
         
-        // Ocultar/mostrar botón de fuerza bruta
+        // Ocultar/mostrar botón de fuerza bruta solo para los cifradores que lo soportan
         btnFuerzaBruta.style.display = 
-            cifrador && parametrosCifradores[cifrador]?.tieneFuerzaBruta ? 'block' : 'none';
+            cifrador && parametrosCifradores[cifrador]?.tieneFuerzaBruta === true ? 'block' : 'none';
 
         if (!cifrador || !parametrosCifradores[cifrador]) return;
 
@@ -188,6 +191,71 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Función para ejecutar fuerza bruta
+    async function procesarFuerzaBruta() {
+        const cifrador = tipoCifrador.value;
+        if (!cifrador) {
+            alert('Por favor seleccione un método de cifrado');
+            return;
+        }
+
+        const texto = textoEntrada.value;
+        if (!texto) {
+            alert('Por favor ingrese un texto');
+            return;
+        }
+
+        const params = obtenerParametros();
+
+        try {
+            const response = await fetch('/fuerza_bruta', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    cifrador: cifrador,
+                    texto: texto,
+                    parametros: params
+                })
+            });
+
+            const data = await response.json();
+            if (data.error) {
+                alert(data.error);
+            } else {
+                // Display results in a list format
+                if (Array.isArray(data.resultados)) {
+                    textoSalida.value = data.resultados.map((resultado, index) => {
+                        let displayText = `Posible solución ${index + 1}: `;
+                        
+                        if (resultado.key && resultado.text) {
+                            displayText += `Key: ${resultado.key}, Text: ${resultado.text}`;
+                        } else if (resultado.clave && resultado.textoDescifrado) {
+                            displayText += `Clave: ${resultado.clave}, Texto: ${resultado.textoDescifrado}`;
+                        } else if (resultado.desplazamiento && resultado.texto) {
+                            displayText += `Desplazamiento: ${resultado.desplazamiento}, Texto: ${resultado.texto}`;
+                        } else if (resultado.a && resultado.b && resultado.texto) {
+                            displayText += `a: ${resultado.a}, b: ${resultado.b}, Texto: ${resultado.texto}`;
+                        } else if (resultado.rieles && resultado.texto) {
+                            displayText += `Rieles: ${resultado.rieles}, Texto: ${resultado.texto}`;
+                        } else {
+                            // Try to intelligently extract key-value pairs from the object
+                            const pairs = Object.entries(resultado).map(([key, value]) => `${key}: ${value}`);
+                            displayText += pairs.join(', ');
+                        }
+                        
+                        return displayText;
+                    }).join('\n');
+                } else {
+                    textoSalida.value = data.resultados || 'No se encontraron resultados';
+                }
+            }
+        } catch (error) {
+            alert('Error al procesar fuerza bruta: ' + error.message);
+        }
+    }
+
     // Función para ejecutar operaciones especiales
     async function ejecutarOperacionEspecial(cifrador, operacion) {
         try {
@@ -222,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
     tipoCifrador.addEventListener('change', actualizarInterfaz);
     btnCifrar.addEventListener('click', () => procesarTexto('cifrar'));
     btnDescifrar.addEventListener('click', () => procesarTexto('descifrar'));
-    btnFuerzaBruta.addEventListener('click', () => procesarTexto('fuerzaBruta'));
+    btnFuerzaBruta.addEventListener('click', procesarFuerzaBruta);
     btnLimpiar.addEventListener('click', () => {
         textoEntrada.value = '';
         textoSalida.value = '';

@@ -51,17 +51,43 @@ def Descifrar(palabraCifrada, a, b):
 
 # Función para Descifrar usando fuerza bruta
 def DescifrarFuerzaBruta(palabraCifrada):
+    """
+    Realiza un ataque por fuerza bruta al cifrado Afín probando todas las combinaciones
+    posibles de claves (a,b) donde 'a' debe ser coprimo con 26 (el tamaño del alfabeto).
+    
+    Args:
+        palabraCifrada (str): El texto cifrado a descifrar
+        
+    Returns:
+        list: Una lista de diccionarios con posibles resultados, cada uno contiene:
+              - 'a': El valor de 'a' utilizado
+              - 'b': El valor de 'b' utilizado
+              - 'textoDescifrado': El texto descifrado con esa clave
+              - 'clave': Representación de la clave como (a,b)
+    """
     posiblesResultados = []
-
-    for a in range(1, TAMAÑO_ALFABETO):
-        if SonCoprimos(a, TAMAÑO_ALFABETO):
-            for b in range(TAMAÑO_ALFABETO):
+    
+    # Valores válidos de 'a' son aquellos que son coprimos con 26
+    # En el cifrado Afín, estos son: 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25
+    valores_a_validos = [a for a in range(1, TAMAÑO_ALFABETO) if SonCoprimos(a, TAMAÑO_ALFABETO)]
+    
+    # Probamos cada combinación válida
+    for a in valores_a_validos:
+        for b in range(TAMAÑO_ALFABETO):
+            try:
                 posibleTextoOriginal = Descifrar(palabraCifrada, a, b)
-                posiblesResultados.append({
-                    "a": a,
-                    "b": b,
-                    "textoDescifrado": posibleTextoOriginal
-                })
-
+                
+                # Solo agregamos resultados válidos (que no sean mensajes de error)
+                if not posibleTextoOriginal.startswith("Error:"):
+                    posiblesResultados.append({
+                        "a": a,
+                        "b": b,
+                        "textoDescifrado": posibleTextoOriginal,
+                        "clave": f"({a},{b})"
+                    })
+            except Exception as e:
+                # Ignoramos cualquier error y continuamos con la siguiente combinación
+                continue
+    
     return posiblesResultados
 

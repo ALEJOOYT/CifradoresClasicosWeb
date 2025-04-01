@@ -12,6 +12,16 @@ def Cifrar(mensaje, clave):
     """
     Realiza el cifrado de transposición por filas simples
     """
+    # Validar que clave sea de tipo string
+    if not isinstance(clave, str):
+        try:
+            clave = str(clave)
+        except:
+            raise ValueError("La clave debe ser una cadena de texto")
+    
+    if not clave:
+        raise ValueError("La clave no puede estar vacía")
+    
     mensaje = mensaje.replace(" ", "")
     numFilas = len(clave)
     longitudMensaje = len(mensaje)
@@ -33,6 +43,16 @@ def Descifrar(mensajeCifrado, clave):
     """
     Realiza el descifrado de transposición por filas simples
     """
+    # Validar que clave sea de tipo string
+    if not isinstance(clave, str):
+        try:
+            clave = str(clave)
+        except:
+            raise ValueError("La clave debe ser una cadena de texto")
+            
+    if not clave:
+        raise ValueError("La clave no puede estar vacía")
+    
     numFilas = len(clave)
     longitudMensaje = len(mensajeCifrado)
     numColumnas = (longitudMensaje + numFilas - 1) // numFilas
@@ -50,7 +70,8 @@ def Descifrar(mensajeCifrado, clave):
     mensajeDescifrado = ""
     for col in range(numColumnas):
         for fila in range(numFilas):
-            if col < len(matriz[fila]) and matriz[fila][col]:
+            # Check if the column exists in this row
+            if matriz[fila] and col < len(matriz[fila]) and matriz[fila][col]:
                 mensajeDescifrado += matriz[fila][col]
     return mensajeDescifrado
 
@@ -74,6 +95,16 @@ def CrearMatriz(mensaje, clave):
     """
     Crea y muestra la matriz de cifrado para propósitos educativos
     """
+    # Validar que clave sea de tipo string
+    if not isinstance(clave, str):
+        try:
+            clave = str(clave)
+        except:
+            raise ValueError("La clave debe ser una cadena de texto")
+            
+    if not clave:
+        raise ValueError("La clave no puede estar vacía")
+    
     mensaje = mensaje.replace(" ", "")
     numFilas = len(clave)
     longitudMensaje = len(mensaje)
