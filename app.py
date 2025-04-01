@@ -35,6 +35,9 @@ from cifradores.transposicionColumna import Cifrar as CifrarTransposicionColumna
 from cifradores.transposicionColumna import Descifrar as DescifrarTransposicionColumna
 from cifradores.transposicionColumna import DescifradoFuerzaBruta as DescifradoFuerzaBrutaTransposicionColumna
 
+from cifradores.transposicionFilas import Cifrar as CifrarTransposicionFilas
+from cifradores.transposicionFilas import Descifrar as DescifrarTransposicionFilas
+
 from cifradores.transposicionRail import Cifrar as CifrarRailFence
 from cifradores.transposicionRail import Descifrar as DescifrarRailFence
 from cifradores.transposicionRail import DescifrarFuerzaBruta as DescifrarFuerzaBrutaRailFence
@@ -597,6 +600,94 @@ def ApiFuerzaBrutaRailFence():
             "listaResultados": [],
             "resultado": f"Error: {str(e)}",
             "exito": False
+        })
+
+
+# API para cifrar Transposición por Filas
+@app.route('/api/cifrarTransposicionFilas', methods=['POST'])
+def ApiCifrarTransposicionFilas():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    try:
+        # Convertir la clave numérica a una cadena de caracteres
+        clave_str = ''.join(chr(ord('A') + i % 26) for i in range(int(clave)))
+        resultado = CifrarTransposicionFilas(texto, clave_str)
+        return jsonify({
+            'resultado': resultado,
+            'exito': True
+        })
+    except Exception as e:
+        return jsonify({
+            'resultado': f'Error: {str(e)}',
+            'exito': False
+        })
+
+# API para descifrar Transposición por Filas
+@app.route('/api/descifrarTransposicionFilas', methods=['POST'])
+def ApiDescifrarTransposicionFilas():
+    datos = request.json
+    texto = datos.get('texto', '')
+    clave = datos.get('clave', '')
+    try:
+        # Convertir la clave numérica a una cadena de caracteres
+        clave_str = ''.join(chr(ord('A') + i % 26) for i in range(int(clave)))
+        resultado = DescifrarTransposicionFilas(texto, clave_str)
+        return jsonify({
+            'resultado': resultado,
+            'exito': True
+        })
+    except Exception as e:
+        return jsonify({
+            'resultado': f'Error: {str(e)}',
+            'exito': False
+        })
+
+# API para descifrar por fuerza bruta Transposición por Filas
+@app.route('/api/fuerzaBrutaTransposicionFilas', methods=['POST'])
+def ApiFuerzaBrutaTransposicionFilas():
+    datos = request.json
+    texto = datos.get('texto', '')
+    claveInicio = int(datos.get('claveInicio', 2))
+    claveFin = int(datos.get('claveFin', 10))
+    if claveInicio < 2:
+        return jsonify({
+            'resultados': [],
+            'listaResultados': [],
+            'resultado': 'Error: El valor inicial de la clave debe ser mayor o igual a 2',
+            'exito': False
+        })
+    if claveFin < claveInicio:
+        return jsonify({
+            'resultados': [],
+            'listaResultados': [],
+            'resultado': 'Error: El valor final de la clave debe ser mayor o igual al valor inicial',
+            'exito': False
+        })
+    try:
+        resultados = []
+        # Para cada longitud de clave
+        for longitud in range(claveInicio, claveFin + 1):
+            # Generar una clave base con longitud 'longitud'
+            clave_base = ''.join(chr(ord('A') + i % 26) for i in range(longitud))
+            
+            # Descifrar con esta clave
+            texto_descifrado = DescifrarTransposicionFilas(texto, clave_base)
+            resultados.append((str(longitud), texto_descifrado))
+        
+        # Transformar los resultados a un formato más amigable
+        resultados_formateados = [{'permutacion': permutacion, 'texto': texto} for permutacion, texto in resultados]
+        return jsonify({
+            'resultados': resultados_formateados,
+            'listaResultados': resultados_formateados,
+            'exito': True
+        })
+    except Exception as e:
+        return jsonify({
+            'resultados': [],
+            'listaResultados': [],
+            'resultado': f'Error: {str(e)}',
+            'exito': False
         })
 
 
