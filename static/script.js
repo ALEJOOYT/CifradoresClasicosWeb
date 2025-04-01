@@ -270,10 +270,20 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.error) {
                 alert(data.error);
             } else {
-                textoSalida.value =
-                    Array.isArray(data.resultado) ?
-                        data.resultado.map(r => `Intento ${r[0]}: ${r[1]}`).join('\n') :
-                        data.resultado;
+                if (cifrador === 'vernam' && operacion === 'cifrar') {
+                    // Para cifrado Vernam, mostrar tanto el resultado como la clave
+                    textoSalida.value = `Texto cifrado: ${data.resultado}\nClave (guárdala para descifrar): ${data.clave}`;
+                    // Si hay un campo de clave, actualizarlo
+                    const inputClave = document.getElementById('clave');
+                    if (inputClave) {
+                        inputClave.value = data.clave;
+                    }
+                } else {
+                    textoSalida.value =
+                        Array.isArray(data.resultado) ?
+                            data.resultado.map(r => `Intento ${r[0]}: ${r[1]}`).join('\n') :
+                            data.resultado;
+                }
             }
         } catch (error) {
             alert('Error al procesar el texto: ' + error.message);

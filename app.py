@@ -35,6 +35,9 @@ from cifradores.transposicionRail import Cifrar as CifrarRailFence
 from cifradores.transposicionRail import Descifrar as DescifrarRailFence
 from cifradores.transposicionRail import DescifrarFuerzaBruta as FuerzaBrutaRailFence
 
+from cifradores.vernam import Cifrar as CifrarVernam
+from cifradores.vernam import Descifrar as DescifrarVernam
+
 app = Flask(__name__)
 
 # Configurar logging
@@ -48,11 +51,11 @@ CIFRADORES = {
     'adfgvx': {'cifrar': CifrarAdfgvx, 'descifrar': DescifrarAdfgvx},
     'playfair': {'cifrar': CifrarPlayfair, 'descifrar': DescifrarPlayfair},
     'hill': {'cifrar': CifrarHill, 'descifrar': DescifrarHill},
+    'vernam': {'cifrar': CifrarVernam, 'descifrar': DescifrarVernam},
     'vigenere': {'cifrar': CifrarVigenere, 'descifrar': DescifrarVigenere},
     'transposicionColumna': {'cifrar': CifrarTransposicionColumna, 'descifrar': DescifrarTransposicionColumna},
     'transposicionRail': {'cifrar': CifrarRailFence, 'descifrar': DescifrarRailFence}
 }
-
 # Diccionario de funciones de fuerza bruta
 FUERZA_BRUTA = {
     'cesar': FuerzaBrutaCesar,
@@ -89,7 +92,16 @@ def ProcesarTexto():
         funcion = CIFRADORES[cifrador]['cifrar'] if operacion == 'cifrar' else CIFRADORES[cifrador]['descifrar']
 
         # Procesar según el cifrador
-        if cifrador == 'cesar':
+        if cifrador == 'vernam':
+            if operacion == 'cifrar':
+                resultado, clave = funcion(texto)
+                return jsonify({'resultado': resultado, 'clave': clave})
+            else:  # descifrar
+                if 'clave' not in parametros:
+                    return jsonify({'error': 'Se requiere la clave para descifrar con Vernam'}), 400
+                resultado = funcion(texto, parametros['clave'])
+                return jsonify({'resultado': resultado})
+        elif cifrador == 'cesar':
             resultado = funcion(texto, int(parametros['desplazamiento']))
         elif cifrador == 'afin':
             resultado = funcion(texto, int(parametros['a']), int(parametros['b']))
