@@ -271,9 +271,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(data.error);
             } else {
                 if (cifrador === 'vernam' && operacion === 'cifrar') {
-                    // Para cifrado Vernam, mostrar tanto el resultado como la clave
-                    textoSalida.value = `Texto cifrado: ${data.resultado}\nClave (guárdala para descifrar): ${data.clave}`;
-                    // Si hay un campo de clave, actualizarlo
+                    // Mostrar solo el texto cifrado
+                    textoSalida.value = data.resultado;
+                    // Guardar la clave en un campo oculto
                     const inputClave = document.getElementById('clave');
                     if (inputClave) {
                         inputClave.value = data.clave;

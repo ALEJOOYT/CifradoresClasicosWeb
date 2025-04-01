@@ -95,7 +95,11 @@ def ProcesarTexto():
         if cifrador == 'vernam':
             if operacion == 'cifrar':
                 resultado, clave = funcion(texto)
-                return jsonify({'resultado': resultado, 'clave': clave})
+                # Store the key in the response but return only the result as the main output
+                return jsonify({
+                    'resultado': resultado,
+                    'clave': clave  # This will be stored in the hidden input field
+                })
             else:  # descifrar
                 if 'clave' not in parametros:
                     return jsonify({'error': 'Se requiere la clave para descifrar con Vernam'}), 400
