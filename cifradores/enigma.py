@@ -75,21 +75,142 @@ class MaquinaEnigma:
             rotor.posicion = self.posicionesIniciales[i]
 
 
-# Configuración por defecto de la máquina Enigma
-def ObtenerMaquinaEnigmaPorDefecto():
-    rotor1 = Rotor("EKMFLGDQVZNTOWYHXUSPAIBRCJ", 16)
-    rotor2 = Rotor("AJDKSIRUXBLHWTMCQGZNPYFVOE", 4)
-    rotor3 = Rotor("BDFHJLCPRTXVZNYEIWGAKMUSQO", 21)
+# Configuración de la máquina Enigma
+def ObtenerMaquinaEnigma(posicion_rotor1=16, posicion_rotor2=4, posicion_rotor3=21, tablero_conexiones=None):
+    """
+    Obtiene una configuración de la máquina Enigma con posiciones de rotores y tablero de conexiones personalizables.
+    
+    Parámetros:
+    - posicion_rotor1: Posición inicial del rotor 1 (0-25)
+    - posicion_rotor2: Posición inicial del rotor 2 (0-25)
+    - posicion_rotor3: Posición inicial del rotor 3 (0-25)
+    - tablero_conexiones: Lista de pares de conexiones o string en formato "A-Z,B-Y,C-X"
+    
+    Retorna:
+    - Una instancia configurada de MaquinaEnigma
+    """
+    # Crear rotores con las posiciones especificadas
+    rotor1 = Rotor("EKMFLGDQVZNTOWYHXUSPAIBRCJ", posicion_rotor1)
+    rotor2 = Rotor("AJDKSIRUXBLHWTMCQGZNPYFVOE", posicion_rotor2)
+    rotor3 = Rotor("BDFHJLCPRTXVZNYEIWGAKMUSQO", posicion_rotor3)
     reflector = Reflector("YRUHQSLDPXNGOKMIEBFZCWVJAT")
-    tableroConexion = TableroConexion([("A", "Z"), ("B", "Y"), ("C", "X")])
+    
+    # Procesar el tablero de conexiones
+    pares_conexiones = []
+    
+    # Si se proporciona como string en formato "A-Z,B-Y,C-X"
+    if isinstance(tablero_conexiones, str) and tablero_conexiones:
+        try:
+            conexiones = tablero_conexiones.split(',')
+            for conexion in conexiones:
+                if '-' in conexion:
+                    par = conexion.split('-')
+                    if len(par) == 2 and len(par[0]) == 1 and len(par[1]) == 1:
+                        pares_conexiones.append((par[0].upper(), par[1].upper()))
+        except Exception as e:
+            # Si hay un error en el formato, usar conexiones por defecto
+            pares_conexiones = [("A", "Z"), ("B", "Y"), ("C", "X")]
+    # Si no se proporciona nada o es None, usar conexiones por defecto
+    elif tablero_conexiones is None:
+        pares_conexiones = [("A", "Z"), ("B", "Y"), ("C", "X")]
+    # Si se proporciona como lista de tuplas, usarla directamente
+    else:
+        pares_conexiones = tablero_conexiones
+    
+    tableroConexion = TableroConexion(pares_conexiones)
     return MaquinaEnigma([rotor1, rotor2, rotor3], reflector, tableroConexion)
 
 
-def Cifrar(texto, rotores=None, reflector=None, conexiones=None):
-    maquina = ObtenerMaquinaEnigmaPorDefecto()
+# Mantener compatibilidad con el código existente
+def ObtenerMaquinaEnigmaPorDefecto():
+    """Función de compatibilidad que devuelve la configuración por defecto de la máquina Enigma"""
+    return ObtenerMaquinaEnigma()
+
+def Cifrar(texto, rotor1=16, rotor2=4, rotor3=21, tableroConexiones=None, reflector=None):
+    """
+    Cifra un texto utilizando la máquina Enigma con configuraciones personalizables.
+    
+    Admite dos formatos de parámetros:
+    1. Formato nuevo: Cifrar(texto, rotor1, rotor2, rotor3, tableroConexiones)
+    2. Formato antiguo: Cifrar(texto, rotores_list, reflector, conexiones)
+    
+    Parámetros:
+    - texto: Texto a cifrar
+    - rotor1: Posición inicial del rotor 1 (0-25) o lista de posiciones [rotor1, rotor2, rotor3]
+    - rotor2: Posición inicial del rotor 2 (0-25) o reflector (no usado actualmente)
+    - rotor3: Posición inicial del rotor 3 (0-25) o lista de conexiones
+    - tableroConexiones: Conexiones del tablero en formato "A-Z,B-Y,C-X" o None
+    - reflector: Parámetro de compatibilidad, no utilizado
+    
+    Retorna:
+    - Texto cifrado
+    """
+    # Detectar el formato de llamada (antiguo o nuevo)
+    pos_rotor1, pos_rotor2, pos_rotor3 = 16, 4, 21  # valores por defecto
+    conexiones = None
+    
+    # Formato antiguo: Cifrar(texto, [rotor1, rotor2, rotor3], reflector, conexiones)
+    if isinstance(rotor2, type(None)) and isinstance(rotor1, list) and len(rotor1) >= 3:
+        # Detectamos el formato antiguo: primer parámetro es una lista de rotores
+        try:
+            pos_rotor1 = int(rotor1[0]) if rotor1[0] is not None else 16
+            pos_rotor2 = int(rotor1[1]) if rotor1[1] is not None else 4
+            pos_rotor3 = int(rotor1[2]) if rotor1[2] is not None else 21
+            # En este caso, rotor3 contiene las conexiones
+            conexiones = rotor3
+        except (ValueError, IndexError):
+            # Si hay error en la conversión, usar valores por defecto
+            pos_rotor1, pos_rotor2, pos_rotor3 = 16, 4, 21
+    # Segundo formato antiguo: Cifrar(texto, rotores_list, reflector, conexiones)
+    elif isinstance(rotor1, list) and len(rotor1) >= 3:
+        try:
+            pos_rotor1 = int(rotor1[0]) if rotor1[0] is not None else 16
+            pos_rotor2 = int(rotor1[1]) if rotor1[1] is not None else 4
+            pos_rotor3 = int(rotor1[2]) if rotor1[2] is not None else 21
+            # En este formato, las conexiones vienen en rotor3
+            conexiones = rotor3
+        except (ValueError, IndexError):
+            pos_rotor1, pos_rotor2, pos_rotor3 = 16, 4, 21
+    # Formato nuevo: Cifrar(texto, rotor1, rotor2, rotor3, tableroConexiones)
+    else:
+        try:
+            pos_rotor1 = int(rotor1) if rotor1 is not None else 16
+            pos_rotor2 = int(rotor2) if rotor2 is not None else 4
+            pos_rotor3 = int(rotor3) if rotor3 is not None else 21
+            conexiones = tableroConexiones
+        except ValueError:
+            # Si hay error en la conversión, usar valores por defecto
+            pos_rotor1, pos_rotor2, pos_rotor3 = 16, 4, 21
+    
+    # Asegurar que las posiciones estén en el rango válido (0-25)
+    pos_rotor1 = max(0, min(25, pos_rotor1))
+    pos_rotor2 = max(0, min(25, pos_rotor2))
+    pos_rotor3 = max(0, min(25, pos_rotor3))
+    
+    maquina = ObtenerMaquinaEnigma(pos_rotor1, pos_rotor2, pos_rotor3, conexiones)
     return maquina.CodificarMensaje(texto)
 
-
-def Descifrar(textoCifrado, rotores=None, reflector=None, conexiones=None):
-    maquina = ObtenerMaquinaEnigmaPorDefecto()
-    return maquina.CodificarMensaje(textoCifrado)
+def Descifrar(textoCifrado, rotor1=16, rotor2=4, rotor3=21, tableroConexiones=None, reflector=None):
+    """
+    Descifra un texto utilizando la máquina Enigma con configuraciones personalizables.
+    Nota: En Enigma, el proceso de cifrado y descifrado es el mismo, pero debe usarse
+    la misma configuración para ambos procesos.
+    
+    Admite dos formatos de parámetros:
+    1. Formato nuevo: Descifrar(textoCifrado, rotor1, rotor2, rotor3, tableroConexiones)
+    2. Formato antiguo: Descifrar(textoCifrado, [rotor1, rotor2, rotor3], reflector, conexiones)
+    
+    Parámetros:
+    - textoCifrado: Texto a descifrar
+    - rotor1: Posición inicial del rotor 1 (0-25) o lista de posiciones [rotor1, rotor2, rotor3]
+    - rotor2: Posición inicial del rotor 2 (0-25) o reflector (no usado actualmente)
+    - rotor3: Posición inicial del rotor 3 (0-25) o lista de conexiones
+    - tableroConexiones: Conexiones del tablero en formato "A-Z,B-Y,C-X" o None
+    - reflector: Parámetro de compatibilidad, no utilizado
+    
+    Retorna:
+    - Texto descifrado
+    """
+    # El proceso de descifrado es idéntico al de cifrado en Enigma
+    # Pasamos todos los parámetros para que Cifrar detecte el formato correcto
+    return Cifrar(textoCifrado, rotor1, rotor2, rotor3, tableroConexiones, reflector)
